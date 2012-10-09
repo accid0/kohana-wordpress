@@ -1,0 +1,140 @@
+#wpbody-content {
+	width: auto !important;
+}
+
+.layerslider_slides {
+	padding: 5px;
+	background-color: #efefef;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+	overflow: hidden;
+}
+
+.layerslider_slides input {	
+	width: 80px;
+}
+
+.layerslider_sublayer {
+	margin-left: 20px;
+	list-style-type: decimal;
+}
+
+.layerslider_slides input {
+	width: 50px;
+}
+
+.layerslider_slides input.layerslider-layer-select {
+	width: auto;
+}
+
+.layerslider_slides select {
+	width: 75px;
+}
+
+.layerslider_slides td,
+.layerslider_slides th {
+	padding: 0px 8px;
+	font-size: 10px;
+}
+
+#layerslider_slides_code {
+	display: none;
+}
+
+#layerslider-sample-tab {
+	display: none;
+}
+
+.layerslider_slides th {
+	text-align: left;
+}
+
+.layerslider_slides table {
+	margin: 0px;
+	padding: 10px;
+	border-spacing: 0px;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+
+.layerslider_slides table tr {
+	position: relative;
+}
+
+.moveable {
+	width: 14px;
+	height: 14px;
+	background-image: url(../images/move.png);
+	cursor: pointer;
+}
+
+.draggable {
+	overflow: hidden;
+}
+
+.draggable * {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	cursor: default;
+}
+
+.ui-state-highlight {
+	width: 100% !important;
+	height: 25px !important;
+	background: #aaa !important;
+}
+
+/* TABS */
+
+.ui-tabs-nav {
+	width: 900px;
+	background-color: #efefef;
+	border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+
+.ui-tabs-nav li {
+	display: inline-block;
+	height: 20px;
+	margin: 5px;
+	padding: 5px;
+	background-color: #dfdfdf;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-o-border-radius: 5px;
+}
+
+.ui-tabs-nav li a {
+	font: normal normal bold 16px/20px Arial, serif;
+	color: #ffffff;
+	text-decoration: none;
+}
+
+.ui-tabs-nav li a:hover {
+	color: #21759B;
+}
+
+.ui-tabs-nav li span {
+	margin: 0px 5px;
+	font: normal normal bold 14px/20px Arial, serif;
+	color: #000000;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.ui-tabs-selected {
+	background-color: #cdcdcd !important;
+}
+
+.ui-tabs-selected a,
+.ui-tabs-selected a:hover {
+	color: #555 !important;
+	cursor: default;
+}

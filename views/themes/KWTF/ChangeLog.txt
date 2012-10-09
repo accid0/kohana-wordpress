@@ -1,0 +1,133 @@
+------------------ VER 1.3 ---------------          
+Removed : background from images folder and from the list of body backgrounds presets  
+Updated : list of google fonts     
+Fixed : colors options for the shop buttons
+Fixed : warning message shown for the bad widgets retrieving
+Fixed : title was hidden in "Related Products" section, in Jigoshop
+Fixed : bugs with shop pages layout
+Fixed : little bug with ajax request in woocommerce cart widget
+Fixed : style for the variations dropdowns, in the product detail page
+Fixed : active status in the product tab, in product detail page, with jigoshop installed
+Fixed : double fixed-image header in the responsive layout
+Added : options to hide the topbar and the cart in topbar
+Added : the dropdown in the topbar menu
+Added : options for the gallery and portfolio pages
+Added : more filters in the products list in admin panel, with woocommerce installed
+Added : breadcrumbs, that was missing
+Added : layout for the portfolio post detail page
+
+UPDATED
+core/functions-fonts.php
+core/functions-template.php
+core/functions-widgets.php
+core/mtx-safe-wp-load.php     
+inc/theme-options/colors-options.php
+inc/theme-options/general-options.php
+inc/colors.php
+inc/functions-theme.php
+inc/jigoshop.php
+inc/shortcodes-woocommerce.php
+inc/woocommerce.php
+jigoshop/style.css
+js/jquery.custom.js    
+woocommerce/style.css
+page.php
+single.php
+slider.php
+style.css
+topbar.php
+woocomerce.php
+
+ADDED
+core/google-fonts.txt
+
+
+
+------------------ VER 1.2 ---------------
+Added : portfolio and gallery pages
+Fixed : a little issue with theme options tab general saving
+Fixed : price filter in menu navigation, when it's not used the woocommerce widget
+
+UPDATED
+gallery.php
+inc/functions-theme.php
+inc/metaboxes.php
+inc/post-types.php
+inc/theme-options/general-options.php
+inc/woocommerce.php
+loop-blog-big.php
+loop-blog-elegant.php
+loop-blog-small.php
+style.css
+taxonomy.php
+
+ADDED
+inc/infinity-portfolio.php
+inc/widgets/gallery_categories.php
+inc/widgets/more_projects.php
+inc/widgets/portfolio_categories.php
+loop-portfolio.php
+portfolio-3cols.php
+portfolio-big_image.php
+portfolio-filterable.php
+portfolio-slider.php
+portfolio.php
+sidebar-portfolio.php
+single-portfolio.php
+
+DELETED
+faq.php
+
+
+------------------ VER 1.1 ---------------  
+Added : style for the product variations
+Fixed : Installer Import/Export, to import the sample data in one click
+Fixed : bug with twitter feeds
+Fixed : bug of the map tab on IE8
+Fixed : some warnings shown in the LayersSliders
+
+UPDATE                              
+core/default-shortcodes/widgets.php
+core/functions-sliders.php           
+core/includes/js/jquery.tweetable.js
+core/theme-options/install/install.php
+css/lessthen480.css
+css/lessthen600.css  
+inc/LayerSlider/layerslider.php
+inc/LayerSlider/settings.php
+images/icons/widget/bulb.png
+images/icons/widget/calc.png     
+images/icons/widget/heart.png  
+jigoshop/style.css     
+js/jquery.custom.js
+inc/fonts.php       
+woocommerce/style.css
+ChangeLog.txt
+style.css
+header.php
+
+ADDED
+images/icons/widget/browser.png
+images/icons/widget/calendar.png
+images/icons/widget/card.png
+images/icons/widget/cert.png
+images/icons/widget/checkbox.png
+images/icons/widget/mail.png
+images/icons/widget/monitor.png
+images/icons/widget/notepad.png
+images/icons/widget/page_layout.png
+images/icons/widget/photo.png
+images/icons/widget/picture.png
+images/icons/widget/shop.png
+images/icons/widget/smile.png
+images/icons/widget/spech.png
+images/icons/widget/wrench.png   
+images/price.png          
+
+DELETED
+images/icons/old_icons          
+images/icons/old_socials  
+
+
+------------------ VER 1.0 ---------------
+Initial Release
