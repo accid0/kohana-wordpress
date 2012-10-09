@@ -7,7 +7,7 @@
 					<?php do_action( 'kwtf_before_sidebar_' . $current_pagename ) ?>
 					
 	                <?php 
-	                    if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar( get_post_meta( get_the_ID(), '_sidebar_choose_page', true ) ) )
+	                    if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar( $sidebar ) )
 	                        get_sidebar( 'default' ) 
 	                ?>
 			

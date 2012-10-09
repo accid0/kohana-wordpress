@@ -17,23 +17,35 @@ if ( empty( $woocommerce_loop['loop'] ) )
 
 // Store column count for displaying the grid
 if ( empty( $woocommerce_loop['columns'] ) )
-	$woocommerce_loop['columns'] = apply_filters( 'loop_shop_columns', 4 );
+	$woocommerce_loop['columns'] = apply_filters( 'loop_shop_columns', 4 ) - 1;
 
 // Increase loop count
 $woocommerce_loop['loop']++;
+
+$loop_class_li = array_diff( get_query_var('class_li'), array('border'));
+$loop_class_li[] = 'category';
+$title_position = get_query_var('title_position');
+
+if ( ! isset( $woocommerce_loop['setLast'] ) && $woocommerce_loop['loop'] % $woocommerce_loop['columns'] ==0 )
+  $loop_class_li[] = 'last';
+
+if ( ! isset( $woocommerce_loop['setFirst'] ) && ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] == 0 )
+  $loop_class_li[] = 'first';
+
+if ( ! empty( $loop_class_li ) )
+  $class = ' class="' . implode( ' ', $loop_class_li ) . '"';
+else
+  $class = '';
+
+$a_class = (in_array( 'shadow', $loop_class_li)) ? 'class="shadow"' : '';
 ?>
-<li class="product sub-category <?php
-	if ( $woocommerce_loop['loop'] % $woocommerce_loop['columns'] == 0 )
-		echo 'last';
-	elseif ( ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] == 0 )
-		echo 'first';
-	?>">
+<li <?php echo $class; ?>>
 
 	<?php do_action( 'woocommerce_before_subcategory', $category ); ?>
 
-	<a href="<?php echo get_term_link( $category->slug, 'product_cat' ); ?>">
+	<a href="<?php echo get_term_link( $category->slug, 'product_cat' ); ?>" <?php echo $a_class?>>
 
-		<?php
+    <?php
 			/**
 			 * woocommerce_before_subcategory_title hook
 			 *
@@ -42,13 +54,15 @@ $woocommerce_loop['loop']++;
 			do_action( 'woocommerce_before_subcategory_title', $category );
 		?>
 
-		<h3>
-			<?php echo $category->name; ?>
-			<?php if ( $category->count > 0 ) : ?>
-				<mark class="count">(<?php echo $category->count; ?>)</mark>
-			<?php endif; ?>
-		</h3>
+    <?php if ( get_query_var( 'shop_show_name' ) ) : ?>
+    <h3 class="<?php echo $title_position ?>"><?php echo $category->name; ?>
 
+      <?php if ( $category->count > 0 ) : ?>
+        <mark class="count">(<?php echo $category->count; ?>)</mark>
+      <?php endif; ?>
+
+    </h3>
+    <?php endif ?>
 		<?php
 			/**
 			 * woocommerce_after_subcategory_title hook

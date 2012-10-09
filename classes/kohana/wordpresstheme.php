@@ -810,7 +810,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const OPT_THEME_URI                                          = 'theme_uri';
   const OPT_THEME_DIR                                          = 'theme_dir';
   const OPT_SHOP_MODE                                          = 'shop_mode';
-
+  const OPT_HAS_SHOP_PAGE                                      = 'has_shop_page';
 
   /**
    * 
@@ -2581,8 +2581,9 @@ class Kohana_WordpressTheme extends WPPlugin {
     self::OPT_METHODS_PRIORITIES                                    => array(
       'hook_woocommerce_before_main_content'                        => self::ATTR_HIGH_PRIORITY,
       'hook_woocommerce_sidebar'                                    => self::ATTR_LOW_PRIORITY,
-
+      'action_admin_bar_menu'                                       => self::ATTR_LOW_PRIORITY,
     ),
+    self::OPT_HAS_SHOP_PAGE                                         => FALSE,
   );
 
   /**
@@ -6444,8 +6445,15 @@ case 'vimeo' :
    * @return void
    */
   public function template_footer(  $name){
+    $footer_type = $this->get_option( self::VAR_FOOTER_TYPE);
+    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
+    if ( is_tax('product_cat') || is_tax('product_tag')
+      || is_post_type_archive('product') || ( get_post_type() == 'product' && is_single() )
+      || is_page($shop_page) ){
+      $footer_type = ($l = get_post_meta( $shop_page, '_footer_type', TRUE)) ? $l : $footer_type;
 
-    set_query_var('footer_type', $this->get_option( self::VAR_FOOTER_TYPE));
+    }
+    set_query_var('footer_type', $footer_type);
     set_query_var('copyright_text_left', $this->convertTags( $this->addp(
       stripslashes( $this->get_option( self::VAR_COPYRIGHT_TEXT_LEFT ) ) ), '', '', FALSE ));
     set_query_var('copyright_text_right', $this->convertTags($this->addp(
@@ -6658,7 +6666,15 @@ case 'vimeo' :
    */
   public function template_sidebar( $name){
     set_query_var('blog_cats_exclude_sidebar', $this->get_option( self::VAR_BLOG_CATS_EXCLUDE_SIDEBAR));
+    $sidebar = get_post_meta( get_the_ID(), '_sidebar_choose_page', true );
+    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
+    if ( is_tax('product_cat') || is_tax('product_tag')
+      || is_post_type_archive('product') || ( get_post_type() == 'product' && is_single() )
+      || is_page($shop_page) ){
+      $sidebar = ( $l = get_post_meta( $shop_page, '_sidebar_choose_page', TRUE) ) ? $l : 'Shop Sidebar';
 
+    }
+    set_query_var( 'sidebar', $sidebar);
     switch($name){
       case 'blog':
         set_query_var('current_pagename', $this->get_current_pagename());
@@ -7854,10 +7870,25 @@ case 'vimeo' :
 
     $wp_admin_bar->add_menu( array(
       //'parent' => false,
-      'title' => 'Theme options',
+      'title' => __( 'Theme options', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
       'id' => "theme-options",
       'href' => admin_url('options-general.php')."?page="
         . $this->get_var( self::OPT_SANITIZED_NAME)
+    ) );
+
+    $wp_admin_bar->add_menu( array(
+      'parent' => "theme-options",
+      'title' => __( 'Edit Options', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+      'id' => "theme-options-edit",
+      'href' => admin_url('options-general.php')."?page="
+        . $this->get_var( self::OPT_SANITIZED_NAME)
+    ) );
+
+    $wp_admin_bar->add_menu( array(
+      'parent' => "theme-options",
+      'title' => __( 'Edit Layer Slider', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+      'id' => "theme-options-slider",
+      'href' => admin_url('themes.php')."?page=kwtf_layerslider"
     ) );
 
     /*foreach( $yiw_theme_options_items as $item => $title )
@@ -8433,7 +8464,7 @@ case 'vimeo' :
   function nav_menu_meta_box() { ?>
   <div class="prices">
     <input type="hidden" name="woocommerce_currency" id="woocommerce_currency" value="<?php echo get_woocommerce_currency_symbol( get_option('woocommerce_currency') ) ?>" />
-    <input type="hidden" name="woocommerce_shop_url" id="woocommerce_shop_url" value="<?php echo get_option('permalink_structure') == '' ? site_url() . '/?post_type=product' : get_permalink( get_option('woocommerce_shop_page_id') ) ?>" />
+    <input type="hidden" name="woocommerce_shop_url" id="woocommerce_shop_url" value="<?php echo get_option('permalink_structure') == '' ? site_url() . '/?post_type=product' : get_permalink( $this->get_var( self::OPT_HAS_SHOP_PAGE) ) ?>" />
     <input type="hidden" name="menu-item[-1][menu-item-url]" value="" />
     <input type="hidden" name="menu-item[-1][menu-item-title]" value="" />
     <input type="hidden" name="menu-item[-1][menu-item-type]" value="custom" />
@@ -9831,19 +9862,30 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
     add_action( 'woocommerce_single_product_summary', 'woocommerce_output_product_data_tabs', 60);
 
+    //catalogs thumbnail
+    remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
 
     if ( $this->ensure_woo( self::VAR_SHOP_SHOW_BUTTON_ADD_TO_CART_SINGLE_PAGE, 0 )){
       remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30);
     }
+
+    $sid = get_option('woocommerce_shop_page_id');
+    $this->set_var( self::OPT_HAS_SHOP_PAGE, $sid);
   }
 
   // decide the layout for the shop pages
   function hook_kwtf_layout_page( $default_layout ) {
-    $is_shop_page = ( get_option('woocommerce_shop_page_id') != false ) ? is_page( get_option('woocommerce_shop_page_id') ) : false;
-    if ( is_tax('product_cat') || is_tax('product_tag') || is_post_type_archive('product') || $is_shop_page )
-      return $this->get_var( self::OPT_DEFAULT_LAYOUT_PAGE_SHOP);
+    if ( $this->ensure_woo()):
+    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
+    if ( is_tax('product_cat') || is_tax('product_tag') || is_post_type_archive('product') || is_page($shop_page) ){
+      $layout = ($l = get_post_meta( $shop_page, '_layout_page', TRUE)) ? $l : $this->get_var( self::OPT_DEFAULT_LAYOUT_PAGE_SHOP);
+      return $layout;
+    }
     else
       return $default_layout;
+    endif;
+
+    return $default_layout;
   }
 
 
@@ -9860,14 +9902,11 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
   /**
    * LAYOUT
    */
-  function hook_woocommerce_before_main_content() {
-    $layout = $this->layout_page();
-    if ( get_post_type() == 'product' && is_tax( 'product-category' ) )
-      $layout = 'sidebar-no';
-    elseif ( get_post_type() == 'product' && is_single() )
+  function hook_woocommerce_before_main_content( ) {
+    if ( get_post_type() == 'product' && is_single() )
       $layout = $this->get_option( self::VAR_SHOP_LAYOUT_PAGE_SINGLE );
-    elseif ( get_post_type() == 'product' && ! is_single() )
-      $layout = ( $l=get_post_meta( get_option( 'woocommerce_shop_page_id' ), '_layout_page', true )) ? $l : $this->get_var( self::OPT_DEFAULT_LAYOUT_PAGE_SHOP);
+    else
+      $layout = $this->layout_page();
     ?><div id="primary" class="layout-<?php echo $layout ?> group">
         <div class="inner group"><?php
 
@@ -9875,6 +9914,28 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
       remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
       add_filter('loop_shop_columns', create_function('', 'return 5;'));
     }
+  }
+
+  /**
+   * @param $category
+   */
+  public function hook_woocommerce_before_subcategory_title( $category){
+
+    $small_thumbnail_size  = apply_filters( 'single_product_small_thumbnail_size', 'shop_catalog' );
+    $image_width    = 1.5 * $this->shop_small_w();
+    $image_height    = 5 + $this->shop_small_h();
+
+    $thumbnail_id  = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true  );
+
+    if ( $thumbnail_id ) {
+      $image = wp_get_attachment_image_src( $thumbnail_id, $small_thumbnail_size  );
+      $image = $image[0];
+    } else {
+      $image = woocommerce_placeholder_img_src();
+    }
+
+    if ( $image )
+      echo '<img src="' . $image . '" alt="' . $category->name . '" width="' . $image_width . '" height="' . $image_height . '" />';
   }
 
   /**
@@ -12583,8 +12644,8 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     if (empty($atts)) return;
 
     extract(shortcode_atts(array(
-      'columns' 	=> 12,
-      'per_page' 	=> 4,
+      'columns' 	=> 4,
+      'per_page' 	=> 12,
       'orderby'   => 'title',
       'order'     => 'asc',
       'cat'       => '',
@@ -12862,4 +12923,87 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     return apply_filters( 'kwtf_sc_product_slider_html', $html );
   }
 
+
+
+  /**
+   * CATEGORY SLIDER
+   *
+   * @description
+   *  Add a category slider
+   *
+   * @example
+   *  [category_slider]
+   *
+   * @attr
+   *  sid - like categories names
+   *  slug - categories slugs
+   *  orderby name|description|slug
+   *  order  asc|desc
+   *  per_cat number categories to show
+   *  style ribbon|traditional
+   **/
+  public function do_category_slider($atts, $content = null) {
+    global $woocommerce_loop;
+
+    extract(shortcode_atts(array(
+      'orderby'       => 'name',
+      'order'         => 'desc',
+      'per_cat'       => 8,
+      'sid'           => '',
+      'slug'          => '',
+      'style'         => ''
+    ), $atts));
+
+    $args = array(
+      'number'        => $per_cat,
+      'orderby '      => $orderby,
+      'order'         => $order,
+      'hide_empty'    => TRUE,
+      'hierarchical'  => TRUE,
+      'pad_counts'    => FALSE,
+
+    );
+
+    if(isset($atts['sid'])){
+      $sid = explode(',', $atts['sid']);
+      $sid = array_map('trim', $sid);
+      $args['name__like'] = $sid;
+    }
+
+    if(isset($atts['slug'])){
+      $slug = explode(',', $atts['slug']);
+      $slug = array_map('trim', $slug);
+      $args['slug'] = $slug;
+    }
+
+    $woocommerce_loop['setLast'] = true;
+
+    if ( empty( $style ) )
+      $style = $this->get_option( self::VAR_SHOP_PRODUCTS_STYLE);
+
+    $woocommerce_loop['style'] = $style;
+
+    $cats = get_terms( 'product_cat', $args);
+    $this->template_archive_product('', '');
+    ob_start();
+    echo '<div class="products-slider traditional">';
+    if ( count($cats) > 0 ) : ?>
+    <ul class="products traditional">
+    <?php foreach( $cats as $cat) :
+
+      set_query_var( 'category', $cat);
+      woocommerce_get_template_part('content', 'product_cat');
+
+    endforeach; // end of the loop. ?>
+    </ul>
+    <div class="clear"></div>
+    <?php endif;
+    echo '</div>';
+
+    $html = ob_get_clean();
+
+    unset( $woocommerce_loop['setLast'] );
+
+    return apply_filters( 'kwtf_sc_category_slider_html', $html );
+  }
 }
