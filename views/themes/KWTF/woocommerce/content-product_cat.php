@@ -57,7 +57,7 @@ $a_class = (in_array( 'shadow', $loop_class_li)) ? 'class="shadow"' : '';
 		?>
 
     <?php if ( get_query_var( 'shop_show_name' ) ) : ?>
-    <h3 class="<?php echo $title_position ?>"><?php echo $category->name; ?>
+    <h3 class="inside-thumb"><?php echo $category->name; ?>
 
       <?php if ( $category->count > 0 ) : ?>
         <mark class="count">(<?php echo $category->count; ?>)</mark>
