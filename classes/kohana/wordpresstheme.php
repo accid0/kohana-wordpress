@@ -303,6 +303,21 @@ class Kohana_WordpressTheme extends WPPlugin {
   const ATTR_FIELD_POST_ID                                      = 'post_id';
   const ATTR_JIGOSHOP                                           = 'jigoshop';
   const ATTR_WOOCOMMERCE                                        = 'woocommerce';
+  const ATTR_THUMB_RECENTPOSTS                                  = 'thumb_recentposts';
+  const ATTR_THUMB_TESTIMONIAL                                  = 'thumb_testimonial';
+  const ATTR_THUMB_SLIDER_ELASTIC                               = 'thumb_slider_elastic';
+  const ATTR_THUMB_SHOP_CATEGORY                                = 'thumb_shop_category';
+  const ATTR_THUMB_PORTFOLIO_3COLS                              = 'thumb_portfolio_3cols';
+  const ATTR_THUMB_PORTFOLIO_SLIDER                             = 'thumb_portfolio_slider';
+  const ATTR_THUMB_PORTFOLIO_BIG                                = 'thumb_portfolio_big';
+  const ATTR_THUMB_GALLERY                                      = 'thumb_gallery';
+  const ATTR_THUMB_MORE_PROJECTS                                = 'thumb_more_projects';
+  const ATTR_BLOG_ELEGANT                                       = 'blog_elegant';
+  const ATTR_BLOG_BIG                                           = 'blog_big';
+  const ATTR_BLOG_SMALL                                         = 'blog_small';
+  const ATTR_NIVO_SLIDER                                        = 'nivo_slider';
+  const ATTR_FEATURES_TAB_ICON                                  = 'features_tab_icon';
+
 
   const VAR_SKINS                                               = 'skins';
   const VAR_SLIDERS                                             = 'sliders';
@@ -651,19 +666,6 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_FONT_BLOG_TITLE_SIZE                                = 'font_blog_title_size';
   const VAR_FONT_META_SIZE                                      = 'font_meta_size';
   const VAR_PANEL_CONFIGS                                       = 'panel_configs';
-  const VAR_THUMB_RECENTPOSTS                                   = 'thumb_recentposts';
-  const VAR_THUMB_TESTIMONIAL                                   = 'thumb_testimonial';
-  const VAR_THUMB_SLIDER_ELASTIC                                = 'thumb_slider_elastic';
-  const VAR_THUMB_PORTFOLIO_3COLS                               = 'thumb_portfolio_3cols';
-  const VAR_THUMB_PORTFOLIO_SLIDER                              = 'thumb_portfolio_slider';
-  const VAR_THUMB_PORTFOLIO_BIG                                 = 'thumb_portfolio_big';
-  const VAR_THUMB_GALLERY                                       = 'thumb_gallery';
-  const VAR_THUMB_MORE_PROJECTS                                 = 'thumb_more_projects';
-  const VAR_BLOG_ELEGANT                                        = 'blog_elegant';
-  const VAR_BLOG_BIG                                            = 'blog_big';
-  const VAR_BLOG_SMALL                                          = 'blog_small';
-  const VAR_NIVO_SLIDER                                         = 'nivo_slider';
-  const VAR_FEATURES_TAB_ICON                                   = 'features_tab_icon';
   const VAR_NOTIFIER_CACHE                                      = 'notifier_cache';
   const VAR_NOTIFIER_CACHE_LAST_UPDATE                          = 'notifier_cache_last_update';
 
@@ -811,6 +813,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const OPT_THEME_DIR                                          = 'theme_dir';
   const OPT_SHOP_MODE                                          = 'shop_mode';
   const OPT_HAS_SHOP_PAGE                                      = 'has_shop_page';
+  const OPT_IMAGE_SIZES                                        = 'image_sizes';
 
   /**
    * 
@@ -1901,13 +1904,8 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_SLIDER_CYCLE_SLIDES, self::VAR_SLIDER_ELASTIC_SLIDES,
       self::VAR_SLIDER_ELEGANT_SLIDES, self::VAR_SLIDER_NIVO_SLIDES,
       self::VAR_SLIDER_THUMBNAILS_SLIDES, self::VAR_SLIDER_UNOSLIDER_SLIDES,
-      self::VAR_PANEL_CONFIGS, self::VAR_THUMB_PORTFOLIO_SLIDER, self::VAR_FEATURES_TAB,
-      self::VAR_THUMB_PORTFOLIO_3COLS, self::VAR_THUMB_SLIDER_ELASTIC, self::VAR_THUMB_TESTIMONIAL,
-      self::VAR_THUMB_RECENTPOSTS, self::VAR_BLOG_BIG, self::VAR_BLOG_ELEGANT, self::VAR_THUMB_MORE_PROJECTS,
-      self::VAR_THUMB_GALLERY, self::VAR_THUMB_PORTFOLIO_BIG, self::VAR_FEATURES_TAB_ICON,
-      self::VAR_NIVO_SLIDER, self::VAR_BLOG_SMALL, self::VAR_NOTIFIER_CACHE, self::VAR_NOTIFIER_CACHE_LAST_UPDATE
-
-
+      self::VAR_PANEL_CONFIGS, self::VAR_FEATURES_TAB, self::VAR_NOTIFIER_CACHE, 
+      self::VAR_NOTIFIER_CACHE_LAST_UPDATE
     ),
 		self::OPT_OPTION_DEFAULTS                               => array(
       self::VAR_DEFAULT_PORTFOLIOS_PID                              => NULL,
@@ -2262,22 +2260,26 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_SLIDER_NIVO_SLIDES                                  => array(),
       self::VAR_SLIDER_THUMBNAILS_SLIDES                            => array(),
       self::VAR_SLIDER_UNOSLIDER_SLIDES                             => array(),
-      self::VAR_THUMB_RECENTPOSTS                                   => array( self::ATTR_WIDTH => 55,  self::ATTR_HEIGHT => 55,  TRUE ),
-      self::VAR_THUMB_TESTIMONIAL                                   => array( self::ATTR_WIDTH => 94,  self::ATTR_HEIGHT => 94,  TRUE ),
-      self::VAR_THUMB_SLIDER_ELASTIC                                => array( self::ATTR_WIDTH => 150, self::ATTR_HEIGHT => 59,  TRUE ),
-      self::VAR_THUMB_PORTFOLIO_3COLS                               => array( self::ATTR_WIDTH => 280, self::ATTR_HEIGHT => 143, TRUE, self::ATTR_CSS_ROLE => '#portfolio li img, #portfolio li .thumb, ' ),
-      self::VAR_THUMB_PORTFOLIO_SLIDER                              => array( self::ATTR_WIDTH => 205, self::ATTR_HEIGHT => 118, TRUE, self::ATTR_CSS_ROLE => '.portfolio-slider li a img, .portfolio-slider li a, .portfolio-slider li' ),
-      self::VAR_THUMB_PORTFOLIO_BIG                                 => array( self::ATTR_WIDTH => 617, self::ATTR_HEIGHT => 295, TRUE, self::ATTR_CSS_ROLE => '#portfolio-bigimage img' ),
-      self::VAR_THUMB_GALLERY                                       => array( self::ATTR_WIDTH => 208, self::ATTR_HEIGHT => 168, TRUE, self::ATTR_CSS_ROLE => '.gallery-wrap li img, .gallery-wrap .internal_page_item' ),
-      self::VAR_THUMB_MORE_PROJECTS                                 => array( self::ATTR_WIDTH => 86,  self::ATTR_HEIGHT => 86,  TRUE ),
-      self::VAR_BLOG_ELEGANT                                        => array( self::ATTR_WIDTH => 450, self::ATTR_HEIGHT => 0,   TRUE ),
-      self::VAR_BLOG_BIG                                            => array( self::ATTR_WIDTH => 720, self::ATTR_HEIGHT => 0,   TRUE ),
-      self::VAR_BLOG_SMALL                                          => array( self::ATTR_WIDTH => 288, self::ATTR_HEIGHT => 266, TRUE ),
-      self::VAR_NIVO_SLIDER                                         => array( self::ATTR_WIDTH => 608, self::ATTR_HEIGHT => 269, TRUE ),
-      self::VAR_FEATURES_TAB_ICON                                   => array( self::ATTR_WIDTH => 20,  self::ATTR_HEIGHT => 20,  TRUE ),
       self::VAR_NOTIFIER_CACHE                                      => NULL,
       self::VAR_NOTIFIER_CACHE_LAST_UPDATE                          => NULL,
       self::VAR_FONT_TYPE_OPTION_ID                                 => NULL,
+
+    ),
+    self::OPT_IMAGE_SIZES                                          => array(
+      self::ATTR_THUMB_RECENTPOSTS                                  => array( self::ATTR_WIDTH=> 55,  self::ATTR_HEIGHT=> 55,  TRUE ),
+      self::ATTR_THUMB_TESTIMONIAL                                  => array( self::ATTR_WIDTH=> 94,  self::ATTR_HEIGHT=> 94,  TRUE ),
+      self::ATTR_THUMB_SLIDER_ELASTIC                               => array( self::ATTR_WIDTH=> 150, self::ATTR_HEIGHT=> 59,  TRUE ),
+      self::ATTR_THUMB_SHOP_CATEGORY                                => array( self::ATTR_WIDTH=> 225, self::ATTR_HEIGHT=> 155, TRUE ),
+      self::ATTR_THUMB_PORTFOLIO_3COLS                              => array( self::ATTR_WIDTH=> 280, self::ATTR_HEIGHT=> 143, TRUE, self::ATTR_CSS_ROLE=> '#portfolio li img, #portfolio li .thumb, ' ),
+      self::ATTR_THUMB_PORTFOLIO_SLIDER                             => array( self::ATTR_WIDTH=> 205, self::ATTR_HEIGHT=> 118, TRUE, self::ATTR_CSS_ROLE=> '.portfolio-slider li a img, .portfolio-slider li a, .portfolio-slider li' ),
+      self::ATTR_THUMB_PORTFOLIO_BIG                                => array( self::ATTR_WIDTH=> 617, self::ATTR_HEIGHT=> 295, TRUE, self::ATTR_CSS_ROLE=> '#portfolio-bigimage img' ),
+      self::ATTR_THUMB_GALLERY                                      => array( self::ATTR_WIDTH=> 208, self::ATTR_HEIGHT=> 168, TRUE, self::ATTR_CSS_ROLE=> '.gallery-wrap li img, .gallery-wrap .internal_page_item' ),
+      self::ATTR_THUMB_MORE_PROJECTS                                => array( self::ATTR_WIDTH=> 86,  self::ATTR_HEIGHT=> 86,  TRUE ),
+      self::ATTR_BLOG_ELEGANT                                       => array( self::ATTR_WIDTH=> 450, self::ATTR_HEIGHT=> 0,   TRUE ),
+      self::ATTR_BLOG_BIG                                           => array( self::ATTR_WIDTH=> 720, self::ATTR_HEIGHT=> 0,   TRUE ),
+      self::ATTR_BLOG_SMALL                                         => array( self::ATTR_WIDTH=> 288, self::ATTR_HEIGHT=> 266, TRUE ),
+      self::ATTR_NIVO_SLIDER                                        => array( self::ATTR_WIDTH=> 608, self::ATTR_HEIGHT=> 269, TRUE ),
+      self::ATTR_FEATURES_TAB_ICON                                  => array( self::ATTR_WIDTH => 20, self::ATTR_HEIGHT => 20, TRUE ),
 
     ),
 		self::OPT_OPTION_PAGE_TITLE	                            => 'Kohana WP Theme Framework Control Panel',
@@ -2308,13 +2310,13 @@ class Kohana_WordpressTheme extends WPPlugin {
     self::OPT_SLIDER_A_BEFORE                               => '',
     self::OPT_SLIDER_A_AFTER                                => '',
     self::OPT_SLIDER_SLIDES_CONFIG                          => array(
-      self::ATTR_UNOSLIDER                                          => array('title', 'image', 'link'),
-      self::ATTR_ELEGANT                                            => array('title', 'image', 'caption', 'link'),
-      self::ATTR_CYCLE                                              => array('title', 'image', 'video', 'caption', 'link'),
-      self::ATTR_ELASTIC                                            => array('title', 'caption', 'image', 'link'),
-      self::ATTR_NIVO                                               => array('image', 'link'),
-      self::ATTR_THUMBNAILS                                         => array('image', 'caption', 'tooltip', 'link'),
-      self::ATTR_FLASH                                              => array('title', 'image', 'caption', 'link'),
+      self::ATTR_UNOSLIDER                                  => array('title', 'image', 'link'),
+      self::ATTR_ELEGANT                                    => array('title', 'image', 'caption', 'link'),
+      self::ATTR_CYCLE                                      => array('title', 'image', 'video', 'caption', 'link'),
+      self::ATTR_ELASTIC                                    => array('title', 'caption', 'image', 'link'),
+      self::ATTR_NIVO                                       => array('image', 'link'),
+      self::ATTR_THUMBNAILS                                 => array('image', 'caption', 'tooltip', 'link'),
+      self::ATTR_FLASH                                      => array('title', 'image', 'caption', 'link'),
     ),
     self::OPT_ACCEPT                                        => FALSE,
     self::OPT_USER_AGENT                                    => FALSE,
@@ -2361,7 +2363,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_FONT_SLOGAN                                 => '#slogan h2',
       self::VAR_FONT_SUBSLOGAN                              => '#slogan h3',
       self::VAR_FONT_SIDEBARFOOTER                          => '#sidebar .widget h2, #sidebar .widget h3, #footer .widget h2, #footer .widget h3',
-      self::VAR_FONT_NAME_TESTIMONIAL                       => '.testimonial .testimonial-name a.name, .testimonial-name span.name',
+      self::VAR_FONT_NAME_TESTIMONIAL                       => '.testimonial .testimonial-name a.name, .testimonial-name span.name, #primary .testimonials-slider ul li a',
       self::VAR_FONT_SPECIAL_FONT                           => '.special-font',
     ),
     self::OPT_SIZES_ROLES                                   => array(
@@ -2388,7 +2390,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_COLORS_LOGO_DESCRIPTION_COLOR                       => '#logo p { color:%s;}',
       self::VAR_COLORS_NAV_COLOR                                    => '#nav ul li a { color:%s;}',
       self::VAR_COLORS_NAV_COLOR_HOVER                              => '#nav ul li a:hover, #nav ul.sub-menu li a:hover, #nav ul.children a:hover { color:%s;}',
-      self::VAR_COLORS_NAV_COLOR_ACTIVE                             => '#nav .current-menu-item a { color:%s;}',
+      self::VAR_COLORS_NAV_COLOR_ACTIVE                             => '#nav .current-menu-item > a, #nav .current-menu-ancestor > a, #nav .current-menu-parent > a { color:%s !important;}',
       self::VAR_COLORS_SUBNAV_BG_COLOR                              => '#nav ul.sub-menu, #nav ul.children { background-color:%s;}',
       self::VAR_COLORS_SUBNAV_BORDER_COLOR                          => '#nav ul.sub-menu li, #nav ul.children li { border-top-color:%s;}',
       self::VAR_COLORS_SUBNAV_COLOR                                 => '#nav ul.sub-menu li a, #nav ul.children li a { color:%s;}',
@@ -3402,17 +3404,10 @@ case 'vimeo' :
     return $post_type;
   }
 
-  private function set_sizes_theme_option( &$image_sizes ) {
+  private function set_sizes_theme_option( $image_sizes ) {
     foreach ( $image_sizes as $id => $size ) {
-      $s = $this->get_option( $id );
-      if ( isset( $s[self::ATTR_WIDTH] ) && ( ! empty( $s[self::ATTR_WIDTH] ) || $s[self::ATTR_WIDTH] == 0 ) && $s[self::ATTR_WIDTH] != $size[0] )
-      $image_sizes[$id][0] = $s[self::ATTR_WIDTH];
-      if ( isset( $s[self::ATTR_HEIGHT] ) && ( ! empty( $s[self::ATTR_HEIGHT] ) || $s[self::ATTR_HEIGHT] == 0 ) && $s[self::ATTR_HEIGHT] != $size[1] )
-      $image_sizes[$id][1] = $s[self::ATTR_HEIGHT];
-      if ( isset( $s[self::ATTR_CSS_ROLE] ) && ( ! empty( $s[self::ATTR_CSS_ROLE] ) || $s[self::ATTR_CSS_ROLE] == '' ) && $s[self::ATTR_CSS_ROLE] != $size[3] )
-        $image_sizes[$id][3] = $s[self::ATTR_CSS_ROLE];
-      if ( isset( $size[3] ) && ! empty( $size[3] ) )
-      add_action( 'kwtf_custom_styles', create_function( '', "echo '$size[3] { width:".$image_sizes[$id][0]."px;height:".$image_sizes[$id][1]."px; }';" ) );
+      if ( isset( $size[ self::ATTR_CSS_ROLE] ) && ! empty( $size[ self::ATTR_CSS_ROLE] ) )
+      add_action( 'kwtf_custom_styles', create_function( '', "echo '{$size[self::ATTR_CSS_ROLE]} { width:".$image_sizes[$id][self::ATTR_WIDTH]."px;height:".$image_sizes[$id][self::ATTR_HEIGHT]."px; }';" ) );
     }
   }
 
@@ -4376,14 +4371,14 @@ case 'vimeo' :
    */
 
 // shop small
-  function shop_small_w() { global $woocommerce; return $woocommerce->get_image_size('shop_catalog_image_width'); }
-  function shop_small_h() { global $woocommerce; return $woocommerce->get_image_size('shop_catalog_image_height'); }
+  private function shop_small_w() { global $woocommerce; return $woocommerce->get_image_size('shop_catalog_image_width'); }
+  private function shop_small_h() { global $woocommerce; return $woocommerce->get_image_size('shop_catalog_image_height'); }
 // shop thumbnail
-  function shop_thumbnail_w() { global $woocommerce; return $woocommerce->get_image_size('shop_thumbnail_image_width'); }
-  function shop_thumbnail_h() { global $woocommerce; return $woocommerce->get_image_size('shop_thumbnail_image_height'); }
+  private function shop_thumbnail_w() { global $woocommerce; return $woocommerce->get_image_size('shop_thumbnail_image_width'); }
+  private function shop_thumbnail_h() { global $woocommerce; return $woocommerce->get_image_size('shop_thumbnail_image_height'); }
 // shop large
-  function shop_large_w() { global $woocommerce; return $woocommerce->get_image_size('shop_single_image_width'); }
-  function shop_large_h() { global $woocommerce; return $woocommerce->get_image_size('shop_single_image_height'); }
+  private function shop_large_w() { global $woocommerce; return $woocommerce->get_image_size('shop_single_image_width'); }
+  private function shop_large_h() { global $woocommerce; return $woocommerce->get_image_size('shop_single_image_height'); }
 
 
   /**
@@ -7134,26 +7129,12 @@ case 'vimeo' :
     // We want them to be 940 pixels wide by 198 pixels tall.
     // Larger images will be auto-cropped to fit, smaller ones will be ignored. See header.php.
     //set_post_thumbnail_size( HEADER_IMAGE_WIDTH, HEADER_IMAGE_HEIGHT, true );
-    $image_sizes = array(
-      'thumb_recentposts'     => array( 55,  55,  TRUE ),
-      'thumb_testimonial'     => array( 94,  94,  TRUE ),
-      'thumb-slider-elastic'  => array( 150, 59,  TRUE ),
-      'thumb_portfolio_3cols' => array( 280, 143, TRUE, '#portfolio li img, #portfolio li .thumb, ' ),
-      'thumb_portfolio_slider'=> array( 205, 118, TRUE, '.portfolio-slider li a img, .portfolio-slider li a, .portfolio-slider li' ),
-      'thumb_portfolio_big'   => array( 617, 295, TRUE, '#portfolio-bigimage img' ),
-      'thumb_gallery'         => array( 208, 168, TRUE, '.gallery-wrap li img, .gallery-wrap .internal_page_item' ),
-      'thumb_more_projects'   => array( 86,  86,  TRUE ),
-      'blog_elegant'          => array( 450, 0,   TRUE ),
-      'blog_big'              => array( 720, 0,   TRUE ),
-      'blog_small'            => array( 288, 266, TRUE ),
-      'nivo_slider'           => array( 608, 269, TRUE ),
-      'features_tab_icon'     => array( 20,  20,  TRUE ),
-    );
+    $image_sizes = $this->get_var( self::OPT_IMAGE_SIZES);
 
     $this->set_sizes_theme_option( $image_sizes );
 
     foreach ( $image_sizes as $id_size => $size )
-      add_image_size( $id_size, apply_filters( 'kwtf_' . $id_size . '_width', $size[0] ), apply_filters( 'kwtf_' . $id_size . '_height', $size[1] ), $size[2] );
+      add_image_size( $id_size, apply_filters( 'kwtf_' . $id_size . '_width', $size[self::ATTR_WIDTH] ), apply_filters( 'kwtf_' . $id_size . '_height', $size[self::ATTR_HEIGHT] ), $size[0] );
 
     //     global $_wp_additional_image_sizes;
     //     yiw_debug($_wp_additional_image_sizes);
@@ -9861,8 +9842,11 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
     remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20);
     add_action( 'woocommerce_single_product_summary', 'woocommerce_output_product_data_tabs', 60);
-
-    //catalogs thumbnail
+    /**
+     * Subcategories
+     *
+     * @see woocommerce_subcategory_thumbnail()
+     */
     remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
 
     if ( $this->ensure_woo( self::VAR_SHOP_SHOW_BUTTON_ADD_TO_CART_SINGLE_PAGE, 0 )){
@@ -9917,19 +9901,34 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
   }
 
   /**
+   * @param $size
+   * @return string
+   */
+  public function hook_single_product_small_thumbnail_size( $size){
+    if ( $size === 'shop_catalog')  $size = self::ATTR_THUMB_SHOP_CATEGORY;
+    return $size;
+  }
+
+  /**
    * @param $category
    */
-  public function hook_woocommerce_before_subcategory_title( $category){
-
+  public function hook_woocommerce_before_subcategory_title( $category  ) {
+    $sizes = $this->get_var( self::OPT_IMAGE_SIZES);
     $small_thumbnail_size  = apply_filters( 'single_product_small_thumbnail_size', 'shop_catalog' );
-    $image_width    = 1.5 * $this->shop_small_w();
-    $image_height    = 5 + $this->shop_small_h();
+    if ( isset($sizes[$small_thumbnail_size])){
+      $image_width          = $sizes[$small_thumbnail_size][self::ATTR_WIDTH];
+      $image_height         = $sizes[$small_thumbnail_size][self::ATTR_HEIGHT];
+    }
+    else{
+      $image_width          = $this->shop_small_w();
+      $image_height         = $this->shop_small_h();
+    }
 
     $thumbnail_id  = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true  );
 
     if ( $thumbnail_id ) {
-      $image = wp_get_attachment_image_src( $thumbnail_id, $small_thumbnail_size  );
-      $image = $image[0];
+      list( $image_url, $image_width, $image_height ) = wp_get_attachment_image_src( $thumbnail_id, $small_thumbnail_size  );
+      $image = $image_url;
     } else {
       $image = woocommerce_placeholder_img_src();
     }
@@ -10401,8 +10400,8 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
   <div class="image-styled">
     <div <?php echo $div_attrs ?>>
     <?php if ( $is_link ) : ?>
-      <a <?php echo $a_attrs ?>><?php endif ?> <img
-      <?php echo $img_attrs ?> /> <?php if ( $is_link ) : ?>
+      <a <?php echo $a_attrs ?>><?php endif ?>
+      <img <?php echo $img_attrs ?> /> <?php if ( $is_link ) : ?>
       </a>
       <?php endif ?>
     </div>
@@ -12477,7 +12476,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
             $html .= '<input type="hidden" name="' . $id_field . '" value="' . $value_field . '" />';
           }
         }
-        $html .= '<button type="submit" class="submit-field"><img src="' . $this->get_var( self::OPT_THEME_URI) . '/images/icons/newsletter-footer-submit.png" title="" alt="" /></button>';
+        $html .= '<input type="submit" value="' . __( 'Subscribe', $this->plg_tdomain ) . '" class="submit-field">';
 
         $html .= '</fieldset>';
 

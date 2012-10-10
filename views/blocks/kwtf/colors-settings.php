@@ -333,7 +333,7 @@
         <label for="colors_subnav_color_hover"><strong><?php echo __('Submenu list items color (hover effect)', $tpl_tdomain)?></strong></label>
         <div class="double">
           <input type="text" name = "colors_subnav_color_hover" id='colors_subnav_color_hover'
-                 value="<?php echo $__colors_subnav_color?>"/>
+                 value="<?php echo $__colors_subnav_color_hover?>"/>
           &nbsp;<img src="<?php echo $uri_theme?>/images/color_picker.png" alt="Color Picker" class="colorpicker-icon" /><br/>
           <div class="clearfix"></div>
         </div>
