@@ -9601,7 +9601,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     .shop-ribbon .products li { width:<?php echo $this->shop_small_w() + ( $this->get_option( self::VAR_SHOP_BORDER_THUMBNAIL ) ? 5 : 0 ) ?>px !important; }
     .shop-ribbon .products li {  }
     .shop-ribbon .products li.category { width: auto !important; }
-    .products li a strong { width:<?php echo $this->shop_small_w() - 30 ?>px !important; }
+    .products li a strong { width:<?php echo $this->shop_small_w() - 30 ?>px; }
     .shop-traditional .products li a img { width:<?php echo $this->shop_small_w() ?>px !important; }
   div.product div.images { width:<?php echo ( $this->shop_large_w() + 14 ) / 960 * 100 ?>%; }
   div.product div.images img { width:<?php echo $this->shop_large_w() ?>px; }

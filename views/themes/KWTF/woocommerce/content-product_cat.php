@@ -17,7 +17,9 @@ if ( empty( $woocommerce_loop['loop'] ) )
 
 // Store column count for displaying the grid
 if ( empty( $woocommerce_loop['columns'] ) )
-	$woocommerce_loop['columns'] = apply_filters( 'loop_shop_columns', 4 ) - 1;
+	$woocommerce_loop['columns'] = apply_filters( 'loop_shop_columns', 4 );
+
+$columns = $woocommerce_loop['columns'] - 1;
 
 // Increase loop count
 $woocommerce_loop['loop']++;
@@ -26,10 +28,10 @@ $loop_class_li = array_diff( get_query_var('class_li'), array('border'));
 $loop_class_li[] = 'category';
 $title_position = get_query_var('title_position');
 
-if ( ! isset( $woocommerce_loop['setLast'] ) && $woocommerce_loop['loop'] % $woocommerce_loop['columns'] ==0 )
+if ( ! isset( $woocommerce_loop['setLast'] ) && $woocommerce_loop['loop'] % $columns ==0 )
   $loop_class_li[] = 'last';
 
-if ( ! isset( $woocommerce_loop['setFirst'] ) && ( $woocommerce_loop['loop'] - 1 ) % $woocommerce_loop['columns'] == 0 )
+if ( ! isset( $woocommerce_loop['setFirst'] ) && ( $woocommerce_loop['loop'] - 1 ) % $columns == 0 )
   $loop_class_li[] = 'first';
 
 if ( ! empty( $loop_class_li ) )

@@ -9,4 +9,5 @@
  * @version     1.6.4
  */
 
+
 woocommerce_get_template( 'archive-product.php' );
