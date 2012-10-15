@@ -16,7 +16,7 @@ if ( $core->is_empty() )
                 <script type="text/javascript">
                     var flashvars = {};
                     flashvars.cssSource = "<?php echo $uri_theme ?>/css/piecemaker.css";
-                    flashvars.xmlSource = "<?php echo $uri_theme ?>/piecemaker.php";
+                    flashvars.xmlSource = "<?php echo $uri_theme ?>/piecemaker.xml";
 
                     var flash_params = {};
                     flash_params.play = "true";

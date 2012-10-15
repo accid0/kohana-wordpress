@@ -31,7 +31,7 @@ $thumbs = '';
                          'container' => false
                       ) ) ?> 
                     <div class="ei-title">
-                        <?php $core->string_( '<h2>', $core->slide_get( 'title' ), '</h2>' ) ?>
+                        <?php $core->string_( '<h2>', $core->slide_get( 'slide_title' ), '</h2>' ) ?>
                         <?php $core->string_( '<h3>', $core->slide_get( 'clean-content' ), '</h3>' ) ?>
                     </div>
                 </li>

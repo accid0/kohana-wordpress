@@ -8,7 +8,7 @@
           
 $wp_load = dirname(__FILE__);
 
-for($i=0; $i<10; $i++)
+for($i=0; $i<15; $i++)
 {                  
 	if(file_exists($wp_load . '/wp-load.php'))
 	{                      

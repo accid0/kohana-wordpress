@@ -40,7 +40,7 @@
               <td>
                 <div class="delete-btn"><a href="?page=<?php echo $_GET['page'] ?>&do=Delete Features&feature=<?php echo $id ?>" title="<?php _e( 'Delete', $tpl_tdomain ) ?>"><img src="<?php echo $uri_theme ?>/images/close_16.png" alt="<?php _e( 'Delete', $tpl_tdomain ) ?>" /></a></div>
                 <div class="name"><?php echo $feature ?></div>
-                <div class="name" style="font-size: 11px;width:auto;"><?php echo '[features_tab name="', $feature, '" open="1"]' ?></div>
+                <div class="name" style="font-size: 11px;width:auto;"><?php echo '[features_tab name="',  $feature, '" open="1"]' ?></div>
                 <div class="loading-icon"><img alt="" src="<?php bloginfo('siteurl') ?>/wp-admin/images/wpspin_light.gif" style="display: none;" class="waiting"></div>
               </td>
             </tr>

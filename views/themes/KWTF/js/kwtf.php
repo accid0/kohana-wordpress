@@ -11,7 +11,7 @@ return;
 ?>
 <script type="text/javascript"> 
 <?php
-switch ($this->get_option( WordpressTheme::VAR_SLIDER_TYPE )):
+switch ($this->get_var( WordpressTheme::OPT_SLIDER_TYPE )):
   case WordpressTheme::ATTR_ELEGANT :
     $easing = ( $eas = $this->get_option( WordpressTheme::VAR_SLIDER_ELEGANT_EASING) ) ? "'$eas'" : 'null';
 ?>  
@@ -42,6 +42,7 @@ switch ($this->get_option( WordpressTheme::VAR_SLIDER_TYPE )):
 <?php 
     break;
   case WordpressTheme::ATTR_CYCLE :
+    $easing = ( $eas = $this->get_option( WordpressTheme::VAR_SLIDER_CYCLE_EASING) ) ? "'$eas'" : 'null';
 ?>
   var  yiw_slider_type = 'cycle',
        yiw_slider_cycle_easing = <?php echo $easing ?>,

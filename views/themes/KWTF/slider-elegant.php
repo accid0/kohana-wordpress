@@ -22,7 +22,7 @@
                         
                         <?php if( $core->slide_get( 'content' ) ): ?>
                         <div class="slider-caption caption-<?php echo $slider_elegant_caption_position ?>">
-                                <h2><?php $core->slide_the( 'title' ) ?></h2>
+                                <h2><?php $core->slide_the( 'slide_title' ) ?></h2>
                                 <h4><?php $core->slide_the( 'subtitle' ) ?></h4>
                                 <?php $core->slide_the( 'content' ) ?>
                         </div>

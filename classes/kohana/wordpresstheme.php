@@ -305,7 +305,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const ATTR_WOOCOMMERCE                                        = 'woocommerce';
   const ATTR_THUMB_RECENTPOSTS                                  = 'thumb_recentposts';
   const ATTR_THUMB_TESTIMONIAL                                  = 'thumb_testimonial';
-  const ATTR_THUMB_SLIDER_ELASTIC                               = 'thumb_slider_elastic';
+  const ATTR_THUMB_SLIDER_ELASTIC                               = 'thumb-slider-elastic';
   const ATTR_THUMB_SHOP_CATEGORY                                = 'thumb_shop_category';
   const ATTR_THUMB_PORTFOLIO_3COLS                              = 'thumb_portfolio_3cols';
   const ATTR_THUMB_PORTFOLIO_SLIDER                             = 'thumb_portfolio_slider';
@@ -2367,7 +2367,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_FONT_SPECIAL_FONT                           => '.special-font',
     ),
     self::OPT_SIZES_ROLES                                   => array(
-      self::VAR_FONT_NAV_SIZE                               => '#nav li { font-size : %dpx;}',
+      self::VAR_FONT_NAV_SIZE                               => '#nav li { font-size : %dpx !important;}',
       self::VAR_FONT_TEXT_SIZE                              => '#primary p, #sidebar .recent-post a.title, .slider-minilayers-static p, .home_items, #primary li, .testimonial-widget blockquote p, #sidebar .icon-text p, .features-tab-content p, .products li .price, .products.ribbon li .below-thumb, .contact-form span.label address, dd, blockquote { font-size : %dpx;}',
       self::VAR_FONT_H1_SIZE                                => 'h1 { font-size : %dpx;}',
       self::VAR_FONT_H2_SIZE                                => 'h2 { font-size : %dpx;}',
@@ -3865,13 +3865,18 @@ case 'vimeo' :
       return $slider_type;
 
     $slider = '';
+    $id = isset($post->ID) ? $post->ID : NULL;
+    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
+    if ( is_tax('product_cat') || is_tax('product_tag')
+      || is_post_type_archive('product') || ( get_post_type() == 'product' && is_single() )
+      || is_page($shop_page) ){
+      $id = $shop_page;
+    }
 
-    if ( isset( $post->ID ) )
-      $slider = get_post_meta( $post->ID, '_slider_type', true );
+    if ( isset( $id ) )
+      $slider = get_post_meta( $id, '_slider_type', true ) ? get_post_meta( $id, '_slider_type', true ) : get_post_meta( $id, 'slider_type', true );
 
-    if ( empty( $slider ) && isset( $post->ID ) && is_page() && ! is_front_page() ) {
-      $slider = get_post_meta( $post->ID, 'slider_type', true );
-    } else if ( empty( $slider ) || is_home() )
+    if ( empty( $slider ) && ( is_home() || is_front_page() || is_page_template('home.php') ))
       $slider = $this->get_option( self::VAR_SLIDER_TYPE);
 
     if ( empty( $slider ) )
@@ -4608,7 +4613,7 @@ case 'vimeo' :
     foreach( $features_tabs as $post_type => $name )
     {
       register_post_type(
-        str_replace( ' ', '_', $post_type ),
+        $post_type,
         array(
           'description' => __('The post type for the content of accordion sliders', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
           'exclude_from_search' => false,
@@ -4619,7 +4624,7 @@ case 'vimeo' :
           'show_in_nav_menus' => false,
           'capability_type' => 'post',
           'publicly_queryable' => true,
-          'rewrite' => array( 'slug' => str_replace( ' ', '_', $post_type ), 'with_front' => true )
+          'rewrite' => array( 'slug' => $post_type , 'with_front' => true )
         )
       );
 
@@ -4642,8 +4647,8 @@ case 'vimeo' :
 
     $return = array();
 
-    foreach( $features_tabs as $features_tab )
-      $return[ sanitize_title( $features_tab ) ] = $features_tab;
+    foreach( $features_tabs as $id => $features_tab )
+      $return[ Url::title( $features_tab) ] = $features_tab;
 
     return $return;
   }
@@ -5534,6 +5539,107 @@ case 'vimeo' :
   }
 
   /**
+   * @param $settings
+   * @return array
+   */
+  private function get_configuration( $settings, &$options = NULL )
+  {
+    $fields = array();
+    foreach( $settings as $setting => $val )
+    {
+      if ( is_null( $options))
+        $var = $this->get_option( "slider_flash_$setting" );
+      else
+        $var = $options[ "slider_flash_$setting"];
+
+      $var = str_replace( '#', '0x', $var );
+
+      if( $var )
+        $fields[] = "$setting=\"$var\"";
+      else
+        $fields[] = "$setting=\"$val\"";
+    }
+
+    return $fields;
+  }
+
+  /**
+   * @param array $slides
+   */
+  private function update_flash_slider( $slides = array(), &$options = NULL){
+    if ( empty($slides))
+      $slides = $this->get_option( self::VAR_SLIDER_FLASH_SLIDES);
+    if ( $this->get_option( self::VAR_SLIDER_CHOOSEN) === self::ATTR_FLASH){
+      $dir = $this->get_var( self::OPT_THEMES_SUB_DIRECTORY) . '/'
+        . $this->get_var( self::OPT_NAME) . '/piecemaker';
+      $view = View::factory( $dir);
+      $view->core = $this;
+      $view->slides = $slides;
+      // array with default values
+      $settings = array(
+        'ImageWidth' => 960,
+        'ImageHeight' => 315,
+        'LoaderColor' => "0x333333",
+        'InnerSideColor' => "0x222222",
+        'SideShadowAlpha' => 0.8,
+        'DropShadowAlpha' => 0.7,
+        'DropShadowDistance' => 25,
+        'DropShadowScale' => 0.95,
+        'DropShadowBlurX' => 40,
+        'DropShadowBlurY' => 4,
+        'MenuDistanceX' => 20,
+        'MenuDistanceY' => 50,
+        'MenuColor1' => "0x999999",
+        'MenuColor2' => "0x333333",
+        'MenuColor3' => "0xFFFFFF",
+        'ControlSize' => 100,
+        'ControlDistance' => 20,
+        'ControlColor1' => "0x222222",
+        'ControlColor2' => "0xFFFFFF",
+        'ControlAlpha' => 0.8,
+        'ControlAlphaOver' => 0.95,
+        'ControlsX' => 450,
+        'ControlsY' => 280,
+        'ControlsAlign' => "center",
+        'TooltipHeight' => 30,
+        'TooltipColor' => "0x222222",
+        'TooltipTextY' => 5,
+        'TooltipTextStyle' => 'P-Italic',
+        'TooltipTextColor' => "0xFFFFFF",
+        'TooltipMarginLeft' => 5,
+        'TooltipMarginRight' => 7,
+        'TooltipTextSharpness' => 50,
+        'TooltipTextThickness' => -100,
+        'InfoWidth' => 400,
+        'InfoBackground' => "0xFFFFFF",
+        'InfoBackgroundAlpha' => 0.95,
+        'InfoMargin' => 400,
+        'InfoSharpness' => 0,
+        'InfoThickness' => 0,
+        'Autoplay' => 10,
+        'FieldOfView' => 45
+      );
+
+      $view->settings = $this->get_configuration( $settings, $options );
+
+      $transitions = array(
+        'Pieces' => 9,
+        'Time' => 1.2,
+        'Transition' => 'easeInOutBack',
+        'Delay' => 0.1,
+        'DepthOffset' => 300,
+        'CubeDistance' => 30
+      );
+
+      $view->transitions = $this->get_configuration( $transitions, $options );
+
+      $dir = $this->get_var( self::OPT_THEME_DIR) . '/piecemaker.xml';
+      $xml = new SimpleXMLElement( (string)$view);
+      $xml->asXML( $dir);
+    }
+  }
+
+  /**
    * (non-PHPdoc)
    * @see Kohana_WPPlugin::_initialize()
    */
@@ -5601,6 +5707,14 @@ case 'vimeo' :
   protected function deactivate(){
     $pid = $this->get_option( self::VAR_DEFAULT_PORTFOLIOS_PID);
     wp_delete_post( $pid);
+  }
+
+  /**
+   *
+   * @param array $params
+   */
+  protected function update_options( &$params){
+    $this->update_flash_slider( $params[self::VAR_SLIDER_FLASH_SLIDES], $params);
   }
 
   protected function block_options( View $template, $sid){
@@ -6217,9 +6331,13 @@ case 'vimeo' :
    */
   protected function button_sliders_edit ( $plugin, $params){
     if ($this->is_post_option( 'slides', $params)){
+      foreach( $params['slides'] as $id => $slide){
+        if ( empty($slide['image_url'])) unset($params['slides'][$id]);
+      }
       $this->set( sprintf( $this->get_var( self::OPT_SLIDER_ID),
         $this->get_option( self::VAR_SLIDER_CHOOSEN)),
         $this->subval_sort($params['slides'], 'order'));
+      $this->update_flash_slider( $params['slides']);
     }
   }
 
@@ -6719,7 +6837,7 @@ case 'vimeo' :
         set_query_var('slider', $this->get_option( self::VAR_SLIDER_LAYERS_CHOOSE));
         break;
       case 'minilayers':
-        set_query_var('slider', $this->get_option( self::VAR_SLIDER_LAYERS_CHOOSE));
+        set_query_var('slider', $this->get_option( self::VAR_SLIDER_MINILAYERS_CHOOSE));
         break;
 
     }
@@ -7003,6 +7121,18 @@ case 'vimeo' :
   }
 
   /**
+   * Add filter for cirillic words
+   * @param $key
+   * @param $raw_key
+   * @return mixed|string
+   */
+  public function filter_sanitize_key( $key, $raw_key ){
+    $raw_key = strtolower( $raw_key );
+    $raw_key = preg_replace( '/[^a-zа-я0-9_\-]/', '', $raw_key );
+    return $raw_key;
+  }
+
+  /**
    * Replace the default get_the_content, managing better the shortcodes
    *
    * @param string $str The string to convert
@@ -7277,7 +7407,7 @@ case 'vimeo' :
     $label_plu = $post->post_title;
 
     if ( empty( $rewrite ) )
-    $rewrite = sanitize_title( $post->post_title );
+    $rewrite = Url::title( $post->post_title );
 
     // icon
     $thumbnail_id = get_post_thumbnail_id( $post->ID );
@@ -7287,8 +7417,8 @@ case 'vimeo' :
     $icon = NULL;
 
     register_post_type(
-    sanitize_title( $post->post_title ),
-    array(
+      Url::title( $post->post_title),
+      array(
     		  'description' => apply_filters( 'the_title' , $post->post_title ),
     		  'exclude_from_search' => FALSE,
     		  'show_ui' => TRUE,
@@ -7296,7 +7426,7 @@ case 'vimeo' :
     		  'supports' => array( 'title', 'editor', 'thumbnail' ),
     		  'public' => TRUE,
     		  'capability_type' => 'page',
-        	  'publicly_queryable' => TRUE,
+        	'publicly_queryable' => TRUE,
     		  'rewrite' => array( 'slug' => $rewrite, 'with_front' => TRUE ),
     		  'menu_icon' => $icon
     )
@@ -8872,27 +9002,6 @@ case 'vimeo' :
   }
 
   /**
-   * @param $settings
-   * @return array
-   */
-  public function get_configuration( $settings )
-  {
-    $fields = array();
-    foreach( $settings as $setting => $val )
-    {
-      $var = $this->get_option( "slider_flash_$setting" );
-      $var = str_replace( '#', '0x', $var );
-
-      if( $var )
-        $fields[] = "$setting=\"$var\"";
-      else
-        $fields[] = "$setting=\"$val\"";
-    }
-
-    return $fields;
-  }
-
-  /**
    * Echo the pagination
    *
    * @since 1.0
@@ -9452,6 +9561,14 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
   }
 
   /**
+   * @param $core
+   * @return WordpressTheme
+   */
+  public function hook_kwtf_get_instance_theme( $core){
+    return $this;
+  }
+
+  /**
    * @param $html
    * @return mixed
    */
@@ -9553,12 +9670,11 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
         break;
 
       case self::ATTR_BG_IMAGE :
-        $image = $this->get_option( self::VAR_HEADER_BG_IMAGE );
 
         // image
         $url_image = $this->get_option( self::VAR_HEADER_BG_IMAGE_CUSTOM );
         $position = $this->get_option( self::VAR_HEADER_BG_IMAGE_CUSTOM_POSITION );
-        $repeat = $this->get_option( self::VAR_HEADER_BG_IMAGE_CUSTOM_REPEATE );
+        $repeat = $this->get_option( self::VAR_HEADER_BG_IMAGE_CUSTOM_REPEAT );
 
         $uploads = wp_upload_dir();
         $url_image = str_replace( '%siteurl%', site_url(), $url_image );
@@ -11306,8 +11422,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
         'name' => '',
         'open' => 1
     ), $atts));
-
-    $name = sanitize_title( $name );
+    $name = Url::title( $name );
     $open = abs( ( int ) $open );
 
     if( empty( $name ) ) {

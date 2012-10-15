@@ -299,7 +299,7 @@ abstract class Kohana_Base_WPPlugin {
   public function action_do_robotstxt(){}
   public function action_get_footer(){}
   public function action_get_header(){}
-  public function action_switch_theme($theme_name, $theme){}
+  public function action_switch_theme($theme_name, WP_Theme $theme){}
   public function action_template_redirect(){}
   public function action_wp_footer(){}
   public function action_wp_head(){}
@@ -374,6 +374,7 @@ abstract class Kohana_Base_WPPlugin {
   public function filter_icon_dir_uri(){}
   public function filter_prepend_attachment(){}
   public function filter_sanitize_title(){}
+  public function filter_sanitize_key( $key, $raw_key ){}
   public function filter_single_post_title( $title){}
   public function filter_the_content( $content){}
   public function filter_the_content_rss(){}
@@ -640,7 +641,7 @@ abstract class Kohana_Base_WPPlugin {
   public function filter_wp_mail_from(){}
   public function filter_wp_mail_from_name(){}
   public function filter_wp_mail_content_type($content_type){}
-  public function filter_wp_page_menu_args(){}
+  public function filter_wp_page_menu_args($args){}
   public function filter_pre_update_option_active_plugins(){}
   public function filter_post_type_link(){}
   public function filter_post_updated_messages(){}

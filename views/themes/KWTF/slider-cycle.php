@@ -18,7 +18,7 @@
                                  'video_height' => 245
                               ) ) ?>                        
                         <div class="hentry">
-                            <h2><?php $core->slide_the( 'title' ) ?></h2>
+                            <h2><?php $core->slide_the( 'slide_title' ) ?></h2>
                                                                                        
                             <?php $core->slide_the( 'content' ) ?>
                         </div>

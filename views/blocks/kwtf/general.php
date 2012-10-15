@@ -53,7 +53,7 @@
           <div id="favicon-option" class="rm_option rm_input rm_upload">
             <label for="favicon"><strong><?php echo __('Custom Favicon', $tpl_tdomain)?></strong></label>
             <div style="float:left; width:280px">
-              <input type="text" name = "favicon" id='favicon' value="<?php echo (!empty($__favicon))?$uri_theme . '/' . $__favicon:''?>">
+              <input type="text" name = "favicon" id='favicon' value="<?php echo $__favicon?>">
               <input type="button" value="Upload Image" id="favicon-button" />
             </div>
             <small><?php _e('A favicon is a 16x16 pixel icon that represents your site; paste the URL to a icon image that you want to use as the image. NOTE: it\'s not allowed the .ico extension', $tpl_tdomain)?></small><div class="clearfix"></div>
@@ -229,7 +229,7 @@
           <div id="topbar_cart_ribbon-option" class="rm_option rm_input rm_upload yiw-deps">
             <label for="topbar_cart_ribbon"><strong><?php echo __('Topbar cart ribbon', $tpl_tdomain)?></strong></label>
             <div style="float:left; width:280px">
-              <input type="text" name = "topbar_cart_ribbon" id='topbar_cart_ribbon' value="<?php echo (!empty($__topbar_cart_ribbon))?$uri_theme . '/' . $__topbar_cart_ribbon:''?>">
+              <input type="text" name = "topbar_cart_ribbon" id='topbar_cart_ribbon' value="<?php echo $__topbar_cart_ribbon?>">
               <input type="button" value="Upload Image" id="topbar_cart_ribbon-button" />
             </div>
             <small><?php _e('Upload your custom image for the ribbon in topbar. <b>Upload in image size 112x95px', $tpl_tdomain)?></small><div class="clearfix"></div>
@@ -262,7 +262,7 @@
           <div id="header_bg_image_custom-option" class="rm_option rm_input rm_upload yiw-deps">
             <label for="header_bg_image_custom"><strong><?php echo __('Header Image Custom', $tpl_tdomain)?></strong></label>
             <div style="float:left; width:280px">
-              <input type="text" name = "header_bg_image_custom" id='header_bg_image_custom' value="<?php echo (!empty($__header_bg_image_custom))?$uri_theme . '/' . $__header_bg_image_custom:''?>">
+              <input type="text" name = "header_bg_image_custom" id='header_bg_image_custom' value="<?php echo $__header_bg_image_custom?>">
               <input type="button" value="Upload Image" id="header_bg_image_custom-button" />
             </div>
             <small><?php _e('Upload your background image.', $tpl_tdomain)?></small><div class="clearfix"></div>

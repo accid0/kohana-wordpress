@@ -83,7 +83,7 @@
       <div id="body_bg_image_custom-option" class="rm_option rm_input rm_upload yiw-deps">
         <label for="body_bg_image_custom"><strong><?php echo __('Body bg Image Custom', $tpl_tdomain)?></strong></label>
         <div style="float:left; width:280px">
-          <input type="text" name = "body_bg_image_custom" id='body_bg_image_custom' value="<?php echo (!empty($__body_bg_image_custom))?$uri_theme . '/' . $__body_bg_image_custom:''?>">
+          <input type="text" name = "body_bg_image_custom" id='body_bg_image_custom' value="<?php echo $__body_bg_image_custom?>">
           <input type="button" value="Upload Image" id="body_bg_image_custom-button" />
         </div>
         <small><?php _e('Upload your background image.', $tpl_tdomain)?></small><div class="clearfix"></div>
