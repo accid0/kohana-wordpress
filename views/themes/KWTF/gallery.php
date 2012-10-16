@@ -47,7 +47,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                         foreach( $cats as $cat )
                         {
                             if( $cat->count > 0 ) :
-                                ?><li class="segment-<?php echo $cat->term_id ?>"><a href="#" data-value="<?php echo strtolower(preg_replace('/\s+/', '-', $cat->slug)) ?>"><?php echo $cat->name ?></a></li><?php
+                                ?><li class="segment-<?php echo $cat->term_id ?>"><a href="#" data-value="<?php echo strtolower(preg_replace('/\s+/', '-', urldecode($cat->slug))) ?>"><?php echo $cat->name ?></a></li><?php
                             else :
                                 ?><li><?php echo $cat->name ?></li><?php
                             endif;
@@ -61,8 +61,8 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                 <div id="content" class="group">
                     <div id="portfolio-gallery" class="internal_page_items internal_page_gallery">
                         <ul class="gallery-wrap image-grid group">
-                        <?php    
-                        
+                        <?php
+
                         $args = array(
                             'post_type'      => $post_type,
                             'posts_per_page' => -1
@@ -94,7 +94,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                             <?php $isLastInRow = ( ($i % $postsPerRow) == 0 ) ? 1 : 0; ?>
                     
                             <?php $image = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full' ); ?>
-                            <li data-id="id-<?php echo $i; ?>" class="<?php if(!empty($terms)) foreach ($terms as $term) { echo strtolower(preg_replace('/\s+/', '-', $term->slug)) . ' '; }  ?>">
+                            <li data-id="id-<?php echo $i; ?>" class="<?php if(!empty($terms)) foreach ($terms as $term) { echo strtolower(preg_replace('/\s+/', '-', urldecode($term->slug))) . ' '; }  ?>">
                             
                                 <div class="internal_page_item internal_page_item_gallery">
                                     <a href="<?php the_permalink() ?>"><?php the_post_thumbnail( 'thumb_gallery', array( 'class' => 'picture' ) ) ?></a>

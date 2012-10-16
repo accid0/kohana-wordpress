@@ -678,6 +678,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const OPT_MINIMUM_WP_VERSION                                  = 'minimum_wp_version';
   const OPT_DEFAULT_LAYOUT_PAGE                                 = 'default_layout_page';
   const OPT_DEFAULT_LAYOUT_PAGE_SHOP                            = 'default_layout_page';
+  const OPT_BINDS_TEMPLATE                                      = 'binds_template';
 
   /**
    * The ID option of the index of the loop of slides
@@ -2586,6 +2587,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       'action_admin_bar_menu'                                       => self::ATTR_LOW_PRIORITY,
     ),
     self::OPT_HAS_SHOP_PAGE                                         => FALSE,
+    self::OPT_BINDS_TEMPLATE                                        => array(),
   );
 
   /**
@@ -4603,7 +4605,7 @@ case 'vimeo' :
   /**
    * Registers dynamic custom types and taxonomies
    */
-  private function register_dymanics_types()
+  private function register_dynamics_types()
   {
     $features_tabs = $this->get_list_features_tabs();
 
@@ -5419,7 +5421,7 @@ case 'vimeo' :
     $submt_lbl = ( empty($fields[self::ATTR_CONTACT_FORM_SUBMIT_LABEL]))? __( 'send message', $this->get_var( self::OPT_PLUGIN_TDOMAIN) ):$fields[self::ATTR_CONTACT_FORM_SUBMIT_LABEL];
     $submt_alg = ( empty($fields[self::ATTR_CONTACT_FORM_SUBMIT_ALIGNMENT]))? __( 'alignright', $this->get_var( self::OPT_PLUGIN_TDOMAIN) ):$fields[self::ATTR_CONTACT_FORM_SUBMIT_ALIGNMENT];
     $html .= "\t\t\t<li class=\"submit-button\">\n";
-    $html .= "\t\t\t\t<input type=\"text\" name=\"kwtf_bot\" id=\"kwtf_bot\" />\n";
+    $html .= "\t\t\t\t<input type=\"hidden\" name=\"kwtf_bot\" id=\"kwtf_bot\" />\n";
     $html .= "\t\t\t\t<input type=\"hidden\" name=\"kwtf_action\" value=\"sendemail\" id=\"kwtf_action\" />\n";
     $html .= "\t\t\t\t<input type=\"hidden\" name=\"kwtf_referer\" value=\"" . $this->curPageURL() . "\" />\n";
     $html .= "\t\t\t\t<input type=\"hidden\" name=\"id_form\" value=\"" . str_replace( '-', '_', $form ) . "\" />\n";
@@ -5527,6 +5529,13 @@ case 'vimeo' :
    * @param $template
    */
   private function bind_template( $template){
+    $binds = $this->get_var( self::OPT_BINDS_TEMPLATE);
+    if ( in_array( $template, $binds))
+      return;
+    else{
+      $binds[] = $template;
+      $this->set_var( self::OPT_BINDS_TEMPLATE, $binds);
+    }
     $search = array( EXT, '/', '\\', '-');
     $replace = array( '', '_', '_', '_');
     if ( $this->ensure_woo())
@@ -5536,6 +5545,7 @@ case 'vimeo' :
     $slug = 'get_template_part_' . $_template_name;
     add_action( $slug, array( $this, 'include__initialize'), self::ATTR_HIGH_PRIORITY, 2);
     do_action( $slug, $_template_name, $template);
+
   }
 
   /**
@@ -6940,6 +6950,8 @@ case 'vimeo' :
       $this->get_var( self::OPT_NAME) . '/' . str_replace( EXT, '', $file );
     $view = View::factory( $file);
     $uri_theme = $this->get_var( self::OPT_THEME_URI);
+    foreach( $wp_query->query_vars as $sid => $value)
+      $view->set( $sid, $value);
     $view->set('tpl_tdomain', $this->get_var( self::OPT_TPL_TDOMAIN));
     $view->set('layout_page', $layout);
     $view->set('paged', $paged);
@@ -7128,7 +7140,7 @@ case 'vimeo' :
    */
   public function filter_sanitize_key( $key, $raw_key ){
     $raw_key = strtolower( $raw_key );
-    $raw_key = preg_replace( '/[^a-zа-я0-9_\-]/', '', $raw_key );
+    $raw_key = preg_replace( '/[^\pL\pN_\-]++/u', '', $raw_key );
     return $raw_key;
   }
 
@@ -7392,6 +7404,7 @@ case 'vimeo' :
         'post_type' => self::ATTR_POST_TYPE_PORTFOLIO,
         'numberposts' => -1 
     ) );
+    $taxonomies = array();
     foreach ( $portofolios as $post ) :
 
     // post types
@@ -7415,7 +7428,6 @@ case 'vimeo' :
     $icon = wp_get_attachment_image_src( $thumbnail_id );
     else
     $icon = NULL;
-
     register_post_type(
       Url::title( $post->post_title),
       array(
@@ -7432,21 +7444,36 @@ case 'vimeo' :
     )
     );
 
-    add_filter( 'manage_edit-'.sanitize_title( $post->post_title ).'_columns', array( $this, 'portfolio_edit_columns'));
+    add_filter( 'manage_edit-'.Url::title( $post->post_title ).'_columns', array( $this, 'portfolio_edit_columns'));
 
     // taxonomies
     $portfolio_tax          = get_post_meta( $post->ID, '_portfolio_tax', TRUE );
     $portfolio_tax_rewrite  = get_post_meta( $post->ID, '_portfolio_tax_rewrite', TRUE );
 
-    if ( ! empty( $portfolio_tax ) )
-    register_taxonomy( sanitize_title( $portfolio_tax ), array( sanitize_title( $post->post_title ) ), array(
-        		'hierarchical' => TRUE,
-        		'labels' => $this->label_tax( __('Category', $this->plg_tdomain), __('Categories', $this->plg_tdomain)),
-        		'show_ui' => TRUE,
-        		'query_var' => TRUE,
-        		'rewrite' => array( 'slug' => $portfolio_tax_rewrite, 'with_front' => FALSE )
-    ));
+    if ( ! empty( $portfolio_tax ) ){
+      $sid = Url::title( "$post->post_title $portfolio_tax" );
+      if ( !isset($taxonomies[$sid])){
+        $taxonomies[$sid] = array(
+          'posts_type' => array(),
+          'vars' => array(
+            'hierarchical' => TRUE,
+            'labels' => $this->label_tax( __('Category', $this->plg_tdomain), __('Categories', $this->plg_tdomain)),
+            'show_ui' => TRUE,
+            'query_var' => TRUE,
+            'rewrite' => array( 'slug' => $portfolio_tax_rewrite, 'with_front' => FALSE )
+          ),
+        );
+      }
+
+      $taxonomies[$sid]['posts_type'] = Url::title( $post->post_title );
+
+    }
+
     endforeach;
+
+    foreach( $taxonomies as $name => $params){
+      register_taxonomy( $name, $params['posts_type'], $params['vars']);
+    }
 
     //flush_rewrite_rules();
     register_post_type(
@@ -7513,7 +7540,7 @@ case 'vimeo' :
 
     //flush_rewrite_rules();
 
-    $this->register_dymanics_types();
+    $this->register_dynamics_types();
 
     register_taxonomy('category-faq', array( self::ATTR_POST_TYPE_FAQ ), array(
       'hierarchical' => true,
@@ -11289,13 +11316,27 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     extract(shortcode_atts(array(
       "width" => '274',
       "height" => '200',
-      "src" => ''
+      "src" => '',
+      "caption" => '',
       ), $atts));
-       
-      $html  = '<div class="google-map-frame">';
-      $html .= '<iframe width="'.$width.'" height="'.$height.'" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="'.$src.'&amp;output=embed" ></iframe>';
-      $html .= '<div class="shadow-thumb-sidebar"></div>';
-      $html .= '</div>';
+    ob_start();
+    ?>
+    <div class="header-map hide-if-no-js">
+      <div id="map-wrap" class="opened">
+         <div id="map"><iframe
+           width="<?php echo $width?>"
+           height="<?php echo $height?>"
+           frameborder="0"
+           scrolling="no"
+           marginheight="0"
+           marginwidth="0"
+           src="<?php echo$src ?>&output=embed">
+    </iframe></div></div>
+    <div id="map-text"><?php echo $caption ?></div>
+       <a href="#" class="tab-label opened"><?php _e('Close Map', $this->get_var( self::OPT_PLUGIN_TDOMAIN)) ?></a>
+    </div>
+      <?php
+      $html  = ob_get_clean();
        
       return apply_filters( 'kwtf_sc_googlemap_html', $html );
   }
