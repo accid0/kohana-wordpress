@@ -40,7 +40,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
 
 ?>  
 
-        <div id="primary" class="layout-<?php echo $layout_type ?>">    
+        <div id="primary" class="layout-<?php echo (is_tax())? $portfolio_layout_page : $layout_type ?>">
 		    <div class="inner group">
 
                 <?php if( get_post_meta( get_the_ID(), '_slogan_page', true ) ): ?>            

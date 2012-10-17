@@ -6863,7 +6863,7 @@ case 'vimeo' :
    */
   public function template_taxonomy( $slug, $name){
     set_query_var('is_portfolio_tax', $this->is_portfolio_tax( get_query_var('taxonomy') ));
-
+    set_query_var('portfolio_layout_page', $this->get_option( self::VAR_PORTFOLIO_LAYOUT_PAGE));
   }
 
   /**
