@@ -1,25 +1,25 @@
 <?php
     
-    $categories_portfolio = get_terms( sanitize_title( $portfolio[$post_type]['tax'] ), 'hide_empty=1&orderby=name');
-    foreach ($categories_portfolio as $category ) {
-        $cat_slug = $category->slug;
+    $categories_portfolio = get_terms( $portfolio[$post_type]['tax'] , 'hide_empty=1&orderby=name');
+    foreach ($categories_portfolio as $category ) :
+        $cat_slug = urldecode($category->slug);
         $cat_name = $category->name;
         $count_items = $category->count;      
 
-        if( $count_items > 0 ) {
+        if( $count_items > 0 ) :
             global $paged;
 
             $args = array(
-                        'post_type' => $post_type,
-                        sanitize_title( $portfolio[$post_type]['tax'] ) => $cat_slug,
-                        'paged' => $paged,
-                        'posts_per_page' => -1
+              'post_type' => $post_type,
+              'taxonomy'  => $portfolio[$post_type]['tax'],
+              'term'      => $cat_slug,
+              'paged'     => $paged,
+              'posts_per_page' => -1
                     );
-
             //wp_reset_query();
-            $portfolio_items = new WP_Query( $args );   
+            $portfolio_items = new WP_Query( $args );
     
-            echo "<h3>$cat_name</h3>\n";        
+            echo "<h3>$cat_name</h3>\n";
             echo '<div class="portfolio-slider">';
             echo '<ul>'."\n";
     
@@ -51,11 +51,11 @@
     
             echo '</ul>'."\n";
             echo '</div>';
-            echo '<div class="clear"></div>'."\n";   
-    
+            echo '<div class="clear"></div>'."\n";
+
             unset( $portfolio_items );
-        }
-    }                   
+        endif;
+    endforeach;
 
     ?>
 
