@@ -3334,8 +3334,9 @@ case 'vimeo' :
     $r = array();
 
     $portofolios = $this->portfolios();
-    foreach ( $portofolios as $pt => $post )
-    $r[ $pt ] = $post['title'];
+    foreach ( $portofolios as $pt => $post ){
+      $r[ $pt ] = $post['title'];
+    }
 
     return $r;
   }
@@ -4626,6 +4627,7 @@ case 'vimeo' :
           'show_in_nav_menus' => false,
           'capability_type' => 'post',
           'publicly_queryable' => true,
+          'query_var' => FALSE,
           'rewrite' => array( 'slug' => $post_type , 'with_front' => true )
         )
       );
@@ -6762,11 +6764,6 @@ case 'vimeo' :
       case 'big_image':
       case 'slider':
       case 'filterable':
-        $post_type = $this->get_portfolio_post_type();
-        $this->set_var( self::OPT_POST_TYPE, $post_type);
-        set_query_var('post_type', $post_type);
-        $portfolio = $this->get_var( self::OPT_PORTFOLIO);
-        set_query_var('portfolio', $portfolio);
         set_query_var('click_event', $this->get_option( self::VAR_PORTFOLIO_THUMBNAIL_CLICK));
         set_query_var('content', $this->content('content', 25, $portfolio[$post_type]['read_more']));
         set_query_var('excerpt', $this->excerpt( 12, '', FALSE ));
@@ -7139,7 +7136,8 @@ case 'vimeo' :
    * @return mixed|string
    */
   public function filter_sanitize_key( $key, $raw_key ){
-    $raw_key = strtolower( $raw_key );
+    $return = FALSE;
+    $raw_key = Utf8::strtolower( $raw_key );
     $raw_key = preg_replace( '/[^\pL\pN_\-]++/u', '', $raw_key );
     return $raw_key;
   }
@@ -7422,6 +7420,11 @@ case 'vimeo' :
     if ( empty( $rewrite ) )
     $rewrite = Url::title( $post->post_title );
 
+    if (Utf8::is_ascii( Url::title( $post->post_title )))
+      $slug = Url::title( $post->post_title );
+    else{
+      $slug = Utf8::substr( Url::title( $post->post_title ), 0, 10);
+    }
     // icon
     $thumbnail_id = get_post_thumbnail_id( $post->ID );
     if ( ! empty( $thumbnail_id ) )
@@ -7429,7 +7432,7 @@ case 'vimeo' :
     else
     $icon = NULL;
     register_post_type(
-      Url::title( $post->post_title),
+      $slug,
       array(
     		  'description' => apply_filters( 'the_title' , $post->post_title ),
     		  'exclude_from_search' => FALSE,
@@ -7440,18 +7443,20 @@ case 'vimeo' :
     		  'capability_type' => 'page',
         	'publicly_queryable' => TRUE,
     		  'rewrite' => array( 'slug' => $rewrite, 'with_front' => TRUE ),
-    		  'menu_icon' => $icon
+    		  'menu_icon' => $icon[0],
+          'query_var' => FALSE,
     )
     );
 
-    add_filter( 'manage_edit-'.Url::title( $post->post_title ).'_columns', array( $this, 'portfolio_edit_columns'));
+    add_filter( 'manage_edit-'. $slug .'_columns', array( $this, 'portfolio_edit_columns'));
 
     // taxonomies
     $portfolio_tax          = get_post_meta( $post->ID, '_portfolio_tax', TRUE );
     $portfolio_tax_rewrite  = get_post_meta( $post->ID, '_portfolio_tax_rewrite', TRUE );
-
+    if ( empty($portfolio_tax_rewrite))
+      $portfolio_tax_rewrite = sanitize_key( Url::title($portfolio_tax));
     if ( ! empty( $portfolio_tax ) ){
-      $sid = Url::title( "$post->post_title $portfolio_tax" );
+      $sid = sanitize_key( Url::title( "$slug $portfolio_tax" ));
       if ( !isset($taxonomies[$sid])){
         $taxonomies[$sid] = array(
           'posts_type' => array(),
@@ -7459,13 +7464,13 @@ case 'vimeo' :
             'hierarchical' => TRUE,
             'labels' => $this->label_tax( __('Category', $this->plg_tdomain), __('Categories', $this->plg_tdomain)),
             'show_ui' => TRUE,
-            'query_var' => TRUE,
+            'query_var' => FALSE,
             'rewrite' => array( 'slug' => $portfolio_tax_rewrite, 'with_front' => FALSE )
           ),
         );
       }
 
-      $taxonomies[$sid]['posts_type'] = Url::title( $post->post_title );
+      $taxonomies[$sid]['posts_type'] = sanitize_key( $slug);
 
     }
 
@@ -8903,10 +8908,17 @@ case 'vimeo' :
 
     foreach ( $portfolios as $post ) {
       $read_more = get_post_meta( $post->ID, '_portfolio_read_more', TRUE );
-      $r[ sanitize_title( $post->post_title ) ] = array(
+
+      if (Utf8::is_ascii( Url::title( $post->post_title )))
+        $slug = Url::title( $post->post_title );
+      else{
+        $slug = Utf8::substr( Url::title( $post->post_title ), 0, 10);
+      }
+
+      $r[ $slug ] = array(
         'ID' => $post->ID,
         'title' => $post->post_title,
-        'tax' => sanitize_title( get_post_meta( $post->ID, '_portfolio_tax', TRUE ) ),
+        'tax' => sanitize_key( Url::title( $slug . " " . get_post_meta( $post->ID, '_portfolio_tax', TRUE ) ) ),
         'items' => get_post_meta( $post->ID, '_portfolio_items', TRUE ),
         'layout' => get_post_meta( $post->ID, '_portfolio_type', TRUE ),
         'read_more' => ! empty( $read_more ) ? $read_more : __( 'View Project', $this->plg_tdomain )

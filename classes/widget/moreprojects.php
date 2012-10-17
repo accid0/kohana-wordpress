@@ -49,7 +49,7 @@ class Widget_MoreProjects extends WPWidget
     if ( empty( $post_type ) )
       $post_type = get_post_type();
 
-    $portfolio_tax = sanitize_title( $portfolio[$post_type]['tax'] );
+    $portfolio_tax = Url::title( $portfolio[$post_type]['tax'] );
 
     global $more;
     $more = 0;
