@@ -6898,7 +6898,7 @@ case 'vimeo' :
     set_query_var('uri_theme', $uri_theme);
     set_query_var('core', $this);
 
-    DB::log("slug=$slug&name=$name");
+    //DB::log("slug=$slug&name=$name");
   }
 
   /**
