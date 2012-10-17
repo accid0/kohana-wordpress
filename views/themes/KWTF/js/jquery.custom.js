@@ -1,4 +1,36 @@
-jQuery(document).ready(function($){ 
+function yiw_lightbox()
+{
+    jQuery('a.thumb.video, a.thumb.img').hover(
+
+        function()
+        {
+            jQuery('<a class="zoom">zoom</a>').appendTo(this).css({
+                dispay:'block',
+                opacity:0,
+                height:jQuery(this).children('img').height(),
+                width:jQuery(this).children('img').width(),
+                'top':jQuery(this).css('padding-top'),
+                'left':jQuery(this).css('padding-left'),
+                padding:0}).animate({opacity:0.4}, 500);
+        },
+
+        function()
+        {
+            jQuery('.zoom').fadeOut(500, function(){jQuery(this).remove()});
+        }
+    );
+
+    jQuery("a[rel^='prettyPhoto']").prettyPhoto({
+        slideshow:5000,
+        theme: yiw_prettyphoto_style,
+        autoplay_slideshow:false,
+        deeplinking: false,
+        show_title:false
+    });
+}
+
+
+jQuery(document).ready(function($){
 
     $('body').removeClass('no_js').addClass('yes_js');   
     
@@ -83,37 +115,6 @@ jQuery(document).ready(function($){
             $(this).parent().toggle( show_dropdown, function(){ document.location = $(this).children('a').attr('href') } )
         });
 
-    function yiw_lightbox()
-    {   
-        $('a.thumb.video, a.thumb.img').hover(
-                                
-            function()
-            {
-                $('<a class="zoom">zoom</a>').appendTo(this).css({
-                    dispay:'block', 
-                    opacity:0, 
-                    height:$(this).children('img').height(), 
-                    width:$(this).children('img').width(),
-                    'top':$(this).css('padding-top'),
-                    'left':$(this).css('padding-left'),
-                    padding:0}).animate({opacity:0.4}, 500);
-            },
-            
-            function()
-            {           
-                $('.zoom').fadeOut(500, function(){$(this).remove()});
-            }
-        );
-        
-        jQuery("a[rel^='prettyPhoto']").prettyPhoto({
-            slideshow:5000,
-            theme: yiw_prettyphoto_style, 
-            autoplay_slideshow:false,
-            deeplinking: false,
-            show_title:false
-        });
-    }
-    
     yiw_lightbox();
     
     // searchform on header    // autoclean labels

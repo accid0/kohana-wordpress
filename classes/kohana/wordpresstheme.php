@@ -3364,7 +3364,7 @@ case 'vimeo' :
 
     $post_types = array_keys($portfolios);
     foreach( $post_types as $pt )
-    if( sanitize_title( $portfolios[$pt]['tax'] ) == $tax )
+    if( $portfolios[$pt]['tax'] == $tax )
     return TRUE;
 
     return FALSE;
@@ -3378,8 +3378,12 @@ case 'vimeo' :
   private function is_portfolio_post_type( $pt = FALSE ) {
     $portfolios = $this->portfolios();
 
+    if ( is_tax() && $this->is_portfolio_tax(get_query_var('taxonomy'))) {
+      return TRUE;
+    }
+
     if ( ! $pt )
-    $pt = get_post_type();
+      $pt = get_post_type();
 
     if ( isset( $portfolios[$pt] ) )
     return TRUE;
@@ -3392,7 +3396,7 @@ case 'vimeo' :
    * Enter description here ...
    */
   private function get_portfolio_post_type() {
-    $portfolio = $this->get_var( self::OPT_PORTFOLIO);
+    $portfolio = $this->portfolios();
     $post_type = get_post_meta( get_the_ID(), '_portfolio_post_type', TRUE );
 
     if ( empty( $post_type ) && is_tax() ) {
@@ -3400,9 +3404,15 @@ case 'vimeo' :
 
       $post_types = array_keys($portfolio);
       foreach( $post_types as $pt )
-      if( sanitize_title( $portfolio[$pt]['tax'] ) == $tax )
-      return $pt;
+      if( $portfolio[$pt]['tax'] == $tax )
+        return $pt;
     }
+    elseif( empty( $post_type )){
+      $pt = get_post_type();
+      if (isset($portfolio[$pt]))
+        return $pt;
+    }
+
 
     return $post_type;
   }
@@ -3421,18 +3431,6 @@ case 'vimeo' :
 
   /** * Different excerpt more text * * @return string */
   private function excerpt_more() { return '...'; }
-
-  /** * Echo the excerpt with specific number of words * * @param int|string $limit * @param string $more_text * * @return string */
-  private function excerpt( $limit = 25, $more_text = '', $echo = TRUE )
-  {
-    $limit_cb = create_function( '', "return $limit;" );
-    $moret_cb = create_function( '', "return '$more_text';" );
-    add_filter( 'excerpt_length', $limit_cb );
-    add_filter( 'excerpt_more', $moret_cb );
-    if ( $echo ) the_excerpt(); else return get_the_excerpt();
-    remove_filter( 'excerpt_length', $limit_cb );
-    remove_filter( 'excerpt_more', $moret_cb );
-  }
   
   /**
    * Return icon path by filename
@@ -6598,7 +6596,6 @@ case 'vimeo' :
     set_query_var('post_type', self::ATTR_POST_TYPE_GALLERY);
     $this->set_var( self::OPT_PORTFOLIO_TYPE, self::ATTR_FILTERABLE);
     set_query_var('portfolio_type', self::ATTR_FILTERABLE);
-    set_query_var('excerpt', $this->excerpt( 12, '', false ));
     set_query_var('gallery_details_icon', $this->get_option( self::VAR_GALLERY_DETAILS_ICON));
     set_query_var('gallery_show_filters', $this->get_option( self::VAR_GALLERY_SHOW_FILTERS));
   }
@@ -6755,7 +6752,6 @@ case 'vimeo' :
     $this->set_var( self::OPT_POST_TYPE, $post_type);
     set_query_var('post_type', $post_type);
     $portfolio = $this->portfolios();
-    $this->set_var( self::OPT_PORTFOLIO, $portfolio);
     set_query_var('portfolio', $portfolio);
     set_query_var('portfolio_show_filters', $this->get_option( self::VAR_PORTFOLIO_SHOW_FILTERS));
 
@@ -6766,7 +6762,6 @@ case 'vimeo' :
       case 'filterable':
         set_query_var('click_event', $this->get_option( self::VAR_PORTFOLIO_THUMBNAIL_CLICK));
         set_query_var('content', $this->content('content', 25, $portfolio[$post_type]['read_more']));
-        set_query_var('excerpt', $this->excerpt( 12, '', FALSE ));
         set_query_var('portfolio_details_icon', $this->get_option( self::VAR_PORTFOLIO_DETAILS_ICON));
         break;
     }
@@ -6794,6 +6789,11 @@ case 'vimeo' :
       $sidebar = ( $l = get_post_meta( $shop_page, '_sidebar_choose_page', TRUE) ) ? $l : 'Shop Sidebar';
 
     }
+    elseif( $this->is_portfolio_post_type() && (is_tax() || $name == 'portfolio')){
+      $pt = $this->get_portfolio_post_type();
+      $ps = $this->portfolios();
+      $sidebar = $ps[$pt]['title'] . ' Sidebar';
+    }
     set_query_var( 'sidebar', $sidebar);
     switch($name){
       case 'blog':
@@ -6807,7 +6807,6 @@ case 'vimeo' :
    * @return void
    */
   public function template_single( $slug, $name){
-    set_query_var('portfolio_layout_page', $this->get_option( self::VAR_PORTFOLIO_LAYOUT_PAGE));
     $post_type = get_post_type();
     $this->set_var( self::OPT_POST_TYPE, $post_type);
     set_query_var('post_type', $post_type);
@@ -6898,6 +6897,8 @@ case 'vimeo' :
     set_query_var('page', $page);
     set_query_var('uri_theme', $uri_theme);
     set_query_var('core', $this);
+
+    DB::log("slug=$slug&name=$name");
   }
 
   /**
@@ -8896,7 +8897,8 @@ case 'vimeo' :
    */
   public function portfolios() {
     $r = array();
-
+    $portfolios = $this->get_var( self::OPT_PORTFOLIO);
+    if ( !empty($portfolios)) return $portfolios;
     $portfolios = wp_cache_get( 'kwtf_portfolios' );
     if ( FALSE === $portfolios ) {
       $portfolios = get_posts( array(
@@ -8925,6 +8927,8 @@ case 'vimeo' :
       );
     }
 
+    $this->set_var( self::OPT_PORTFOLIO, $r);
+
     return $r;
   }
 
@@ -8939,6 +8943,18 @@ case 'vimeo' :
     }
 
     echo $text;
+  }
+
+  /** * Echo the excerpt with specific number of words * * @param int|string $limit * @param string $more_text * * @return string */
+  public function excerpt( $limit = 25, $more_text = '', $echo = TRUE )
+  {
+    $limit_cb = create_function( '', "return $limit;" );
+    $moret_cb = create_function( '', "return '$more_text';" );
+    add_filter( 'excerpt_length', $limit_cb );
+    add_filter( 'excerpt_more', $moret_cb );
+    if ( $echo ) the_excerpt(); else return get_the_excerpt();
+    remove_filter( 'excerpt_length', $limit_cb );
+    remove_filter( 'excerpt_more', $moret_cb );
   }
 
   /**

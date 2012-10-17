@@ -100,7 +100,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                                     <a href="<?php the_permalink() ?>"><?php the_post_thumbnail( 'thumb_gallery', array( 'class' => 'picture' ) ) ?></a>
                                     <div class="overlay">                            
                                         <h5><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h5>
-                                        <p><?php echo $excerpt ?></p>
+                                        <p><?php echo $core->excerpt( 12, '', false ) ?></p>
                                         <div class="controls">
                                             <a class="icon-zoom" href="<?php echo $image[0] ?>" rel="prettyPhoto" title="<?php the_title() ?>"><?php _e( 'Zoom', $tpl_tdomain ) ?></a>
                                             <?php if ( $gallery_details_icon ) : ?>

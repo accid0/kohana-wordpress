@@ -7,8 +7,7 @@
 
 /*
 Template Name: Portfolio
-*/                                
-
+*/
                                               
 $portfolio_type = ! get_post_meta( get_the_ID(), 'portfolio_type', true ) ? ( isset( $portfolio[$post_type]['layout'] ) ? $portfolio[$post_type]['layout'] : '' ) : get_post_meta( get_the_ID(), 'portfolio_type', true );
 
@@ -25,6 +24,7 @@ get_header();
 
 $layout_type = ( in_array($portfolio_type, $portfolio_types['no_sidebar']) ) ? 'sidebar-no' : $layout_page;
 
+$sidebar_type = (is_tax()) ? $portfolio[$post_type]['title'] . ' Sidebar' : '';
 if( $portfolio_type == 'full_desc' ) {
     get_template_part( 'single', 'portfolio' );
     die;
@@ -50,7 +50,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                 </div>    
                 <?php elseif ( is_tax() ) : ?>
                 <div id="slogan">
-                    <h2><?php echo ucfirst( get_query_var('term' )); ?> category</h2>
+                    <h2><?php echo __('Category', $tpl_tdomain) . ': ' . Utf8::ucfirst( get_query_var('term' )); ?></h2>
                 </div>
                 <?php endif; ?>   
                                
@@ -64,7 +64,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                         foreach( $cats as $cat )
                         {
                             if( $cat->count > 0 ) :
-                                ?><li class="segment-<?php echo $cat->term_id ?>"><a href="#" data-value="<?php echo strtolower(preg_replace('/\s+/', '-', $cat->slug)) ?>"><?php echo $cat->name ?></a></li><?php
+                                ?><li class="segment-<?php echo $cat->term_id ?>"><a href="#" data-value="<?php echo strtolower(preg_replace('/\s+/', '-', urldecode( $cat->slug))) ?>"><?php echo $cat->name ?></a></li><?php
                             else :
                                 ?><li><?php echo $cat->name ?></li><?php
                             endif;
