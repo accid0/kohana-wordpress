@@ -38,7 +38,7 @@ get_header() ?>
                 <!-- END CONTENT -->
                 
                 <!-- START LATEST NEWS -->
-                <?php 
+                <?php
                     if( $post_type == 'bl_testimonials' ) {
                         get_sidebar('testimonials');
                     } else {
@@ -49,5 +49,6 @@ get_header() ?>
             
             </div>     
          </div> 
-        
-<?php get_footer() ?>
+
+<?php
+get_footer();

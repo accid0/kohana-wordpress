@@ -15,4 +15,6 @@
 					<?php do_action( 'kwtf_after_sidebar_' . $current_pagename ) ?>
 				</div>
 				
-            <?php endif ?>
+            <?php endif;
+
+            wp_reset_postdata();

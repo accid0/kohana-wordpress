@@ -894,6 +894,10 @@ class Kohana_WordpressTheme extends WPPlugin {
           self::ATTR_SRC    => 'css/tipsy.css',
         ),
         array(
+          self::ATTR_HANDLE => 'flexslider',
+          self::ATTR_SRC    => 'css/flexslider.css',
+        ),
+        array(
           self::ATTR_HANDLE => 'jquery-ui-style',
           self::ATTR_SRC    => 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/smoothness/jquery-ui.css',
         ),
@@ -11094,11 +11098,16 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
 
 
     $urls = explode("\n", $content);
-    $urls = array_map('trim', $urls);
+    $urls = array_map( function ($url){
+      $url = str_replace('<p>', '', $url);
+      $url = str_replace('</p>', "\n", $url);
+      return trim($url);
+    }, $urls);
 
-    $html = "<div class=\"nivo-slider\" style=\"width:{$width}px; height:{$height}px\">\n";
+    $html = "<div class=\"flexslider-sc\" style=\"width:{$width}px; height:{$height}px\">\n";
 
     $i = 0;
+    $html .= '<ul class="slides">';
     foreach($urls as $url)
     {
       $host = $a_before = $a_after = '';
@@ -11113,28 +11122,36 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
       $url = str_replace( '<br />', '', $url );
       if( !preg_match('/http:\/\/(.*)/', $url) ) $host = site_url() . '/';
 
-      if($url != '') $html .= "    $a_before<img src=\"{$host}{$url}\" alt=\"$i\" />$a_after\n";
+      if($url != '') $html .= "<li>$a_before<img src=\"{$host}{$url}\" alt=\"$i\" />$a_after</li>\n";
       $i++;
     }
 
-    $html .= "</div>\n";
+    $html .= "</ul></div>\n";
 
 
     $html .= "  <script type=\"text/javascript\">
                     jQuery(document).ready(function($){
-                        if( !jQuery().nivoSlider ) {
-                            $.getScript(' ". $this->get_var( self::OPT_THEME_URI) . "/js/jquery.nivo.slider.pack.js" . " ', function(){
+                        if( !jQuery().flexslider ) {
+                            $.getScript(' ". $this->get_var( self::OPT_THEME_URI) . "/js/jquery.flexslider.min.js" . " ', function(){
                                     
-                                $('.nivo-slider').nivoSlider({
-                                    effect: '$effect',
-                                    directionNav:false
+                                $('.flexslider-sc').flexslider({
+                                    animation: '$effect',
+                                    directionNav: false,
+                    				        controlNav: true,
+                    				        keyboardNav: false,
+                                    slideshowSpeed: 3000,
+                                    slideDirection: 'horizontal'
                                 });
 
                             });
                         } else {
-                                $('.nivo-slider').nivoSlider({
-                                    effect: '$effect',
-                                    directionNav:false
+                                $('.flexslider-sc').flexslider({
+                                    animation: '$effect',
+                                    directionNav: false,
+                    				        controlNav: true,
+                    				        keyboardNav: false,
+                                    slideshowSpeed: 3000,
+                                    slideDirection: 'horizontal'
                                 });
                         }
                     });
@@ -12427,6 +12444,18 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
 
     return apply_filters( 'kwtf_sc_i_html', $html );
   }
+
+  /**
+   * PRE
+   *
+   * @example
+   *   [i]text[/i]
+   **/
+  function do_pre($atts, $content = NULL) {
+    $html = "<pre>{$content}</pre>";
+
+    return apply_filters( 'kwtf_sc_pre_html', $html );
+  }
   
   /**
    * ITALIC EM
@@ -13133,8 +13162,6 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
 
     return apply_filters( 'kwtf_sc_product_slider_html', $html );
   }
-
-
 
   /**
    * CATEGORY SLIDER

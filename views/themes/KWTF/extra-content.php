@@ -16,3 +16,6 @@
 		
 			<?php do_action( 'kwtf_after_extra-content' ) ?>
 			<?php do_action( 'kwtf_after_extra-content_' . $current_pagename ) ?>
+      <?php
+
+wp_reset_postdata();
