@@ -12247,8 +12247,9 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
 
     $content = str_replace( '<ul>', '', $content );
     $content = str_replace( '</ul>', '', $content );
+    $html = '';
 
-    $html  = '<div class="one-third'.$last.'">';
+    //$html  = '<div class="one-third'.$last.'">';
     $html .= '	<div class="price-table">';
     $html .= '	  <div class="head '.$color.'">';
     $html .= '	   	<p>'.$title.'</p>';
@@ -12262,7 +12263,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     if ( ! $nobutton ) $html .= '		<p class="more"><a href="'.$href.'">'.$buttontext.'</a></p>';
     $html .= '	  </div>';
     $html .= '  </div>';
-    $html .= '</div>';
+    //$html .= '</div>';
 
     return apply_filters( 'kwtf_sc_price_html', $html );
   }
@@ -12452,7 +12453,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
    *   [i]text[/i]
    **/
   function do_pre($atts, $content = NULL) {
-    $html = "<pre>{$content}</pre>";
+    $html = "<pre>" . htmlentities($content) . "</pre>";
 
     return apply_filters( 'kwtf_sc_pre_html', $html );
   }

@@ -23,7 +23,8 @@ get_header() ?>
                 
                 <!-- START CONTENT -->
                 <div id="content" class="group">
-                    <?php get_template_part('loop', 'index') ?>
+                  <?php $core->breadcrumb(); ?>
+                  <?php get_template_part('loop', 'index') ?>
                 </div>                       
                 <!-- END CONTENT -->
                 

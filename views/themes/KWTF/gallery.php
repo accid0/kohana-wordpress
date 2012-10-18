@@ -59,6 +59,9 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
     
                 <!-- START CONTENT -->
                 <div id="content" class="group">
+
+                    <?php $core->breadcrumb(); ?>
+
                     <div id="portfolio-gallery" class="internal_page_items internal_page_gallery">
                         <ul class="gallery-wrap image-grid group">
                         <?php

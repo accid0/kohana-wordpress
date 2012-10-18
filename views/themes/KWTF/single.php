@@ -28,6 +28,9 @@ get_header() ?>
     
                 <!-- START CONTENT -->
                 <div id="content" class="group">
+
+                    <?php $core->breadcrumb(); ?>
+
                     <?php 
                           switch( $post_type ) {
                               default             : get_template_part('loop', 'index');

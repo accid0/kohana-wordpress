@@ -1385,7 +1385,7 @@ tr:nth-child(2n+1) {background-color:#f6f6f6;}
 .price-table .head p {margin:0 !important;padding:0 !important;line-height:4em;font-size:13px;}
 .price-table .head h2.price {font-size:4em;margin:0 !important;line-height:0.4em;text-align:center;padding:0;}
 .price-table .body {padding:20px 25px;}
-.price-table .body ul {list-style:none;margin:0 0 20px;}
+.price-table .body ul {list-style:none !important;margin:0 0 20px !important;}
 .price-table .body li {padding:10px 0 10px 35px;background:url('images/icons/tick20.png') left center no-repeat;line-height:20px;}
 .price-table .body .more {text-align:center;padding:0!important;margin:0!important;}
 .price-table .body .more a {padding:5px 10px;text-align:center;border:1px solid #dbd8d8;background:#f3f3f3;color:#999;display:inline-block;width:auto;height:16px;line-height:16px;text-transform:uppercase;font-size:110%;}

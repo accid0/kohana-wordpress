@@ -11,6 +11,9 @@ get_header() ?>
     <div class="inner group">
         <!-- START CONTENT -->
         <div id="content" class="group">
+
+            <?php $core->breadcrumb(); ?>
+
             <?php get_template_part('loop', 'index') ?>
         </div>                       
         <!-- END CONTENT -->

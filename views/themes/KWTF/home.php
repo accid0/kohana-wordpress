@@ -30,12 +30,13 @@ get_header() ?>
     
                 <!-- START CONTENT -->
                 <div id="content" class="group">
-                    <?php 
-                        if ( is_home() )
-                            get_template_part( 'loop', 'index' ); 
-                        else
-                            get_template_part( 'loop', 'page' ); 
-                    ?>
+                <?php $core->breadcrumb(); ?>
+                <?php
+                   if ( is_home() )
+                     get_template_part( 'loop', 'index' );
+                   else
+                     get_template_part( 'loop', 'page' );
+                ?>
     
                 </div>
                 <!-- END CONTENT -->

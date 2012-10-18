@@ -19,7 +19,9 @@ get_header();
 
             <?php get_template_part( 'slogan' ) ?>
                 <div id="content" class="group">
-                    
+
+                <?php $core->breadcrumb(); ?>
+
                 <?php if ( !is_tax() ) get_template_part( 'loop', 'page' ); 
                     
                     $args = array(

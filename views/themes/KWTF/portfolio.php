@@ -77,8 +77,10 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
     
                 <!-- START CONTENT -->
                 <div id="content" class="group">
-                    <?php if ( ! is_tax() && $portfolio_type != 'filterable' ) get_template_part( 'loop', 'page' ); ?>
-                    <?php if ( ! empty( $portfolio_type ) ) get_template_part( 'portfolio', $portfolio_type ); ?>
+
+                  <?php $core->breadcrumb(); ?>
+                  <?php if ( ! is_tax() && $portfolio_type != 'filterable' ) get_template_part( 'loop', 'page' ); ?>
+                  <?php if ( ! empty( $portfolio_type ) ) get_template_part( 'portfolio', $portfolio_type ); ?>
                 </div>
                 <!-- END CONTENT -->
     
