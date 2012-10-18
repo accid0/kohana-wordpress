@@ -7174,6 +7174,17 @@ case 'vimeo' :
     }
   }
 
+  /**
+   * (non-PHPdoc)
+   * @see Kohana_Base_WPPlugin::action_edit_post()
+   */
+  public function action_edit_post( $postpage_id){
+    if ( is_admin() && get_post_type($postpage_id) === self::ATTR_POST_TYPE_PORTFOLIO){
+      flush_rewrite_rules();
+
+    }
+  }
+
   // default theme setup
   /**
    *
