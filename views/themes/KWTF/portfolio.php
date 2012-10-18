@@ -21,7 +21,7 @@ if ( $portfolio_type == 'filterable' )
     wp_enqueue_script( 'jquery-quicksand',  $uri_theme . "/js/jquery.quicksand.js", array('jquery'));
 
 get_header();                                    
-
+$layout_type = (is_tax())? $portfolio_layout_page : $layout_type;
 $layout_type = ( in_array($portfolio_type, $portfolio_types['no_sidebar']) ) ? 'sidebar-no' : $layout_page;
 
 $sidebar_type = (is_tax()) ? $portfolio[$post_type]['title'] . ' Sidebar' : '';
@@ -40,7 +40,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
 
 ?>  
 
-        <div id="primary" class="layout-<?php echo (is_tax())? $portfolio_layout_page : $layout_type ?>">
+        <div id="primary" class="layout-<?php echo $layout_type ?>">
 		    <div class="inner group">
 
                 <?php if( get_post_meta( get_the_ID(), '_slogan_page', true ) ): ?>            

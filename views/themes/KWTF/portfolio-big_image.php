@@ -61,7 +61,7 @@
 
                         <div class="work-description">
                             <h3><?php the_title() ?></h3>
-                            <?php echo $content ?>
+                            <?php echo $core->content('content', 25, $portfolio[$post_type]['read_more']) ?>
                         </div>
                         <div class="clear"></div>
                     </div>                         

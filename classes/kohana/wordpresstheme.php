@@ -3186,7 +3186,7 @@ case 'vimeo' :
       $url = str_replace( '/', '', $url);
       return $url;
        
-    } elseif ( preg_match( '/watch/', $url, $matches) ) {
+    } elseif ( preg_match( '/watch\?v=/', $url, $matches) ) {
       $arr = parse_url($url);
       $url = str_replace( 'v=', '', $arr['query'] );
       return $url;
@@ -3450,73 +3450,6 @@ case 'vimeo' :
       return $this->get_var( self::OPT_THEME_URI) . "/images/icons/{$icon}{$size}.png";
     else
       return $this->get_var( self::OPT_THEME_URI) . "/images/icons/{$icon}.png";
-  }
-
-  /**
-   * Return post content with read more link (if needed)
-   *
-   * @param int|string $limit
-   * @param string $more_text
-   *
-   * @return string
-   */
-  private function content( $what = 'content', $limit = 25, $more_text = '' ) {
-    if ( $what == 'content' )
-      $content = get_the_content();
-    else if ( $what == 'excerpt' )
-      $content = get_the_excerpt();
-
-    if ( empty( $content ) ) return;
-      $content = explode( ' ', $content );
-    /*
-     if ( count( $content ) >= $limit ) {
-     array_pop( $content );
-     if( $more_text != "" )
-     $readmore = implode( " ", $content ) . '<a class="read-more" href="' . get_permalink() . '">' . $more_text . '</a>';
-     else
-     $content = implode( " ", $content ) . ' &#91;...&#93;';
-     } else
-     $content = implode( " ", $content );
-     */
-    if ( ! empty( $more_text ) ) {
-      array_pop( $content );
-      $more_text = '<a class="read-more" href="' . get_permalink() . '">' . $more_text . '</a>';
-    }
-
-    // split
-    if ( count( $content ) >= $limit ) {
-      $split_content = '';
-      for ( $i = 0; $i < $limit; $i++ )
-      $split_content .= $content[$i] . ' ';
-
-      $content = $split_content . '...';
-    } else {
-      $content = implode( " ", $content );
-    }
-
-    // TAGS UNCLOSED
-    $tags = array();
-    // get all tags opened
-    preg_match_all("/(<([\w]+)[^>]*>)/", $content, $tags_opened, PREG_SET_ORDER);
-    foreach ( $tags_opened as $tag )
-    $tags[] = $tag[2];
-
-    // get all tags closed and remove it from the tags opened.. the rest will be closed at the end of the content
-    preg_match_all("/(<\/([\w]+)[^>]*>)/", $content, $tags_closed, PREG_SET_ORDER);
-    foreach ( $tags_closed as $tag )
-    unset( $tags[ array_search( $tag[2], $tags ) ] );
-
-    // close the tags
-    if ( ! empty( $tags ) )
-    foreach ( $tags as $tag )
-    $content .= "</$tag>";
-
-    $content = preg_replace( '/\[.+\]/', '', $content );
-    $content = preg_replace( '/<img[^>]+./', '', $content ); //remove images
-    $content = apply_filters( 'the_content', $content );
-    $content = str_replace( ']]>', ']]&gt;', $content );
-
-    return $content.$more_text;
   }
 
   // get the options from the post request
@@ -6761,7 +6694,6 @@ case 'vimeo' :
       case 'slider':
       case 'filterable':
         set_query_var('click_event', $this->get_option( self::VAR_PORTFOLIO_THUMBNAIL_CLICK));
-        set_query_var('content', $this->content('content', 25, $portfolio[$post_type]['read_more']));
         set_query_var('portfolio_details_icon', $this->get_option( self::VAR_PORTFOLIO_DETAILS_ICON));
         break;
     }
@@ -8955,6 +8887,73 @@ case 'vimeo' :
     if ( $echo ) the_excerpt(); else return get_the_excerpt();
     remove_filter( 'excerpt_length', $limit_cb );
     remove_filter( 'excerpt_more', $moret_cb );
+  }
+
+  /**
+   * Return post content with read more link (if needed)
+   *
+   * @param int|string $limit
+   * @param string $more_text
+   *
+   * @return string
+   */
+  public function content( $what = 'content', $limit = 25, $more_text = '' ) {
+    if ( $what == 'content' )
+      $content = get_the_content();
+    else if ( $what == 'excerpt' )
+      $content = get_the_excerpt();
+
+    if ( empty( $content ) ) return;
+    $content = explode( ' ', $content );
+    /*
+     if ( count( $content ) >= $limit ) {
+     array_pop( $content );
+     if( $more_text != "" )
+     $readmore = implode( " ", $content ) . '<a class="read-more" href="' . get_permalink() . '">' . $more_text . '</a>';
+     else
+     $content = implode( " ", $content ) . ' &#91;...&#93;';
+     } else
+     $content = implode( " ", $content );
+     */
+    if ( ! empty( $more_text ) ) {
+      array_pop( $content );
+      $more_text = '<a class="read-more" href="' . get_permalink() . '">' . $more_text . '</a>';
+    }
+
+    // split
+    if ( count( $content ) >= $limit ) {
+      $split_content = '';
+      for ( $i = 0; $i < $limit; $i++ )
+        $split_content .= $content[$i] . ' ';
+
+      $content = $split_content . '...';
+    } else {
+      $content = implode( " ", $content );
+    }
+
+    // TAGS UNCLOSED
+    $tags = array();
+    // get all tags opened
+    preg_match_all("/(<([\w]+)[^>]*>)/", $content, $tags_opened, PREG_SET_ORDER);
+    foreach ( $tags_opened as $tag )
+      $tags[] = $tag[2];
+
+    // get all tags closed and remove it from the tags opened.. the rest will be closed at the end of the content
+    preg_match_all("/(<\/([\w]+)[^>]*>)/", $content, $tags_closed, PREG_SET_ORDER);
+    foreach ( $tags_closed as $tag )
+      unset( $tags[ array_search( $tag[2], $tags ) ] );
+
+    // close the tags
+    if ( ! empty( $tags ) )
+      foreach ( $tags as $tag )
+        $content .= "</$tag>";
+
+    $content = preg_replace( '/\[.+\]/', '', $content );
+    $content = preg_replace( '/<img[^>]+./', '', $content ); //remove images
+    $content = apply_filters( 'the_content', $content );
+    $content = str_replace( ']]>', ']]&gt;', $content );
+
+    return $content.$more_text;
   }
 
   /**
