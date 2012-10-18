@@ -42,7 +42,7 @@
             <div id="map-text">
                 Where we are? Find us in this great google map
             </div>
-            <a href="#" class="tab-label<?php if ( $opened == 'yes' ) : ?> opened<?php else : ?> closed<?php endif; ?>"><?php if ( $opened == 'yes' ) _e( 'Close Map', $tpl_tdomain ); else _e( 'Open Map', $tpl_tdomain ); ?></a>
-            <a href="#" class="tab-label<?php if ( $opened == 'yes' ) : ?> opened<?php else : ?> closed<?php endif; ?>"><?php if ( $opened == 'yes' ) _e( 'Close Map', $tpl_tdomain ); else _e( 'Open Map', $tpl_tdomain ); ?></a>
+            <a href="#" class="tab-label<?php if ( $opened == 'yes' ) : ?> opened<?php else : ?> closed<?php endif; ?>"><?php if ( $opened == 'yes' ) _e( 'Close', $tpl_tdomain ); else _e( 'Open', $tpl_tdomain ); ?></a>
+            <a href="#" class="tab-label<?php if ( $opened == 'yes' ) : ?> opened<?php else : ?> closed<?php endif; ?>"><?php if ( $opened == 'yes' ) _e( 'Close', $tpl_tdomain ); else _e( 'Open', $tpl_tdomain ); ?></a>
 
         </div>   

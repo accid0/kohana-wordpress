@@ -489,6 +489,9 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_HEADER_BG_IMAGE_CUSTOM_REPEAT                       = 'header_bg_image_custom_repeat';
   const VAR_HEADER_BG_IMAGE_CUSTOM_POSITION                     = 'header_bg_image_custom_position';
   const VAR_HEADER_OPACITY                                      = 'header_opacity';
+  const VAR_TOPSIDEBAR_HAS                                      = 'topsidebar_has';
+  const VAR_TOPSIDEBAR_ROWS                                     = 'topsidebar_rows';
+  const VAR_TOPSIDEBAR_COLS                                     = 'topsidebar_cols';
   const VAR_NEWSLETTER_FORM_SHOW                                = 'newsletter_form_show';
   const VAR_NEWSLETTER_FORM_TITLE                               = 'newsletter_form_title';
   const VAR_NEWSLETTER_FORM_DESCRIPTION                         = 'newsletter_form_description';
@@ -1366,6 +1369,9 @@ class Kohana_WordpressTheme extends WPPlugin {
         self::VAR_HEADER_BG_IMAGE_CUSTOM_REPEAT                       => self::ATTR_TEXT,
         self::VAR_HEADER_BG_IMAGE_CUSTOM_POSITION                     => self::ATTR_TEXT,
         self::VAR_HEADER_OPACITY                                      => self::ATTR_TEXT,
+        self::VAR_TOPSIDEBAR_HAS                                      => self::ATTR_TEXT,
+        self::VAR_TOPSIDEBAR_COLS                                     => self::ATTR_TEXT,
+        self::VAR_TOPSIDEBAR_ROWS                                     => self::ATTR_TEXT,
         self::VAR_NEWSLETTER_FORM_SHOW                                => self::ATTR_TEXT,
         self::VAR_NEWSLETTER_FORM_TITLE                               => self::ATTR_TEXT,
         self::VAR_NEWSLETTER_FORM_DESCRIPTION                         => self::ATTR_TEXT,
@@ -1722,6 +1728,9 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_HEADER_BG_IMAGE_CUSTOM_REPEAT                       => 'Header Image Repeat',
       self::VAR_HEADER_BG_IMAGE_CUSTOM_POSITION                     => 'Header Image Position',
       self::VAR_HEADER_OPACITY                                      => 'Header Opacity',
+      self::VAR_TOPSIDEBAR_HAS                                      => 'Header Sidebar',
+      self::VAR_TOPSIDEBAR_COLS                                     => 'Sidebar Columns',
+      self::VAR_TOPSIDEBAR_ROWS                                     => 'Sidebar Rows',
       self::VAR_NEWSLETTER_FORM_SHOW                                => 'Show',
       self::VAR_NEWSLETTER_FORM_TITLE                               => 'Title',
       self::VAR_NEWSLETTER_FORM_DESCRIPTION                         => 'Description',
@@ -2073,6 +2082,9 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_HEADER_BG_IMAGE_CUSTOM_REPEAT                       => self::ATTR_NO_REPEATE,
       self::VAR_HEADER_BG_IMAGE_CUSTOM_POSITION                     => self::ATTR_BOTTOM_CENTER,
       self::VAR_HEADER_OPACITY                                      => 1,
+      self::VAR_TOPSIDEBAR_HAS                                      => 0,
+      self::VAR_TOPSIDEBAR_COLS                                     => 4,
+      self::VAR_TOPSIDEBAR_ROWS                                     => 1,
       self::VAR_NEWSLETTER_FORM_SHOW                                => 1,
       self::VAR_NEWSLETTER_FORM_TITLE                               => 'Stay Updated:',
       self::VAR_NEWSLETTER_FORM_DESCRIPTION                         => 'subscribe our special newsletter',
@@ -6825,6 +6837,17 @@ case 'vimeo' :
   }
 
   /**
+   * @param $slug
+   * @param $name
+   */
+  public function template_topsidebar( $slug, $name){
+    set_query_var('topsidebar_rows', $this->get_option( self::VAR_TOPSIDEBAR_ROWS));
+    set_query_var('topsidebar_cols', $this->get_option( self::VAR_TOPSIDEBAR_COLS));
+    set_query_var('use_topsidebar',  $this->get_option( self::VAR_TOPSIDEBAR_HAS));
+
+  }
+
+  /**
    * @param $name
    * @return void
    */
@@ -7313,9 +7336,13 @@ case 'vimeo' :
       }
     }
 
+    // header sidebars
+    for( $i = 1; $i <= $this->get_option( self::VAR_TOPSIDEBAR_ROWS); $i++ )
+      register_sidebar( $this->sidebar_args( "Header Row $i", _x( "The widget area nr. %d used in Header section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
+
     // footer sidebars
-    for( $i = 1; $i <= $this->get_option( self::VAR_FOOTER_ROWS, 0 ); $i++ )
-      register_sidebar( $this->sidebar_args( "Footer Row $i", __( "The widget area nr. {$i} used in Footer section", $this->plg_tdomain), 'widget', 'h3' ) );
+    for( $i = 1; $i <= $this->get_option( self::VAR_FOOTER_ROWS); $i++ )
+      register_sidebar( $this->sidebar_args( "Footer Row $i", __( "The widget area nr. %d used in Footer section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
 
 
     if ( ! function_exists( 'is_plugin_active' ) )

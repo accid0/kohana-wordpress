@@ -325,6 +325,83 @@
             <div class="fade_color"></div>
           </div>
           <!-- option -->
+          <div id="topsidebar_has-option" class="rm_option rm_input rm_on_off yiw-deps">
+            <label for="topsidebar_has"><strong><?php _e('Header Sidebar', $tpl_tdomain)?></strong></label>
+            <div class="iphone-check">
+              <input class="on_off" type='checkbox' id='topsidebar_has' name = "topsidebar_has" value="1"  <?php checked($__topsidebar_has, 1)?>/>
+            </div>
+            <small><?php _e('Say if you want the sidebar on header.', $tpl_tdomain)?></small><div class="clearfix"></div>
+            <div class="fade_color"></div>
+          </div>
+          <!-- option -->
+          <div id="topsidebar_rows-option" class="rm_option rm_input slider_control yiw-deps">
+            <label for="topsidebar_rows"><strong><?php echo __('Header Sidebar Rows Number', $tpl_tdomain)?></strong></label>
+            <div class="ui-slider">
+              <span class="minCaption">1</span>
+              <span class="maxCaption">3</span>
+              <span id="topsidebar_rows-feedback" class="feedback"><strong><?php echo $__topsidebar_rows?></strong></span>
+              <div id="topsidebar_rows" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                <input type="hidden" name="topsidebar_rows" value = "<?php echo $__topsidebar_rows?>" />
+              </div>
+            </div>
+            <script type="text/javascript">
+              jQuery(document).ready(function($){
+                $('#topsidebar_rows').each(function(e){
+                  var val = <?php echo ($__topsidebar_rows)?$__topsidebar_rows:0?>;
+                  var minValue = 1;
+                  var maxValue = 3;
+                  $(this).slider({
+                    value: val,
+                    min: minValue,
+                    max: maxValue,
+                    range: 'min',
+                    slide: function( event, ui ) {
+                      $( 'input[name="topsidebar_rows"]' ).val( ui.value );
+                      $( '#topsidebar_rows-feedback strong' ).text( ui.value + '' );
+                    }
+                  });
+                });
+              });
+            </script>
+
+            <small><?php _e('Select the number rows of the header sidebar', $tpl_tdomain)?></small><div class="clearfix"></div>
+            <div class="fade_color"></div>
+          </div>
+          <!-- option -->
+          <div id="topsidebar_cols-option" class="rm_option rm_input slider_control yiw-deps">
+            <label for="topsidebar_cols"><strong><?php echo __('Header Sidebar Columns Number', $tpl_tdomain)?></strong></label>
+            <div class="ui-slider">
+              <span class="minCaption">1</span>
+              <span class="maxCaption">4</span>
+              <span id="topsidebar_cols-feedback" class="feedback"><strong><?php echo $__topsidebar_cols?></strong></span>
+              <div id="topsidebar_cols" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                <input type="hidden" name="topsidebar_cols" value = "<?php echo $__topsidebar_cols?>" />
+              </div>
+            </div>
+            <script type="text/javascript">
+              jQuery(document).ready(function($){
+                $('#topsidebar_cols').each(function(e){
+                  var val = <?php echo ($__topsidebar_cols)?$__topsidebar_cols:0?>;
+                  var minValue = 1;
+                  var maxValue = 4;
+                  $(this).slider({
+                    value: val,
+                    min: minValue,
+                    max: maxValue,
+                    range: 'min',
+                    slide: function( event, ui ) {
+                      $( 'input[name="topsidebar_cols"]' ).val( ui.value );
+                      $( '#topsidebar_cols-feedback strong' ).text( ui.value + '' );
+                    }
+                  });
+                });
+              });
+            </script>
+
+            <small><?php _e('Select the number columns of the header sidebar', $tpl_tdomain)?></small><div class="clearfix"></div>
+            <div class="fade_color"></div>
+          </div>
+          <!-- option -->
         </div>
       </div>
       <div class="rm_section section_effect" id="newsletter-form-section">

@@ -132,8 +132,8 @@
 		$src = get_post_meta( get_the_ID(), '_map_url', true );
         if ( get_post_meta( get_the_ID(), '_show_map', true ) == 'yes' && ! empty( $src ) ) 
     		wp_localize_script( 'jquery-custom', 'header_map', array(
-            	'tab_open'  => __( 'Open map', $tpl_tdomain ),
-            	'tab_close' => __( 'Close map', $tpl_tdomain ),
+            	'tab_open'  => __( 'Open', $tpl_tdomain ),
+            	'tab_close' => __( 'Close', $tpl_tdomain ),
             ) );
             
     ?>
@@ -209,6 +209,12 @@
             
             <!-- SLIDER -->
             <?php get_template_part( 'slider' ); ?>
-            <!-- /SLIDER -->                        
-        	    
-        	<?php get_template_part( 'map' ); ?> 
+            <!-- /SLIDER -->
+
+            <!-- HEADER SIDEBAR -->
+            <?php get_template_part( 'topsidebar'); ?>
+            <!--/HEADER SIDEBAR -->
+
+            <!-- MAP -->
+            <?php get_template_part( 'map' ); ?>
+            <!--/MAP -->
