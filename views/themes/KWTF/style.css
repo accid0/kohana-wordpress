@@ -103,6 +103,7 @@ body.responsive.isMobile .wrapper { overflow:hidden; }
 #content    { width: 75%; }
 #sidebar    { width: 22%; }
 #footer     { clear: both; }
+#topsidebar { clear: both; }
 
 /* layouts */
 .layout-sidebar-left #sidebar, .layout-sidebar-right #content { float:left; }
@@ -586,7 +587,70 @@ body.no_js #nav ul li ul.submenu li:hover > ul, body.no_js #nav ul li ul.childre
 #crumbs a {
   color: #999 !important;
 }
-/* ====================== END PRIMARY CONTENT ====================== */    
+/* ====================== END PRIMARY CONTENT ====================== */
+
+
+
+/* ====================== START topsidebar ====================== */
+#topsidebar {  }
+
+#topsidebar .inner:first-child {
+    border-bottom: 1px solid #CFCFCF;
+    margin-top: 0px;
+    padding-bottom: 10px;
+    padding-top: 0px;
+}
+
+#topsidebar .topsidebar_cols_1 .widget {
+    width: 960px;
+}
+
+#topsidebar .topsidebar_cols_2 .widget {
+    float: left;
+    width: 475px;
+    margin-right: 5px;
+}
+
+#topsidebar .topsidebar_cols_2 .widget:last-child {
+    margin-right: 0;
+    margin-left: 5px;
+}
+
+#topsidebar .topsidebar_cols_3 .widget {
+    float: left;
+    width: 310px;
+    margin-right: 10px;
+}
+
+#topsidebar .topsidebar_cols_4 .widget {
+    float: left;
+    width: 230px;
+    margin-right: 10px;
+}
+
+#topsidebar .topsidebar_cols_3 .widget:last-child {
+    margin-right: 0px;
+    width: 320px;
+}
+
+#topsidebar .topsidebar_cols_4 .widget:last-child {
+    margin-right: 0px;
+    width: 240px;
+}
+
+#topsidebar .widget > p,
+#topsidebar .widget > div,
+#topsidebar .widget > blockquote,
+#topsidebar .widget > table,
+#topsidebar .widget > ul,
+#topsidebar .widget > ol {
+    border: none;
+    padding-left: 0 !important;
+}
+
+#topsidebar .widget ul li a {color:#545252;}
+#topsidebar .widget ul li a:hover {color:#9A6614;}
+/* ====================== END topsidebar ====================== */    
 
 
 

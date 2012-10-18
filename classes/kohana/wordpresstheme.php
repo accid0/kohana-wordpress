@@ -7318,6 +7318,12 @@ case 'vimeo' :
     // sidebars registers
     register_sidebar( $this->sidebar_args( 'Default Sidebar', __( 'This sidebar will be shown in all pages with empty sidebar or without any sidebat set.', $this->plg_tdomain ) ) );
 
+
+    // header sidebars
+
+    for( $i = 1; $i <= $this->get_option( self::VAR_TOPSIDEBAR_ROWS); $i++ )
+      register_sidebar( $this->sidebar_args( "Header Row $i", _x( "The widget area nr. %d used in Header section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
+
     register_sidebar( $this->sidebar_args( 'Blog Sidebar', __( 'The sidebar showed on page with Blog template', $this->plg_tdomain ) ) );
     register_sidebar( $this->sidebar_args( 'Gallery Sidebar', __( 'The sidebar shown on Gallery pages', $this->plg_tdomain ) ) );
 
@@ -7336,13 +7342,9 @@ case 'vimeo' :
       }
     }
 
-    // header sidebars
-    for( $i = 1; $i <= $this->get_option( self::VAR_TOPSIDEBAR_ROWS); $i++ )
-      register_sidebar( $this->sidebar_args( "Header Row $i", _x( "The widget area nr. %d used in Header section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
-
     // footer sidebars
     for( $i = 1; $i <= $this->get_option( self::VAR_FOOTER_ROWS); $i++ )
-      register_sidebar( $this->sidebar_args( "Footer Row $i", __( "The widget area nr. %d used in Footer section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
+      register_sidebar( $this->sidebar_args( "Footer Row $i", _x( "The widget area nr. %d used in Footer section", $i, $this->plg_tdomain), 'widget', 'h3' ) );
 
 
     if ( ! function_exists( 'is_plugin_active' ) )
@@ -7892,14 +7894,16 @@ case 'vimeo' :
         'std' => 'yes'
       ),
 
-//     72 => array(
-//         'id' => 'slider_accordion',
-//         'name' => __( 'Accordion slider', 'yiw' ),
-//         'type' => 'select',
-//         'options' => yiw_accordion_sliders( array( 'no' => __( 'No accordion', 'yiw' ) ) ),
-//         'std' => 'yes',
-//         'std' => 0
-//     ),
+     11 => array(
+         'id' => 'topsidebar_has',
+         'name' => __( 'Show Sidebar below the nav menu', $this->plg_tdomain ),
+         'type' => 'radio',
+         'options' => array(
+           'yes' => __( 'Yes', $this->plg_tdomain ),
+           'no'  => __( 'No', $this->plg_tdomain ),
+         ),
+         'std' => ($this->get_option( self::VAR_TOPSIDEBAR_HAS))? 'yes' : 'no',
+     ),
 
       80 => array(
         'id' => 'slider_type',

@@ -14,7 +14,7 @@
  * @copyright ®©Andrew Scherbakov
  * To change this template use File | Settings | File Templates.
  */
-if ( $use_sidebar):
+if ( $use_topsidebar && $use_topsidebar !== 'no'):
 ?>
 <div id="topsidebar" class="<?php echo $layout_page;?>">
     <?php for( $i = 1; $i <= $topsidebar_rows; $i++ ) : ?>
@@ -24,3 +24,4 @@ if ( $use_sidebar):
 <?php endfor; ?>
 </div>
 <?php endif;
+wp_reset_postdata();
