@@ -51,7 +51,7 @@
                     <?php endif ?>  
 
                     <h5><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h5>
-                    <?php echo $content ?>
+                    <?php echo $core->content('content', 25, $portfolio[$post_type]['read_more']) ?>
                 </li>       
                 <?php $i++; endwhile ?>        
             </ul>                             
