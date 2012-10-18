@@ -83,6 +83,7 @@ class Widget_AlmostAllCategories extends WPWidget
       'show_count'    =>  $instance['show_count']
     );
     $ex = $this->_plugin->get_option( WordpressTheme::VAR_BLOG_CATS_EXCLUDE_SIDEBAR );
+    $ex = implode(',', $ex);
     if( ! empty( $ex ) && strlen( trim( $ex ) ) > 0 ){
       $cat_params['exclude'] = trim( $ex );
     }

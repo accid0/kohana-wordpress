@@ -7,7 +7,7 @@
 					<?php do_action( 'kwtf_before_sidebar_' . $current_pagename ) ?>
 					
 	                <?php 
-	                    if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar( 'Blog Sidebar' ) )
+	                    if ( !function_exists('dynamic_sidebar') || !dynamic_sidebar( $sidebar ) )
 	                        get_sidebar( 'default' ) 
 	                ?>
 			

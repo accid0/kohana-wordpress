@@ -6726,9 +6726,13 @@ case 'vimeo' :
       $ps = $this->portfolios();
       $sidebar = $ps[$pt]['title'] . ' Sidebar';
     }
+    elseif( empty($sidebar)){
+      $sidebar = get_post_meta( get_the_ID(), 'sidebar_choose_page', true );
+    }
     set_query_var( 'sidebar', $sidebar);
     switch($name){
       case 'blog':
+        if (empty($sidebar)) set_query_var( 'sidebar', "Blog Sidebar");
         set_query_var('current_pagename', $this->get_current_pagename());
         break;
     }
@@ -7738,6 +7742,20 @@ case 'vimeo' :
         'desc' => __( 'Select footer of page', $this->plg_tdomain ),
         'desc_location' => 'inline',
         'std' => $this->get_option(self::VAR_FOOTER_TYPE),
+      ),
+      60 => array(
+        'id' => 'blog_type',
+        'name' => __('Blog Page', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+        'type' => 'select',
+        'options' => array(
+          self::ATTR_BIG                   => __( 'Big Thumbnail', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+          self::ATTR_SMALL                 => __( 'Small Thumbnail', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+          self::ATTR_ELEGANT               => __( 'Elegant', $this->get_var( self::OPT_PLUGIN_TDOMAIN)),
+
+        ),
+        'desc' => __( 'NB: only for blog page', $this->plg_tdomain ),
+        'desc_location' => 'inline',
+        'std' => $this->get_option(self::VAR_BLOG_TYPE),
       ),
     );
     $this->register_metabox( 'kwtf_options_page', __( 'Options of page', $this->plg_tdomain ), 'page', $options_args, 'side' );
