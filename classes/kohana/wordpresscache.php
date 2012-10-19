@@ -245,7 +245,7 @@ abstract class Kohana_WordpressCache extends WPPlugin {
       $mobile_agents = '$hyper_cache_mobile_agents = ' . $this->strToArray( $options[self::VAR_MOBILE_AGENTS]);
     }
     else $mobile_agents = '';
-    $plugin_dir = PLUGINDIR . DIRECTORY_SEPARATOR . $this->plugin_dir . DIRECTORY_SEPARATOR;
+    $plugin_dir = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->plugin_dir . DIRECTORY_SEPARATOR;
     $kohana_dir = WP_PLUGIN_DIR . '/kadapter/';
     $comment = ($options[self::VAR_COMMENT])? 'TRUE':'FALSE';
     $archive = ($options[self::VAR_ARCHIVE])? 'TRUE':'FALSE';
