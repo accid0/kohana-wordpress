@@ -259,7 +259,7 @@ abstract class Kohana_WPPlugin extends Kohana_Base_WPPlugin {
       catch( Exception $e){}
       $class = $class->getParentClass();
     }
-    while( $class->getShortName() != 'Kohana_WPPlugin');
+    while( basename( $class->getName() ) != 'Kohana_WPPlugin');
     $this->_options = $this->merge_options($this->_defaults, $values);
     
     $this->_options [self::OPT_PLUGIN_FILE]= $file;

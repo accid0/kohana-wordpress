@@ -11129,11 +11129,13 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
 
 
     $urls = explode("\n", $content);
-    $urls = array_map( function ($url){
-      $url = str_replace('<p>', '', $url);
-      $url = str_replace('</p>', "\n", $url);
+    $urls = array_map( create_function('$url',
+      '
+      $url = str_replace("<p>", "", $url);
+      $url = str_replace("</p>", "\n", $url);
       return trim($url);
-    }, $urls);
+      '
+    ), $urls);
 
     $html = "<div class=\"flexslider-sc\" style=\"width:{$width}px; height:{$height}px\">\n";
 
