@@ -15,23 +15,28 @@ Theme Features:
     (a nice parallax effect slider) and the responsive UnoSlider.
 <!-- /SLIDER -->
 
+Woocommerce:
 <!-- WOOCOMMERCE -->
 included
 <!-- /WOOCOMMERCE -->
 
+Shortcodes:
 <!-- SHORTCODES -->
 50+
 <!-- /SHORTCODES -->
 
+Colors & BackGrounds:
 <!-- COLORS -->
 unlimited and 50+ backgrounds
 <!-- /COLORS -->
 
+Cache:
 <!-- CACHE -->
 partial cache system for customise part page with admin panel options page
 based on apc, memcache, file, e.t.c.
 <!-- /CACHE -->
 
+Developers:
 <!-- DEVELOPERS -->
 create new module inherit WordpressTheme class in there and
 used all controllers, views, features theme framework
