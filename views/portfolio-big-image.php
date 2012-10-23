@@ -1,16 +1,6 @@
                 <div id="portfolio-bigimage">         
 
                     <?php
-                        $args = array(
-                            'post_type' => $post_type,
-                            'posts_per_page' => $portfolio[$post_type]['items'],
-                            'paged' => $paged
-                        );                                       
-                        
-                        if ( is_tax() )   
-                            $args = wp_parse_args( $args, $wp_query->query );
-
-                        $_portfolio = new WP_Query( $args );
                         $i = 1;
                         while( $_portfolio->have_posts() ) : $_portfolio->the_post();
                             global $more;
@@ -66,7 +56,7 @@
                         <div class="clear"></div>
                     </div>                         
                     <?php endwhile ?>        
-
+                    <?php wp_reset_query(); ?>
                 </div>                          
 
                 <?php if( $pagination = $core->pagination( $_portfolio->max_num_pages, 10, FALSE )) : echo $pagination; else : ?>

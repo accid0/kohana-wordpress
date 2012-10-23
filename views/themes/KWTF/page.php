@@ -1,36 +1,28 @@
-<?php        
-/**
- * @package WordPress
- * @subpackage YIW Themes
- * @since 1.0
- */                        
-
-get_header() ?>                        
+<?php
+echo $header; ?>
         
 		<div id="primary" class="layout-<?php echo $layout_page ?>">
 		    <div class="inner group">
-                <?php get_template_part('slogan') ?>
-    			
-    			<?php get_template_part( 'accordion', 'slider' ) ?>
+                <?php echo $slogan; ?>
     			
                 <!-- START CONTENT -->
                 <div id="content" class="group">
                     <?php $core->breadcrumb(); ?>
                     
-                    <?php get_template_part( 'loop', 'page' ) ?> 
+                    <?php echo $content; ?>
                     
                     <?php comments_template() ?>
                 </div>
                 <!-- END CONTENT -->
                 
                 <!-- START SIDEBAR -->
-                <?php get_sidebar() ?>
+                <?php echo $sidebar; ?>
                 <!-- END SIDEBAR -->    
                                   
                 <!-- START EXTRA CONTENT -->
-        		<?php get_template_part( 'extra', 'content' ) ?>
+        		<?php echo $extra_content; ?>
                 <!-- END EXTRA CONTENT -->
             </div>
         </div>       
         
-<?php get_footer() ?>
+<?php echo $footer;

@@ -1,68 +1,34 @@
 <?php
-/**
- * @package WordPress
- * @subpackage Impero
- * @since Impero 1.0
- */
-
 /*
-Template Name: Gallery
+Template Name: Faq
 */                   
 
-get_header();
+echo $header;?>
 
-
-?>  
-
-        <div id="primary" class="layout-faq">
+        <div id="primary" class="layout-<?php echo $layout_page ?>">
             <div class="inner group">
 
-            <?php get_template_part( 'slogan' ) ?>
+                <!-- START CONTENT -->
+            <?php echo $slogan; ?>
                 <div id="content" class="group">
 
                 <?php $core->breadcrumb(); ?>
 
-                <?php if ( !is_tax() ) get_template_part( 'loop', 'page' ); 
-                    
-                    $args = array(
-                        'post_type'      => $post_type,
-                        'posts_per_page' => -1
-                    );                   
-                    
-                    if ( is_tax() )   
-                       $args = wp_parse_args( $args, $wp_query->query ); 
-                    
-                    $faq = new WP_Query( $args );   
-                    
-                    $first = TRUE;
-                    $close_first = FALSE;
-                    if( $close_first ) $first = FALSE;
-    
-                    $html = '';
-                    
-                    
-                    while( $faq->have_posts() ) : $faq->the_post(); 
-                        
-                        $title = the_title( '', '', false );
-                        $content = get_the_content() . ' ' . the_category();
-        
-                        $attr = '';
-            
-                        echo do_shortcode( "[toggle title=\"$title\"{$attr}]{$content}[/toggle]" );
-            
-                        
-                    
-                    endwhile; 
-                    wp_reset_query(); 
-                    ?>
-                </div> 
-                
+                <?php echo $content;?>
 
-                
-                
+                <?php echo $faq;?>
+                </div>
+                <!-- END CONTENT -->
+
+              <!-- START SIDEBAR -->
+              <?php echo $sidebar; ?>
+              <!-- END SIDEBAR -->
+
+              <!-- START EXTRA CONTENT -->
+              <?php echo $extra_content; ?>
+              <!-- END EXTRA CONTENT -->
+
             </div>
         </div>
 
-                
-
-<?php get_footer() ?>
+<?php echo $footer;

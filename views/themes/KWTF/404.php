@@ -1,11 +1,5 @@
-<?php      
-/**
- * @package WordPress
- * @subpackage Beauty & Clean
- * @since 1.0
- */
-
-get_header() ?>           
+<?php
+echo $header ?>
          
     <div class="p404 group">   
         <h1><strong>404</strong> <?php _e('error', $tpl_tdomain) ?></h1>
@@ -26,4 +20,4 @@ get_header() ?>
         <!-- END SEARCH -->
     </div>
     
-<?php get_footer() ?>
+<?php echo $footer; ?>

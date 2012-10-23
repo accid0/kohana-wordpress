@@ -1,40 +1,17 @@
 <?php
-/**
- * @package WordPress
- * @subpackage Impero
- * @since Impero 1.0
- */
-
 /*
 Template Name: Gallery
 */
-
-// enqueue necessary scripts
-wp_enqueue_script( 'jquery-quicksand',  get_template_directory_uri()."/js/jquery.quicksand.js", array('jquery'));
-
-
-get_header();
-
-$cat_params = Array(
-    'hide_empty'    =>  FALSE,
-    'title_li'      =>  ''
-);
-
-$cats = get_terms( 'category-photo', $cat_params );
-$_active_title = get_post_meta( $post->ID, '_show_title_page', true );
+echo $header;
 ?>  
 
         <div id="primary" class="layout-<?php echo $layout_page ?>">
             <div class="inner group">
 
-                <?php if( get_post_meta( get_the_ID(), '_slogan_page', true ) ): ?>            
+                <?php echo $slogan;?>
+                <?php if ( is_tax() ) : ?>
                 <div id="slogan">
-                    <h2><?php echo get_post_meta( get_the_ID(), '_slogan_page', true ); ?></h2>
-                    <h3><?php echo get_post_meta( get_the_ID(), '_subslogan_page', true ); ?></h3>
-                </div>    
-                <?php elseif ( is_tax() ) : ?>
-                <div id="slogan">
-                    <h2><?php echo ucfirst( get_query_var('term' )); ?><?php _e( ' category', $tpl_tdomain ) ?></h2>
+                    <h2><?php echo ucfirst( $term); ?><?php _e( ' category', $tpl_tdomain ) ?></h2>
                 </div>
                 <?php endif; ?>    
                 
@@ -65,20 +42,7 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                     <div id="portfolio-gallery" class="internal_page_items internal_page_gallery">
                         <ul class="gallery-wrap image-grid group">
                         <?php
-
-                        $args = array(
-                            'post_type'      => $post_type,
-                            'posts_per_page' => -1
-                        );                   
-                        
-                        if ( is_tax() )   
-                           $args = wp_parse_args( $args, $wp_query->query ); 
-                        
-                        $gallery = new WP_Query( $args );   
-                        
-                        $postsPerRow = ($layout_page != 'sidebar-no') ? 3 : 4;
                         $i = 0;
-                        
                         while( $gallery->have_posts() ) : $gallery->the_post(); ?>
                         
                             <?php 
@@ -125,12 +89,13 @@ $_active_title = get_post_meta( $post->ID, '_show_title_page', true );
                 </div>
                 <!-- END CONTENT -->
     
-                <?php if($layout_page != 'sidebar-no') get_sidebar() ?>
+                <?php echo $sidebar; ?>
 
                 <!-- START EXTRA CONTENT -->
-                <?php get_template_part( 'extra', 'content' ) ?>
+                <?php echo $extra_content; ?>
                 <!-- END EXTRA CONTENT -->    
             </div>
         </div>
 
-<?php get_footer() ?>
+<?php
+echo $footer;

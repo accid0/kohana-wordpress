@@ -829,7 +829,7 @@ class Kohana_WordpressTheme extends WPPlugin {
     self::OPT_MODE                                          => self::ATTR_THEME,
     self::OPT_SHOP_MODE                                     => self::ATTR_NONE,
     self::OPT_THEME_STATUS                                  => self::ATTR_UNDEFINED,
-    self::OPT_THEMES_ROOT                                   => '/kadapter/kohana/modules/wordpress/views/',
+    self::OPT_THEMES_ROOT                                   => 'wordpress',
     self::OPT_THEME_URI                                     => '',
     self::OPT_THEME_DIR                                     => '',
     self::OPT_THEMES_SUB_DIRECTORY                          => 'themes',
@@ -5620,8 +5620,8 @@ case 'vimeo' :
     if ( $this->theme_status !== self::ATTR_UNDEFINED)
     return ($this->theme_status === self::ATTR_ACTIVE);
 
-    $this->set_var( self::OPT_THEMES_ROOT, WP_PLUGIN_DIR  .
-      $this->get_var( self::OPT_THEMES_ROOT) .
+    $this->set_var( self::OPT_THEMES_ROOT, MODPATH  .
+      $this->get_var( self::OPT_THEMES_ROOT) . '/views/' .
       $this->get_var( self::OPT_THEMES_SUB_DIRECTORY) );
     register_theme_directory( $this->get_var( self::OPT_THEMES_ROOT));
     $dir = get_template_directory();
@@ -6448,7 +6448,8 @@ case 'vimeo' :
    * @return WordpressTheme
    */
   public static function getInstance(){
-    return parent::getInstance();
+    $instance = parent::getInstance();
+    return $instance;
   }
 
   /**
@@ -6589,11 +6590,22 @@ case 'vimeo' :
         set_query_var('pagination', $this->pagination( '', 10, FALSE));
         break;
       case 'portfolio':
+        set_query_var('portfolio_layout_page', $this->get_option( self::VAR_PORTFOLIO_LAYOUT_PAGE));
+        $post_type = $this->get_portfolio_post_type();
+        $this->set_var( self::OPT_POST_TYPE, $post_type);
+        set_query_var('post_type', $post_type);
         set_query_var('date_format', $this->get_option( self::VAR_DATE_FORMAT));
         set_query_var('pagination', $this->pagination( '', 10, FALSE));
         set_query_var('blog_read_more_text', $this->get_option( self::VAR_BLOG_READ_MORE_TEXT));
         break;
     }
+  }
+
+  /**
+   * @param $name
+   * @return void
+   */
+  public function template_single_product( $slug, $name){
   }
 
   /**
@@ -6767,10 +6779,6 @@ case 'vimeo' :
     $this->set_var( self::OPT_BLOG_TYPE, $blog_type);
     switch($name){
       case 'portfolio':
-        set_query_var('portfolio_layout_page', $this->get_option( self::VAR_PORTFOLIO_LAYOUT_PAGE));
-        $post_type = $this->get_portfolio_post_type();
-        $this->set_var( self::OPT_POST_TYPE, $post_type);
-        set_query_var('post_type', $post_type);
         break;
     }
   }
@@ -6816,6 +6824,13 @@ case 'vimeo' :
   public function template_taxonomy( $slug, $name){
     set_query_var('is_portfolio_tax', $this->is_portfolio_tax( get_query_var('taxonomy') ));
     set_query_var('portfolio_layout_page', $this->get_option( self::VAR_PORTFOLIO_LAYOUT_PAGE));
+    switch ($name){
+      case 'product-cat':
+      case 'product-tag':
+
+        $this->template_archive_product( $slug, $name);
+        break;
+    }
   }
 
   /**
@@ -6852,7 +6867,7 @@ case 'vimeo' :
    * @return void
    */
   public function include__initialize( $slug, $name = NULL){
-    global $paged, $page;
+    global $paged, $page, $prof;
     $uri_theme = $this->get_var( self::OPT_THEME_URI);
     set_query_var('tpl_tdomain', $this->get_var( self::OPT_TPL_TDOMAIN));
     set_query_var('layout_page', $this->layout_page());
@@ -6869,7 +6884,7 @@ case 'vimeo' :
    * @see Kohana_Base_WPPlugin::filter_template_include()
    */
   public function filter_template_include( $template){
-    global $paged, $page, $post, $wp_query;
+    global $paged, $page, $post, $wp_query, $wp;
     if( $wp_query->is_posts_page )
       $post_id = get_option( self::ATTR_GLOBAL_PAGE_FOR_POSTS );
     else if ( isset($post->ID) )
@@ -6904,22 +6919,24 @@ case 'vimeo' :
     }
     $layout = apply_filters( 'kwtf_layout_page', $layout );
     $this->set_var( self::OPT_LAYOUT, $layout);
-    $file = str_replace( $this->get_var( self::OPT_THEME_DIR) , '', $template);
-    $this->bind_template( $file);
+    $file = str_replace( $this->get_var( self::OPT_THEME_DIR) . '/' , '', $template);
     if ( $file === $template ) return $template;
+    $this->bind_template( $file);
+    $uri = str_replace( EXT, '', $file );
     $file = $this->get_var( self::OPT_THEMES_SUB_DIRECTORY) . '/' .
-      $this->get_var( self::OPT_NAME) . '/' . str_replace( EXT, '', $file );
+      $this->get_var( self::OPT_NAME) . '/' . $uri ;
     $view = View::factory( $file);
     $uri_theme = $this->get_var( self::OPT_THEME_URI);
-    foreach( $wp_query->query_vars as $sid => $value)
-      $view->set( $sid, $value);
+    $view->set( $wp_query->query_vars);
     $view->set('tpl_tdomain', $this->get_var( self::OPT_TPL_TDOMAIN));
     $view->set('layout_page', $layout);
     $view->set('paged', $paged);
     $view->set('page', $page);
     $view->set('uri_theme', $uri_theme);
     $view->set('core', $this);
-    echo $view;
+    DB::log($uri . '?' . $wp->query_string);
+    echo Manager::execute( $uri . '?' . $wp->query_string, $view)->body($view);
+    //DB::log( var_export( $wp->query_vars, TRUE));
     return FALSE;
   }
 
@@ -7568,7 +7585,6 @@ case 'vimeo' :
     $loading = $this->get_all_fonts_user();
 
     $output = '';
-
     //     global $wp_scripts;
     //     yiw_debug($wp_scripts->registered);
 
@@ -7588,6 +7604,7 @@ case 'vimeo' :
     if ( isset( $loading[self::ATTR_WEB_FONTS] ) && ! empty( $loading[self::ATTR_WEB_FONTS] ) ) :
       $this->fonts_web_fonts();
     endif;
+
 
   }
 
@@ -9288,6 +9305,9 @@ case 'vimeo' :
    */
   public function breadcrumb( $delimiter = ' &rsaquo; ' ) {
 
+    global $post;
+    $has_breadcrumbs = get_post_meta( $post->ID, '_show_breadcrumbs_page', TRUE);
+    if ( $has_breadcrumbs !== 'yes' ) return;
     $home = __( 'Home Page', $this->plg_tdomain ); // text for the 'Home' link
     $before = '<a class="no-link current" href="#">'; // tag before the current crumb
     $after = '</a>'; // tag after the current crumb
@@ -9295,7 +9315,6 @@ case 'vimeo' :
 
     echo '<p id="crumbs" class="theme_breadcumb">';
 
-    global $post;
     $homeLink = site_url();
     if( !is_home() && !is_front_page() )
       echo '<a class="home" href="' . $homeLink . '">' . $home . '</a> ' . $delimiter . ' ';
@@ -9380,6 +9399,7 @@ case 'vimeo' :
     }
 
     if ( get_query_var('paged') ) {
+      echo ' ' . $delimiter . ' ';
       if ( is_category() || is_day() || is_month() || is_year() || is_search() || is_tag() || is_author() )
         echo ' (';
       echo $before . __('Page', $this->plg_tdomain) . ' ' . get_query_var('paged') . $after;
@@ -10099,6 +10119,8 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
       $layout = ($l = get_post_meta( $shop_page, '_layout_page', TRUE)) ? $l : $this->get_var( self::OPT_DEFAULT_LAYOUT_PAGE_SHOP);
       return $layout;
     }
+    elseif( is_product())
+      return $this->get_option( self::VAR_SHOP_LAYOUT_PAGE_SINGLE );
     else
       return $default_layout;
     endif;

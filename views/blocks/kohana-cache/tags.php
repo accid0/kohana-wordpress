@@ -16,7 +16,7 @@
   	  	<input type='checkbox' name = "has_cache_tag" value = "1" <?php echo ($__has_cache_tag) ? 'checked': ''?>
         />
         <p>
-        <br/><?php _e( 'Эта опция включает пост обработку html кода полученого в результате работы Wordpress движка. Kohana получает этот код в качестве главного шаблона и обрабатывая ури запроса использует его.', $tpl_tdomain)?>
+        <br/><?php _e( 'Эта опция включает пост обработку html кода полученого в результате работы Wordpress движка. Плагин цыпляется за after_theme_setup и вставляет в файл из кеша не кешируемые места.', $tpl_tdomain)?>
 	    <br/><?php _e( 'При дезактивации все найденые переменные будут стерты из кода.', $tpl_tdomain)?>
         </p>
       </div>        
@@ -25,9 +25,9 @@
         <label for="cache_tag"><strong><?php echo __('Cache Tag', $tpl_tdomain)?></strong></label>
         <br/>
   	  	<input type='text' name = "cache_tag" value = "<?php echo $__cache_tag?>"/>
-        <p><?php _e( 'Метка для определения тега Kohana. Пример:', $tpl_tdomain)?><br/> &lt;!-- &lt;<strong><?php echo $__cache_tag?></strong> <strong>var</strong> = 'your_var' /&gt; --&gt;
-        <br/><?php _e( 'Если плагин найдет такой тег где-то в коде, то вместо него будет подставлен код:', $tpl_tdomain)?>
-        <code>&lt;?php echo $your_var ?&gt;</code>
+        <p><?php _e( 'Метка для определения тега. Пример:', $tpl_tdomain)?><br/> &lt;!-- &lt;<strong><?php echo $__cache_tag?></strong> <strong>var</strong> = 'your_var' /&gt; --&gt;
+        <br/><?php _e( 'Если плагин найдет такой тег где-то в коде, то вместо него будет подставлен запрос.', $tpl_tdomain)?>
+
         </p>
 	  </div>          
               

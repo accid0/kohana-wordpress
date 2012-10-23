@@ -28,7 +28,6 @@
     /*
      * Print the <title> tag based on what is being viewed.
      */
-    global $page, $paged;
 
     wp_title( '|', true, 'right' );
 
@@ -36,12 +35,10 @@
     bloginfo( 'name' );
     
     // Add description, if is home
-    if ( is_home() || is_front_page() )
-        echo ' | ' . get_bloginfo( 'description' );
+    echo ' | ' . $description;
 
     // Add a page number if necessary:
-    if ( $paged >= 2 || $page >= 2 )
-        echo ' | ' . sprintf( __( 'Page %s', $tpl_tdomain ), max( $paged, $page ) );
+    echo $page;
 
     ?></title>          
     
@@ -49,15 +46,15 @@
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />                              
 	
 	<?php if ( $responsive ) : ?>
-	<link rel="stylesheet" type="text/css" media="screen and (max-width: 960px)" href="<?php echo get_template_directory_uri(); ?>/css/lessthen960.css" />
-	<link rel="stylesheet" type="text/css" media="screen and (max-width: 600px)" href="<?php echo get_template_directory_uri(); ?>/css/lessthen600.css" />
-	<link rel="stylesheet" type="text/css" media="screen and (max-width: 480px)" href="<?php echo get_template_directory_uri(); ?>/css/lessthen480.css" />
+	<link rel="stylesheet" type="text/css" media="screen and (max-width: 960px)" href="<?php echo $uri_theme; ?>/css/lessthen960.css" />
+	<link rel="stylesheet" type="text/css" media="screen and (max-width: 600px)" href="<?php echo $uri_theme; ?>/css/lessthen600.css" />
+	<link rel="stylesheet" type="text/css" media="screen and (max-width: 480px)" href="<?php echo $uri_theme; ?>/css/lessthen480.css" />
 	<?php endif; ?>
     
     <?php
         // styles 
-        wp_enqueue_style( 'prettyPhoto',        get_template_directory_uri()."/css/prettyPhoto.css" );  
-        wp_enqueue_style( 'tipsy',        get_template_directory_uri()."/css/tipsy.css" );
+        wp_enqueue_style( 'prettyPhoto', $uri_theme . "/css/prettyPhoto.css" );
+        wp_enqueue_style( 'tipsy', $uri_theme . "/css/tipsy.css" );
 
         // scripts    
         wp_enqueue_script( 'jquery-easing' );
@@ -69,13 +66,13 @@
         wp_enqueue_script( 'jquery-jcarousel' );   
         
         if( $topbar_content == 'twitter' ) {
-            wp_enqueue_script( 'jquery-flexislider',        get_template_directory_uri()."/js/jquery.flexslider.min.js" );
+            wp_enqueue_script( 'jquery-flexislider', $uri_theme . "/js/jquery.flexslider.min.js" );
         }
 
         if( !in_array( $slider_type, array('none','fixed-image')) ) {
 
                 if( !in_array( $slider_type, array('carousel')) )
-                    wp_enqueue_style( 'slider-' . $slider_type,        get_template_directory_uri()."/css/slider-". $slider_type .".css" );  
+                    wp_enqueue_style( 'slider-' . $slider_type, $uri_theme . "/css/slider-". $slider_type .".css" );
             
                 // cycle
                 if ( $slider_type == 'cycle' ) {
@@ -84,31 +81,31 @@
                 } 
                 
                 // flash
-		elseif ( $slider_type == 'flash' ){
+		            elseif ( $slider_type == 'flash' ){
                     wp_enqueue_script( 'swfobject' );
                 }
                 
                 // thumbnails
                 elseif ( $slider_type == 'thumbnails' ){
-                    wp_enqueue_script( 'jquery-aw-showcases', get_template_directory_uri()."/js/jquery.aw-showcase.js" );
+                    wp_enqueue_script( 'jquery-aw-showcases', $uri_theme . "/js/jquery.aw-showcase.js" );
                 }
                 
                 //unoslider
                 elseif( $slider_type == 'unoslider' ) {
-                    wp_enqueue_style( 'slider-' . $slider_type . '-', get_template_directory_uri()."/css/unoslider-themes/$slider_theme/theme.css" );  
-                    wp_enqueue_script( 'unoslider', get_template_directory_uri()."/js/unoslider.js" );
+                    wp_enqueue_style( 'slider-' . $slider_type . '-', $uri_theme . "/css/unoslider-themes/$slider_theme/theme.css" );
+                    wp_enqueue_script( 'unoslider', $uri_theme . "/js/unoslider.js" );
                 }   
 	    
                 // elastic
                 elseif ( $slider_type == 'elastic' ) {                                                                                       
                     wp_enqueue_style( 'Playfair', 'http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Playfair+Display:400italic' ); 
-                    wp_enqueue_script( 'jquery-elastic', get_template_directory_uri()."/js/jquery.eislideshow.js", array('jquery'), '1.0' );   
+                    wp_enqueue_script( 'jquery-elastic', $uri_theme . "/js/jquery.eislideshow.js", array('jquery'), '1.0' );
                 }                    
         }                             
 
 
         // custom
-        wp_enqueue_script( 'jquery-custom',      get_template_directory_uri()."/js/jquery.custom.js", array('jquery'), '1.0', true); 
+        wp_enqueue_script( 'jquery-custom', $uri_theme . "/js/jquery.custom.js", array('jquery'), '1.0', true);
                                                                                 
         if( $font_type == 'cufon' )
         {                      
@@ -121,16 +118,8 @@
          */
         if ( is_singular() && get_option( 'thread_comments' ) )
             wp_enqueue_script( 'comment-reply' );        
-                                                                
-        $body_class = '';
-        if ( ( $responsive  && ! $GLOBALS['is_IE'] ) || ( $responsive && $ieversion >= 9 ) )
-            $body_class = ' responsive';     
-                                         
-        if ( ! is_user_logged_in() )
-            $body_class .= ' not-logged-in';
-		
-		$src = get_post_meta( get_the_ID(), '_map_url', true );
-        if ( get_post_meta( get_the_ID(), '_show_map', true ) == 'yes' && ! empty( $src ) ) 
+
+        if ( $show_map == 'yes' && ! empty( $src ) )
     		wp_localize_script( 'jquery-custom', 'header_map', array(
             	'tab_open'  => __( 'Open', $tpl_tdomain ),
             	'tab_close' => __( 'Close', $tpl_tdomain ),
@@ -159,7 +148,7 @@
             <div id="header" class="group">   
         
                 <!-- TOPBAR -->
-                <?php get_template_part( 'topbar' ) ?>
+                <?php echo $topbar; ?>
                 <!-- END TOPBAR -->  
                 
                 <div class="group inner">
@@ -175,12 +164,8 @@
                             <a class="logo-text" href="<?php echo home_url() ?>" title="<?php bloginfo('name') ?>"><?php bloginfo('name') ?></a>
                         <?php endif ?>
                         <?php if ( $logo_use_description ) :
-                        
-                            $description = get_bloginfo('description');
-                            $description = str_replace( '[', '<strong>', $description );
-                            $description = str_replace( ']', '</strong>', $description );
                             
-                            echo '<p class="logo-description">', $description, '</p>';
+                            echo '<p class="logo-description">', $description_logo, '</p>';
                                                                                         
                         endif; ?>
                     </div>
@@ -189,16 +174,8 @@
                 
                     <!-- START NAV -->
                     <div id="nav" class="group">
-                        <?php  
-                            $nav_args = array(
-                                'theme_location' => 'nav',
-                                'container' => 'none',
-                                'menu_class' => 'level-1',
-                                'depth' => 3,   
-                                //'fallback_fb' => false,
-                                //'walker' => new description_walker()
-                            );
-                            
+                        <?php
+
                             wp_nav_menu( $nav_args ); 
                         ?>    
                     </div>
@@ -208,13 +185,13 @@
             <!-- END HEADER -->
             
             <!-- SLIDER -->
-            <?php get_template_part( 'slider' ); ?>
+            <?php echo $slider_body; ?>
             <!-- /SLIDER -->
 
             <!-- HEADER SIDEBAR -->
-            <?php get_template_part( 'topsidebar'); ?>
+            <?php echo $topsidebar; ?>
             <!--/HEADER SIDEBAR -->
 
             <!-- MAP -->
-            <?php get_template_part( 'map' ); ?>
+            <?php echo $map; ?>
             <!--/MAP -->

@@ -1,15 +1,5 @@
             <ul id="portfolio">         
                 <?php
-                    $args = array(
-                        'post_type' => $post_type,
-                        'posts_per_page' => $portfolio[$post_type]['items'],
-                        'paged' => $paged
-                    );                                  
-                    
-                    if ( is_tax() )   
-                       $args = wp_parse_args( $args, $wp_query->query );
-
-                    $_portfolio = new WP_Query( $args );
                     $i = 1;
 
                     while( $_portfolio->have_posts() ) : $_portfolio->the_post();
@@ -53,7 +43,8 @@
                     <h5><a href="<?php the_permalink() ?>"><?php the_title() ?></a></h5>
                     <?php echo $core->content('content', 25, $portfolio[$post_type]['read_more']) ?>
                 </li>       
-                <?php $i++; endwhile ?>        
+                <?php $i++; endwhile ?>
+                <?php wp_reset_query(); ?>
             </ul>                             
 
             <?php if( $pagination = $core->pagination( $_portfolio->max_num_pages, 10, FALSE )) : echo $pagination; else : ?>

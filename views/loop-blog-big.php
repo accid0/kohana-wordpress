@@ -1,5 +1,4 @@
-       				<?php $has_thumbnail = ( ! has_post_thumbnail()  ) ? false : true; ?>
-                       
+
                     <div id="post-<?php the_ID(); ?>" <?php post_class('hentry-post group blog-' . $blog_type ); ?>>
                               
                         <div class="<?php if ( ! $has_thumbnail ) echo 'without ' ?>thumbnail">

@@ -8,13 +8,9 @@ echo $header; ?>
         <div id="primary" class="layout-<?php echo $layout_type ?>">
 		    <div class="inner group">
 
-                <?php if ( is_tax() ) : ?>
                 <div id="slogan">
                     <h2><?php echo __('Category', $tpl_tdomain) . ': ' . Utf8::ucfirst( $term ); ?></h2>
                 </div>
-                <?php else: ?>
-                <?php echo $slogan;?>
-                <?php endif; ?>
                                
                 <?php if ( $portfolio_type == 'filterable' ) : ?>
                 <!-- FILTERS -->

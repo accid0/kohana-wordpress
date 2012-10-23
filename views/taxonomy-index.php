@@ -7,7 +7,7 @@
 
             <?php $core->breadcrumb(); ?>
 
-            <?php echo $content; ?>
+            <?php $content; ?>
         </div>                       
         <!-- END CONTENT -->
 

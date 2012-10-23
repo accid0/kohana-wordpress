@@ -2,10 +2,10 @@
 /*
 Template Name: Archives
 */
-get_header() ?>
+echo $header; ?>
         <div id="primary" class="layout-<?php echo $layout_page ?>">
           <div class="inner group">
-            <?php get_template_part('slogan') ?>
+            <?php echo $slogan; ?>
 
             <?php query_posts('posts_per_page=30') ?>
 
@@ -36,15 +36,11 @@ get_header() ?>
 			      </div>
             <!-- END CONTENT -->
             <!-- START SIDEBAR -->
-            <?php
-            wp_reset_query();
-            get_sidebar()
-            ?>
+            <?php echo $sidebar;?>
             <!-- END SIDEBAR -->
 
             </div>
         </div>
 
 <?php
-wp_reset_query();
-get_footer();
+echo $footer;

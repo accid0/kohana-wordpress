@@ -1,13 +1,9 @@
                     <div class="clear"></div>
                     <div class="posts">
                     <?php      
-                        global $wp_query, $post, $more;
-                        
-                        $tmp_query = $wp_query;
-                        
-                        if (have_posts()) : 
-                    
-                    $post = $posts[0]; // Hack. Set $post so that the_date() works. ?>
+                        global $post, $more;
+
+                        if (have_posts()) :  ?>
                     <?php 
                         
                         while (have_posts()) : the_post(); 
@@ -72,9 +68,7 @@
                         
                         <?php
                         endif;
-                         
-                        $wp_query = $tmp_query;
-                        wp_reset_postdata();
+                        wp_reset_query();
                     ?>    
                 
                     <?php if( is_singular() ): ?>

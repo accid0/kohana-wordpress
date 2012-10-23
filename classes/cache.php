@@ -207,7 +207,7 @@ function hyper_cache_callback($buffer) {
   global $hyper_cache_notfound, $hyper_cache_stop, $hyper_cache_charset, $hyper_cache_home,
     $hyper_cache_redirects, $hyper_redirect, $hc_file, $hyper_cache_name,
     $hyper_cache_browsercache, $hyper_cache_timeout, $hyper_cache_lastmodified, $hyper_cache_gzip,
-    $hyper_cache_gzip_on_the_fly, $hyper_cache_store_compressed;
+    $hyper_cache_gzip_on_the_fly, $hyper_cache_store_compressed, $hyper_cache_feed;
 
   if (!function_exists('is_home')) return $buffer;
 

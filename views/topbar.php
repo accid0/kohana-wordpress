@@ -1,6 +1,5 @@
-<?php if ( ! $show_topbar ) return; ?>
 
-        <div id="top">
+    <div id="top">
 			<div class="inner">
                 <div class="topbar-left">
                 <?php if( $topbar_content == 'static' ) : ?>
@@ -21,7 +20,7 @@
                                     slideshowSpeed: <?php echo $topbar_twitter_interval; ?> * 1000,
                                     animationDuration: 700,
                                     directionNav: false,             
-                                    controlNav: false,             
+                                    controlNav: false,
                                     keyboardNav: false
                                 });
                             };

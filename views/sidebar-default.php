@@ -1,4 +1,4 @@
-		<?php if ( ! dynamic_sidebar( 'Default Sidebar' ) ) : ?>	
+		<?php if ( !function_exists('dynamic_sidebar') || ! dynamic_sidebar( 'Default Sidebar' ) ) { ?>
             
             <div class="widget">            
                 <h3><?php _e( 'Search', $tpl_tdomain ) ?></h3>
@@ -34,5 +34,6 @@
                     <?php wp_list_bookmarks( 'title_li=&categorize=0' ) ?>
                 </ul>
             </div>
-        
-        <?php endif; ?>
+        <?php
+        }
+        else wp_reset_postdata();?>

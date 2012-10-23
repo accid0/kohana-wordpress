@@ -1,8 +1,5 @@
                 <div class="clear"></div>
-                <?php
-                    if( strpos($footer_type, "big") !== false )
-                        get_footer('big');
-                ?>
+                <?php echo $footer_big; ?>
                 
                 <!-- START FOOTER -->
                 <div id="copyright" class="group">

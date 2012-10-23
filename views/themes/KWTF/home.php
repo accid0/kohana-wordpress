@@ -1,55 +1,31 @@
-<?php        
-/**
- * @package WordPress
- * @subpackage Sheeva
- * @since 1.0
- */
- 
+<?php
 /*
 Template Name: Home
 */
 
-global $wp_query;      
-
-if ( ( is_home() || is_front_page() ) && get_option( 'show_on_front' ) == 'posts' || $wp_query->is_posts_page ) {
-
-    get_template_part( 'blog' ); 
-    die;
-}       
-
-if( ( is_home() || is_front_page() ) && get_option( 'show_on_front' ) == 'posts' || is_home() && get_option( 'page_for_posts' ) != '0' ) {
-    get_template_part( 'blog' );
-    die;
-}
-
-get_header() ?>  
+echo $header; ?>
         
         <div id="primary" class="layout-<?php echo $layout_page ?>">
 		    <div class="inner group">
-                <?php get_template_part('slogan') ?>
+                <?php echo $slogan; ?>
     
                 <!-- START CONTENT -->
                 <div id="content" class="group">
                 <?php $core->breadcrumb(); ?>
-                <?php
-                   if ( is_home() )
-                     get_template_part( 'loop', 'index' );
-                   else
-                     get_template_part( 'loop', 'page' );
-                ?>
+                <?php echo $loop_content; ?>
     
                 </div>
                 <!-- END CONTENT -->
                 
-                <!-- START LATEST NEWS -->
-                <?php get_sidebar() ?>
-                <!-- END LATEST NEWS -->  
+                <!-- START SIDEBAR -->
+                <?php echo $sidebar; ?>
+                <!-- END SIDEBAR -->
                                   
                 <!-- START EXTRA CONTENT -->
-        		<?php get_template_part( 'extra', 'content' ) ?>
+        		<?php echo $extra_content; ?>
                 <!-- END EXTRA CONTENT -->   
             </div>
         </div>             
         
 <?php
-get_footer();
+echo $footer;
