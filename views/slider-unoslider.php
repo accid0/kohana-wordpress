@@ -1,10 +1,3 @@
-<?php 
-/**
- * @package WordPress
- * @subpackage Impero
- * @since 1.0
-*/
-?>
 
     <!-- START SLIDER -->
     <!--<div class="slider-wrapper theme-default">

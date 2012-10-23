@@ -1,10 +1,3 @@
-<?php 
-/**
- * @package WordPress
- * @subpackage Sheeva
- * @since 1.0
- */
-?>
 
         <div id="slider" class="cycle group inner">
                 

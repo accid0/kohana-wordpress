@@ -867,6 +867,13 @@ class Kohana_WordpressTheme extends WPPlugin {
           self::ATTR_DEPS       => array('jquery'),
         ),
         array(
+          self::ATTR_HANDLE     => 'jquery-custom',
+          self::ATTR_SRC        => 'js/jquery.custom.js',
+          self::ATTR_DEPS       => array('jquery'),
+          self::ATTR_VER        => '1.0',
+          self::ATTR_IN_FOOTER  => TRUE,
+        ),
+        array(
           self::ATTR_HANDLE     => 'jquery-tweetable',
           self::ATTR_SRC        => 'js/jquery.tweetable.js',
           self::ATTR_DEPS       => array('jquery'),
@@ -874,6 +881,11 @@ class Kohana_WordpressTheme extends WPPlugin {
         array(
           self::ATTR_HANDLE     => 'jquery-jcarousel',
           self::ATTR_SRC        => 'js/jquery.jcarousel.min.js',
+          self::ATTR_DEPS       => array('jquery'),
+        ),
+        array(
+          self::ATTR_HANDLE     => 'jquery-flexislider',
+          self::ATTR_SRC        => 'js/jquery.flexslider.min.js',
           self::ATTR_DEPS       => array('jquery'),
         ),
         array(
@@ -3871,6 +3883,7 @@ case 'vimeo' :
    * @since 1.0
    */
   private function slider_is_empty() {
+
     if ( ! $this->get_var( self::OPT_SLIDER_LENGHT) )
       return true;
     else
@@ -6934,9 +6947,9 @@ case 'vimeo' :
     $view->set('page', $page);
     $view->set('uri_theme', $uri_theme);
     $view->set('core', $this);
-    DB::log($uri . '?' . $wp->query_string);
+
     echo Manager::execute( $uri . '?' . $wp->query_string, $view)->body($view);
-    //DB::log( var_export( $wp->query_vars, TRUE));
+
     return FALSE;
   }
 
@@ -8330,6 +8343,7 @@ case 'vimeo' :
   public function action_wp_head() {
     if ( function_exists( 'qtrans_useCurrentLanguageIfNotFoundShowAvailable' ) )
       $this->option_values = $this->qtranslate_option_walk( $this->option_values );
+
     $this->slider_init();
 
     /**

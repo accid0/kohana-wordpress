@@ -14,7 +14,7 @@ class Controller_Slider_Elegant extends Controller_Manager{
    * view file for action
    * @var string
    */
-  protected $template = '';
+  protected $template = 'slider-elegant';
 
   /**
    * (non-PHPdoc)
@@ -37,6 +37,12 @@ class Controller_Slider_Elegant extends Controller_Manager{
    * @see Controller_Manager::do_action()
    */
   protected function do_action(){
+
+    global $wp_query;
+
+    do_action('get_template_part_slider', 'slider', 'elegant');
+
+    $this->view->set($wp_query->query_vars);
 
   }
 }

@@ -1,10 +1,4 @@
-<?php
-/**
- * @package WordPress
- * @subpackage Maya
- * @since 1.0
- */ 
-?>
+
         <!-- BEGIN NIVO SLIDER -->
         <div id="slider" class="nivo group inner mobile">
             <div class="slider-images">

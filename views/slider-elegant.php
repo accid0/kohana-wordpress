@@ -1,11 +1,4 @@
-<?php 
-/**
- * @package WordPress
- * @subpackage Sheeva
- * @since 1.0
- */
- ?>
- 
+
         <!-- START SLIDER -->
         <div id="slider" class="slider_elegant group inner">
             <ul class="group">

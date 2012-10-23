@@ -1,10 +1,5 @@
 <?php 
-/**
- * @package WordPress
- * @subpackage Diverso
- * @since 1.0
- */    
- 
+
 if ( $core->is_empty() )
     return;
 

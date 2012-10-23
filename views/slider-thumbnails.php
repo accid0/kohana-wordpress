@@ -1,10 +1,4 @@
-<?php 
-/**
- * @package WordPress
- * @subpackage Sommerce
- * @since 1.0
- */
- 
+<?php
 if ( $core->is_empty() )
     return;
 ?>

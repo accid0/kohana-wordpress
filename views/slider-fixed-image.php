@@ -1,9 +1,3 @@
-<?php 
-/**
- * @package WordPress
- * @since 1.0
- */
- ?>
 
 		<!-- START SLIDER -->
         <div id="slider" class="group inner mobile fixed-image">
