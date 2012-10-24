@@ -2613,6 +2613,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       'hook_woocommerce_before_main_content'                        => self::ATTR_HIGH_PRIORITY,
       'hook_woocommerce_sidebar'                                    => self::ATTR_LOW_PRIORITY,
       'action_admin_bar_menu'                                       => self::ATTR_LOW_PRIORITY,
+
     ),
     self::OPT_HAS_SHOP_PAGE                                         => FALSE,
     self::OPT_BINDS_TEMPLATE                                        => array(),
@@ -6470,6 +6471,8 @@ case 'vimeo' :
    * @return void
    */
   public function template_header($name){
+    set_query_var('src', get_post_meta( get_the_ID(), '_map_url', true ));
+    set_query_var('show_map', get_post_meta( get_the_ID(), '_show_map', true ));
     set_query_var('isIpad', $this->mobile_is_device( self::OPT_IS_IPAD));
     set_query_var('responsive', $this->get_option( self::VAR_RESPONSIVE));
     set_query_var('topbar_content', $this->get_option( self::VAR_TOPBAR_CONTENT));
@@ -6948,7 +6951,8 @@ case 'vimeo' :
     $view->set('uri_theme', $uri_theme);
     $view->set('core', $this);
 
-    echo Manager::execute( $uri . '?' . $wp->query_string, $view)->body($view);
+    echo Manager::execute( $uri . '?' . $wp->query_string
+      , $view, HTTP_WPCache::factory('wp-file'))->body($view);
 
     return FALSE;
   }
@@ -7594,31 +7598,6 @@ case 'vimeo' :
 
     if ( is_admin() )
       return;
-
-    $loading = $this->get_all_fonts_user();
-
-    $output = '';
-    //     global $wp_scripts;
-    //     yiw_debug($wp_scripts->registered);
-
-    // cufon
-    if ( isset( $loading[self::ATTR_CUFON] ) && ! empty( $loading[self::ATTR_CUFON] ) ) :
-      //yiw_fonts_cufon();
-      add_action( 'wp_enqueue_scripts', array( $this, 'fonts_cufon') );
-    endif;
-
-    // google font
-    if ( isset( $loading[self::ATTR_GOOGLE_FONT] ) && ! empty( $loading[self::ATTR_GOOGLE_FONT] ) ) :
-      $this->fonts_google_fonts();
-      //add_action( 'wp_enqueue_styes', 'yiw_fonts_google_fonts' );
-    endif;
-
-    // web font
-    if ( isset( $loading[self::ATTR_WEB_FONTS] ) && ! empty( $loading[self::ATTR_WEB_FONTS] ) ) :
-      $this->fonts_web_fonts();
-    endif;
-
-
   }
 
   /**
@@ -8343,8 +8322,6 @@ case 'vimeo' :
   public function action_wp_head() {
     if ( function_exists( 'qtrans_useCurrentLanguageIfNotFoundShowAvailable' ) )
       $this->option_values = $this->qtranslate_option_walk( $this->option_values );
-
-    $this->slider_init();
 
     /**
      * Add new roles css for the customizations
@@ -9728,6 +9705,84 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
     return str_replace( "button\"", "sc-button\"", $html );
   }
 
+  /**
+   *
+   */
+  public function hook_kwtf_wp_head(){
+
+    $loading = $this->get_all_fonts_user();
+
+    // cufon
+    if ( isset( $loading[self::ATTR_CUFON] ) && ! empty( $loading[self::ATTR_CUFON] ) ) :
+      add_action( 'wp_enqueue_scripts', array( $this, 'fonts_cufon') );
+      wp_enqueue_script('cufon');
+    endif;
+
+    // google font
+    if ( isset( $loading[self::ATTR_GOOGLE_FONT] ) && ! empty( $loading[self::ATTR_GOOGLE_FONT] ) ) :
+      $this->fonts_google_fonts();
+
+    endif;
+
+    // web font
+    if ( isset( $loading[self::ATTR_WEB_FONTS] ) && ! empty( $loading[self::ATTR_WEB_FONTS] ) ) :
+      $this->fonts_web_fonts();
+    endif;
+
+    $this->slider_init();
+
+    $slider_type = $this->slider_type();
+
+    if( !in_array( $slider_type, array(self::ATTR_NONE, self::ATTR_FIXED_IMAGE)) ) {
+
+      if( !in_array( $slider_type, array( 'flash')) )
+        wp_enqueue_style( 'slider-' . $slider_type, $this->get_var( self::OPT_THEME_URI) . "/css/slider-". $slider_type .".css" );
+
+      // flash
+      if ( $slider_type == self::ATTR_FLASH ){
+        wp_enqueue_script( 'swfobject' );
+      }
+
+      // thumbnails
+      elseif ( $slider_type == self::ATTR_THUMBNAILS ){
+        wp_enqueue_script( 'jquery-aw-showcases', $this->get_var( self::OPT_THEME_URI) . "/js/jquery.aw-showcase.js" );
+      }
+
+      //unoslider
+      elseif( $slider_type == self::ATTR_UNOSLIDER ) {
+        wp_enqueue_style( 'slider-' . $slider_type . '-', $this->get_var( self::OPT_THEME_URI) . "/css/unoslider-themes/" . $this->get_option( self::VAR_SLIDER_UNOSLIDER_THEME) . "/theme.css" );
+        wp_enqueue_script( 'unoslider', $this->get_var( self::OPT_THEME_URI) . "/js/unoslider.js" );
+      }
+
+      // elastic
+      elseif ( $slider_type == self::ATTR_ELASTIC ) {
+        wp_enqueue_style( 'Playfair', 'http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Playfair+Display:400italic' );
+        wp_enqueue_script( 'jquery-elastic', $this->get_var( self::OPT_THEME_URI) . "/js/jquery.eislideshow.js", array('jquery'), '1.0' );
+      }
+    }
+
+    /* We add some JavaScript to pages with the comment form
+    * to support sites with threaded comments (when in use).
+    */
+    if ( is_singular() && get_option( 'thread_comments' ) )
+      wp_enqueue_script( 'comment-reply' );
+
+    // custom
+    wp_enqueue_script( 'jquery-custom', $this->get_var( self::OPT_THEME_URI) . "/js/jquery.custom.js", array('jquery'), '1.0', true);
+
+    if ( get_query_var('show_map') == 'yes' && get_query_var('src') != '' ){
+
+      wp_localize_script( 'jquery-custom', 'header_map', array(
+        'tab_open'  => __( 'Open', $this->get_var( self::OPT_PLUGIN_TDOMAIN ) ),
+        'tab_close' => __( 'Close', $this->get_var( self::OPT_PLUGIN_TDOMAIN ) ),
+      ) );
+
+    }
+
+    wp_head();
+
+  }
+
   /* product ribbons */
   public function hook_kwtf_custom_styles() {
     $custom_ribbon = $this->get_option( self::VAR_SHOP_PRODUCTS_RIBBON );
@@ -10624,7 +10679,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
         $img_attrs['title'] = $a_attrs['title'] = $title;
 
         if ( ! empty( $align ) )
-        $div_attrs['class'][] = "align$align";
+          $img_attrs['class'][] = "align$align";
 
         if ( ! empty( $width ) ) {
           $div_attrs['style'][] = "width:{$width}px;";

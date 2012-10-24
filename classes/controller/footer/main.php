@@ -48,5 +48,9 @@ class Controller_Footer_Main extends Controller_Manager{
       $this->view->footer_big = $this->extend('big');
     else $this->view->footer_big = '';
 
+    $this->view->scripts = $this->execute('scripts/footer');
+
+    //$this->response->headers('cache-control', 'public, max-age=3600');
+
   }
 }

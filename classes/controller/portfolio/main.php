@@ -90,5 +90,7 @@ class Controller_Portfolio_Main extends Controller_Manager{
 
     $this->response->body( $this->view);
 
+    //$this->response->headers('cache-control', 'public, max-age=3600');
+
   }
 }

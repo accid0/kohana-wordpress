@@ -24,6 +24,6 @@
         </div>     
         <!-- END SHADOW WRAPPER -->     
     
-    <?php wp_footer(); ?>   
+    <?php echo $scripts; ?>
     </body>
 </html>
