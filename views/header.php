@@ -97,10 +97,7 @@
                 
                     <!-- START NAV -->
                     <div id="nav" class="group">
-                        <?php
-
-                            wp_nav_menu( $nav_args ); 
-                        ?>    
+                        <?php echo $menu; ?>
                     </div>
                     <!-- END NAV -->     
                 </div>

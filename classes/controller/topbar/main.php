@@ -48,6 +48,8 @@ class Controller_Topbar_Main extends Controller_Manager{
 
     if ( $this->view->show_topbar ){
 
+      $this->view->menu = $this->execute('menu/topbar');
+
       $this->response->body( $this->view);
 
     }

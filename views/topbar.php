@@ -47,18 +47,7 @@
                 </div>
                 <div class="topbar-right"<?php if ( ! $show_ribbon ) : ?> style="right:0;"<?php endif ?>>
                     <ul class="topbar-level-1">
-                        <?php
-                        $nav_args = array(
-                            'theme_location' => 'topbar',  
-						                'items_wrap' => '%3$s',
-                            'container' => 'none',
-                            'menu_class' => 'topbar-level-1',
-                            'depth' => 2,
-                            'fallback_cb' => ''
-                        );
-                        
-                        wp_nav_menu( $nav_args );
-                        ?>
+                        <?php echo $menu;?>
                         <?php
                         if( !$topbar_login ) :
                             if( is_user_logged_in() ) :

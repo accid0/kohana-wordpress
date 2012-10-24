@@ -67,14 +67,7 @@ class Controller_Header_Main extends Controller_Manager{
 
     $this->view->description_logo = str_replace( ']', '</strong>', $description );
 
-    $this->view->nav_args = array(
-      'theme_location' => 'nav',
-      'container' => 'none',
-      'menu_class' => 'level-1',
-      'depth' => 3,
-      //'fallback_fb' => false,
-      //'walker' => new description_walker()
-    );
+    $this->view->menu = $this->execute('menu/main');
 
     $this->view->topbar = $this->execute('topbar');
 
