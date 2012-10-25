@@ -38,7 +38,7 @@ class Controller_Topbar_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $wp_query;
+    global $wp_query, $wp;
 
     do_action('get_template_part_topbar', 'topbar', $this->request->param('query'));
 
@@ -48,7 +48,8 @@ class Controller_Topbar_Main extends Controller_Manager{
 
     if ( $this->view->show_topbar ){
 
-      $this->view->menu = $this->execute('menu/topbar');
+      $this->view->menu = $this->execute('menu/topbar?' . $wp->query_string,
+        NULL, $this->view->cache_menu_top );
 
       $this->response->body( $this->view);
 

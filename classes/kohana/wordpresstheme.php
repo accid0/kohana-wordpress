@@ -317,7 +317,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const ATTR_BLOG_SMALL                                         = 'blog_small';
   const ATTR_NIVO_SLIDER                                        = 'nivo_slider';
   const ATTR_FEATURES_TAB_ICON                                  = 'features_tab_icon';
-
+  const ATTR_BLOCK_CACHE_SETTINGS                               = 'Cache';
 
   const VAR_SKINS                                               = 'skins';
   const VAR_SLIDERS                                             = 'sliders';
@@ -671,6 +671,16 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_PANEL_CONFIGS                                       = 'panel_configs';
   const VAR_NOTIFIER_CACHE                                      = 'notifier_cache';
   const VAR_NOTIFIER_CACHE_LAST_UPDATE                          = 'notifier_cache_last_update';
+  const VAR_CACHE_MENU_TOP                                      = 'cache_menu_top';
+  const VAR_CACHE_MENU_MAIN                                     = 'cache_menu_main';
+  const VAR_CACHE_SCRIPTS                                       = 'cache_scripts';
+  const VAR_CACHE_SLIDER                                        = 'cache_slider';
+  const VAR_CACHE_TOPSIDEBAR                                    = 'cache_topsidebar';
+  const VAR_CACHE_MAP                                           = 'cache_map';
+  const VAR_CACHE_SIDEBAR                                       = 'cache_sidebar';
+  const VAR_CACHE_BIG_FOOTER                                    = 'cache_big_footer';
+  const VAR_CACHE_EXTRA_CONTENT                                 = 'cache_extra_content';
+  const VAR_CACHE_TAG                                           = 'cache_tag';
 
   const OPT_THEMES_ROOT                                         = 'themes_root';
   const OPT_THEMES_SUB_DIRECTORY                                = 'themes_sub_directory';
@@ -818,6 +828,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const OPT_SHOP_MODE                                          = 'shop_mode';
   const OPT_HAS_SHOP_PAGE                                      = 'has_shop_page';
   const OPT_IMAGE_SIZES                                        = 'image_sizes';
+  const OPT_SIDEBAR_TYPE                                       = 'sidebar_type';
 
   /**
    * 
@@ -1580,6 +1591,17 @@ class Kohana_WordpressTheme extends WPPlugin {
         self::ATTR_EXPORTIMPORT_BUTTON_DELETE_PANEL                   => self::ATTR_SUBMIT,
         self::ATTR_SHORTCODES_BUTTON_ADD                              => self::ATTR_SUBMIT,
       ),
+      self::ATTR_BLOCK_CACHE_SETTINGS                                 => array(
+        self::VAR_CACHE_MENU_TOP                                      => self::ATTR_TEXT,
+        self::VAR_CACHE_MENU_MAIN                                     => self::ATTR_TEXT,
+        self::VAR_CACHE_SCRIPTS                                       => self::ATTR_TEXT,
+        self::VAR_CACHE_SLIDER                                        => self::ATTR_TEXT,
+        self::VAR_CACHE_TOPSIDEBAR                                    => self::ATTR_TEXT,
+        self::VAR_CACHE_MAP                                           => self::ATTR_TEXT,
+        self::VAR_CACHE_SIDEBAR                                       => self::ATTR_TEXT,
+        self::VAR_CACHE_BIG_FOOTER                                    => self::ATTR_TEXT,
+        self::VAR_CACHE_EXTRA_CONTENT                                 => self::ATTR_TEXT,
+      ),
 		),
 		self::OPT_OPTION_FIELD_LABELS                           => array(
       self::VAR_BODY_BG_COLOR                                       => 'Body bg Color',
@@ -1923,6 +1945,15 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::ATTR_EXPORTIMPORT_BUTTON_APPLY_PANEL                    => 'Apply Panel',
       self::ATTR_EXPORTIMPORT_BUTTON_DELETE_PANEL                   => 'Delete Panel',
       self::ATTR_SHORTCODES_BUTTON_ADD                              => 'Add Shortcodes',
+      self::VAR_CACHE_MENU_TOP                                      => 'Top Menu',
+      self::VAR_CACHE_MENU_MAIN                                     => 'Main Menu',
+      self::VAR_CACHE_SCRIPTS                                       => 'Scripts',
+      self::VAR_CACHE_SLIDER                                        => 'Sliders',
+      self::VAR_CACHE_TOPSIDEBAR                                    => 'Top Sidebar',
+      self::VAR_CACHE_MAP                                           => 'Map',
+      self::VAR_CACHE_SIDEBAR                                       => 'Main Sidebar',
+      self::VAR_CACHE_BIG_FOOTER                                    => 'Footer Sidebar',
+      self::VAR_CACHE_EXTRA_CONTENT                                 => 'Extra Content',
     ),
 		self::OPT_OPTION_STATIC                                 => array( 
 		  self::VAR_CONTACT_FORMS, self::VAR_DEFAULT_PORTFOLIOS_PID, self::VAR_FONT_TYPE_OPTION_ID,
@@ -1931,7 +1962,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_SLIDER_ELEGANT_SLIDES, self::VAR_SLIDER_NIVO_SLIDES,
       self::VAR_SLIDER_THUMBNAILS_SLIDES, self::VAR_SLIDER_UNOSLIDER_SLIDES,
       self::VAR_PANEL_CONFIGS, self::VAR_FEATURES_TAB, self::VAR_NOTIFIER_CACHE, 
-      self::VAR_NOTIFIER_CACHE_LAST_UPDATE
+      self::VAR_NOTIFIER_CACHE_LAST_UPDATE, self::VAR_CACHE_TAG
     ),
 		self::OPT_OPTION_DEFAULTS                               => array(
       self::VAR_DEFAULT_PORTFOLIOS_PID                              => NULL,
@@ -2292,6 +2323,16 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_NOTIFIER_CACHE                                      => NULL,
       self::VAR_NOTIFIER_CACHE_LAST_UPDATE                          => NULL,
       self::VAR_FONT_TYPE_OPTION_ID                                 => NULL,
+      self::VAR_CACHE_MENU_TOP                                      => 1,
+      self::VAR_CACHE_MENU_MAIN                                     => 1,
+      self::VAR_CACHE_SCRIPTS                                       => 1,
+      self::VAR_CACHE_SLIDER                                        => 1,
+      self::VAR_CACHE_TOPSIDEBAR                                    => 1,
+      self::VAR_CACHE_MAP                                           => 1,
+      self::VAR_CACHE_SIDEBAR                                       => 1,
+      self::VAR_CACHE_BIG_FOOTER                                    => 1,
+      self::VAR_CACHE_EXTRA_CONTENT                                 => 1,
+      self::VAR_CACHE_TAG                                           => 0,
 
     ),
     self::OPT_IMAGE_SIZES                                          => array(
@@ -2488,6 +2529,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::ATTR_TERM_RELATIONSHIPS
     ),
     self::OPT_LAYOUT                                        => '',
+    self::OPT_SIDEBAR_TYPE                                  => FALSE,
     self::OPT_WIDGET_NUM                                    => array(),
     self::OPT_PORTFOLIO                                     => array(),
     self::OPT_RSS_FORUM_URL                                 => '',
@@ -5613,6 +5655,38 @@ case 'vimeo' :
   }
 
   /**
+   * @param string $name
+   * @return string
+   */
+  private function sidebar_type(){
+    global $wp_query;
+    $sidebar = $this->get_var( self::OPT_SIDEBAR_TYPE);
+    if ( $sidebar !== FALSE ) return $sidebar;
+    $sidebar = get_post_meta( get_the_ID(), '_sidebar_choose_page', true );
+    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
+
+    if ( is_tax('product_cat') || is_tax('product_tag')
+      || is_post_type_archive('product') || ( get_post_type() == 'product' && is_single() )
+      || is_page($shop_page) ){
+      $sidebar = ( $l = get_post_meta( $shop_page, '_sidebar_choose_page', TRUE) ) ? $l : 'Shop Sidebar';
+
+    }
+    elseif( $this->is_portfolio_post_type() ){
+      $pt = $this->get_portfolio_post_type();
+      $ps = $this->portfolios();
+      $sidebar = $ps[$pt]['title'] . ' Sidebar';
+
+    }
+
+    elseif( empty($sidebar)){
+      $post_id = ( $wp_query->is_posts_page ) ? get_option('page_for_posts') : get_the_ID();
+      $sidebar = get_post_meta( $post_id, 'sidebar_choose_page', true );
+    }
+    $this->set_var( self::OPT_SIDEBAR_TYPE, $sidebar);
+    return $sidebar;
+  }
+
+  /**
    * (non-PHPdoc)
    * @see Kohana_WPPlugin::_initialize()
    */
@@ -6471,6 +6545,13 @@ case 'vimeo' :
    * @return void
    */
   public function template_header($name){
+    set_query_var('cache_menu_top', $this->get_option( self::VAR_CACHE_MENU_TOP));
+    set_query_var('cache_menu_main', $this->get_option( self::VAR_CACHE_MENU_MAIN));
+    set_query_var('cache_scripts', $this->get_option( self::VAR_CACHE_SCRIPTS));
+    set_query_var('cache_slider', $this->get_option( self::VAR_CACHE_SLIDER));
+    set_query_var('cache_topsidebar', $this->get_option( self::VAR_CACHE_TOPSIDEBAR));
+    set_query_var('cache_map', $this->get_option( self::VAR_CACHE_MAP));
+    set_query_var('use_topsidebar',  $this->get_option( self::VAR_TOPSIDEBAR_HAS));
     set_query_var('src', get_post_meta( get_the_ID(), '_map_url', true ));
     set_query_var('show_map', get_post_meta( get_the_ID(), '_show_map', true ));
     set_query_var('isIpad', $this->mobile_is_device( self::OPT_IS_IPAD));
@@ -6551,6 +6632,8 @@ case 'vimeo' :
       stripslashes( $this->get_option( self::VAR_FOOTER_TEXT_CENTERED ) ) ), '', '', FALSE ));
     set_query_var('footer_rows', $this->get_option( self::VAR_FOOTER_ROWS));
     set_query_var('footer_cols', $this->get_option( self::VAR_FOOTER_COLUMNS, 1));
+    set_query_var('cache_scripts', $this->get_option( self::VAR_CACHE_SCRIPTS));
+    set_query_var('cache_big_footer', $this->get_option( self::VAR_CACHE_BIG_FOOTER));
   }
 
   /**
@@ -6757,22 +6840,7 @@ case 'vimeo' :
    */
   public function template_sidebar( $name){
     set_query_var('blog_cats_exclude_sidebar', $this->get_option( self::VAR_BLOG_CATS_EXCLUDE_SIDEBAR));
-    $sidebar = get_post_meta( get_the_ID(), '_sidebar_choose_page', true );
-    $shop_page = $this->get_var( self::OPT_HAS_SHOP_PAGE);
-    if ( is_tax('product_cat') || is_tax('product_tag')
-      || is_post_type_archive('product') || ( get_post_type() == 'product' && is_single() )
-      || is_page($shop_page) ){
-      $sidebar = ( $l = get_post_meta( $shop_page, '_sidebar_choose_page', TRUE) ) ? $l : 'Shop Sidebar';
-
-    }
-    elseif( $this->is_portfolio_post_type() && (is_tax() || $name == 'portfolio')){
-      $pt = $this->get_portfolio_post_type();
-      $ps = $this->portfolios();
-      $sidebar = $ps[$pt]['title'] . ' Sidebar';
-    }
-    elseif( empty($sidebar)){
-      $sidebar = get_post_meta( get_the_ID(), 'sidebar_choose_page', true );
-    }
+    $sidebar = $this->sidebar_type();
     set_query_var( 'sidebar', $sidebar);
     switch($name){
       case 'blog':
@@ -6855,6 +6923,7 @@ case 'vimeo' :
    */
   public function template_topbar( $slug, $name){
     set_query_var('show_topbar', $this->get_option( self::VAR_SHOW_BAR));
+    set_query_var('cache_menu_top', $this->get_option( self::VAR_CACHE_MENU_TOP));
     set_query_var('show_ribbon', $this->get_option( self::VAR_SHOW_TOPBAR_CART_RIBBON));
     set_query_var('topbar_content', $this->get_option( self::VAR_TOPBAR_CONTENT));
     set_query_var('topbar_text', $this->get_option( self::VAR_TOPBAR_TEXT));
@@ -6891,7 +6960,9 @@ case 'vimeo' :
     set_query_var('page', $page);
     set_query_var('uri_theme', $uri_theme);
     set_query_var('core', $this);
-
+    set_query_var('cache_sidebar',  $this->get_option( self::VAR_CACHE_SIDEBAR));
+    set_query_var('cache_extra_content',  $this->get_option( self::VAR_CACHE_EXTRA_CONTENT));
+    set_query_var('sidebar', $this->sidebar_type());
     //DB::log("slug=$slug&name=$name");
   }
 

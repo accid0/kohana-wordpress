@@ -48,7 +48,9 @@ class Controller_Blog_Main extends Controller_Manager{
     $this->view->content_loop = $this->execute('loop/index');
 
     wp_reset_query();
-    $this->view->sidebar = $this->execute('sidebar');
+    $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
 
     wp_reset_postdata();
     $this->view->footer = $this->execute('footer');

@@ -65,6 +65,8 @@ class Controller_Sidebar_Main extends Controller_Manager{
 
       $this->response->body( $this->view);
 
+      $this->response->headers('cache-control', 'public, max-age=3600');
+
     }
 
   }

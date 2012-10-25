@@ -47,7 +47,11 @@ class Controller_Topsidebar_Main extends Controller_Manager{
     $this->auto_render = FALSE;
 
     if ( $this->view->use_topsidebar && $this->view->use_topsidebar !== 'no'){
+
       $this->response->body( $this->view);
+
+      $this->response->headers('cache-control', 'public, max-age=3600');
+
     }
 
   }

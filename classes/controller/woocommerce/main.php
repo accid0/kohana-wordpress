@@ -71,7 +71,8 @@ class Controller_Woocommerce_Main extends Controller_Manager{
     remove_action( 'woocommerce_sidebar', 'woocommerce_get_sidebar', 10);
 
     if ( $this->view->layout_page != 'sidebar-no' ){
-      $sidebar = $this->execute('sidebar');
+      $sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+        NULL, $this->view->cache_sidebar );
     }
 
     ob_start();
@@ -83,7 +84,5 @@ class Controller_Woocommerce_Main extends Controller_Manager{
     $this->view->footer = $this->execute('footer/shop');
 
     $this->response->body( $this->view);
-
-    //DB::log((string)$header);
   }
 }

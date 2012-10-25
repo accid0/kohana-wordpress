@@ -38,7 +38,7 @@ class Controller_Single_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $wp_query;
+    global $wp_query, $wp;
 
     do_action('get_template_part_single', 'single', $this->request->param('query'));
 
@@ -54,16 +54,19 @@ class Controller_Single_Main extends Controller_Manager{
 
       $this->view->content = $this->execute('loop/portfolio');
 
-      $this->view->sidebar = $this->execute('sidebar/portfolio');
     }
     else{
 
       $this->view->content = $this->execute('loop/index');
 
-      $this->view->sidebar = $this->execute('sidebar/blog');
     }
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->sidebar = $this->execute('sidebar/blog?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
+
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

@@ -37,6 +37,7 @@ class Controller_Scripts_Main extends Controller_Manager{
    * @see Controller_Manager::do_action()
    */
   protected function do_action(){
-    $this->response->body($this->extend('content'));
+    $this->response->body($this->extend('content', FALSE));
+    $this->response->headers('cache-control', 'public, max-age=3600');
   }
 }

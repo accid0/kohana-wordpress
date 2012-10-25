@@ -38,13 +38,18 @@ class Controller_Index_Main extends Controller_Manager{
    */
   protected function do_action(){
 
+    global $wp;
+
     $this->view->header = $this->execute('header');
 
     $this->view->content = $this->execute('loop/index');
-    DB::log($this->view->content);
-    $this->view->sidebar = $this->execute('sidebar/blog');
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->sidebar = $this->execute('sidebar/blog?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
+
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

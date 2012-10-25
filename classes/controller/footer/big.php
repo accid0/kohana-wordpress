@@ -14,7 +14,7 @@ class Controller_Footer_Big extends Controller_Manager{
    * view file for action
    * @var string
    */
-  protected $template = '';
+  protected $template = 'footer-big';
 
   /**
    * (non-PHPdoc)
@@ -37,6 +37,6 @@ class Controller_Footer_Big extends Controller_Manager{
    * @see Controller_Manager::do_action()
    */
   protected function do_action(){
-
+    $this->response->headers('cache-control', 'public, max-age=3600');
   }
 }

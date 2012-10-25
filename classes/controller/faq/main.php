@@ -38,7 +38,7 @@ class Controller_Faq_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $wp_query;
+    global $wp_query, $wp;
 
     $this->view->header = $this->execute('header');
 
@@ -82,9 +82,12 @@ class Controller_Faq_Main extends Controller_Manager{
     $this->view->faq = $html;
 
     wp_reset_query();
-    $this->view->sidebar = $this->execute('sidebar');
+    $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

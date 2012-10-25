@@ -38,7 +38,7 @@ class Controller_Portfolio_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $post;
+    global $post, $wp;
 
     $this->view->portfolio_type = ! get_post_meta( get_the_ID(), 'portfolio_type', true )
       ? ( isset( $this->view->portfolio[$this->view->post_type]['layout'] )
@@ -81,10 +81,12 @@ class Controller_Portfolio_Main extends Controller_Manager{
       $this->view->content = $this->extend( $this->view->portfolio_type );
 
     if ( $this->view->layout_type != 'sidebar-no')
-      $this->view->sidebar = $this->execute('sidebar');
+      $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+        NULL, $this->view->cache_sidebar );
     else $this->view->sidebar = '';
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

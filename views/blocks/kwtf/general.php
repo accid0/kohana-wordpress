@@ -22,7 +22,7 @@
           <div id="responsive-option" class="rm_option rm_input rm_on_off">
             <label for="responsive"><strong><?php _e('Activate responsive', $tpl_tdomain)?></strong></label>
             <div class="iphone-check">
-              <input class="on_off" type='checkbox' id='responsive' name = "responsive" value="1"  checked = "<?php echo ($__responsive)? 'checked':'';?>"/>
+              <input class="on_off" type='checkbox' id='responsive' name = "responsive" value="1"  <?php echo checked( $__responsive, 1);?>/>
             </div>
             <small><?php _e('Select if you want to active or not the responsive', $tpl_tdomain)?></small><div class="clearfix"></div>
           </div>

@@ -38,7 +38,7 @@ class Controller_Gallery_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $post, $wp_query;
+    global $post, $wp_query, $wp;
 
 
     // enqueue necessary scripts
@@ -70,11 +70,13 @@ class Controller_Gallery_Main extends Controller_Manager{
     $this->view->postsPerRow = ($this->view->layout_page != 'sidebar-no') ? 3 : 4;
 
     if($this->view->layout_page != 'sidebar-no')
-      $this->view->sidebar = $this->execute('sidebar');
+      $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+        NULL, $this->view->cache_sidebar);
     else
       $this->view->sidebar = '';
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

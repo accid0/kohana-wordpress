@@ -38,15 +38,20 @@ class Controller_Page_Main extends Controller_Manager{
    */
   protected function do_action(){
 
+    global $wp;
+
     $this->view->header = $this->execute('header');
 
     $this->view->slogan = $this->execute('slogan');
 
     $this->view->content = $this->execute('loop/page');
 
-    $this->view->sidebar = $this->execute('sidebar');
+    $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 

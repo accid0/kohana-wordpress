@@ -38,13 +38,14 @@ class Controller_Header_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $wp_query, $page, $paged;
+    global $wp_query, $page, $paged, $wp;
 
     do_action('get_header', $this->request->param('query'));
 
     $this->view->set($wp_query->query_vars);
 
-    $this->view->scripts = $this->execute('scripts/header');
+    $this->view->scripts = $this->execute('scripts/header?' . $wp->query_string,
+      NULL, $this->view->cache_scripts);
 
     // Add description, if is home
     $this->view->description =  get_bloginfo( 'description' );
@@ -67,15 +68,25 @@ class Controller_Header_Main extends Controller_Manager{
 
     $this->view->description_logo = str_replace( ']', '</strong>', $description );
 
-    $this->view->menu = $this->execute('menu/main');
+    $this->view->menu = $this->execute('menu/main?' . $wp->query_string,
+      NULL, $this->view->cache_menu_main);
 
     $this->view->topbar = $this->execute('topbar');
 
-    $this->view->slider_body = $this->execute('slider');
+    $this->view->slider_body = $this->execute('slider?' . $this->view->slider_type,
+      NULL, ( $this->view->cache_slider
+        && $this->view->slider_type != 'none'
+        && ! $wp_query->is_posts_page ) );
 
-    $this->view->topsidebar = $this->execute('topsidebar');
+    $this->view->topsidebar = $this->execute('topsidebar',
+      NULL, ( $this->view->cache_topsidebar
+        && $this->view->use_topsidebar
+        && ( $this->view->use_topsidebar === 'yes' ) ) );
 
-    $this->view->map = $this->execute('map', $this->view);
+    $this->view->map = $this->execute('map?' . $wp->query_string,
+      $this->view, ( $this->view->cache_map
+        && !empty($this->view->src)
+        && ( $this->view->show_map === 'yes' ) ) );
 
     //$this->response->headers('cache-control', 'public, max-age=3600');
 

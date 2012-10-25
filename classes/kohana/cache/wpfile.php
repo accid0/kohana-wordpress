@@ -143,7 +143,7 @@ class Kohana_Cache_WPFile extends Cache_File
     try
     {
       $data = $lifetime."\n".$data;
-      $file->fwrite($data, strlen($data));
+      $file->fwrite((string)$data, strlen($data));
       return (bool) $file->fflush();
     }
     catch (ErrorException $e)

@@ -38,7 +38,7 @@ class Controller_Home_Main extends Controller_Manager{
    */
   protected function do_action(){
 
-    global $wp_query;
+    global $wp_query, $wp;
 
     if ( ( is_home() || is_front_page() ) && get_option( 'show_on_front' ) == 'posts'
       || $wp_query->is_posts_page || (is_home() && get_option( 'page_for_posts' ) != '0' )) {
@@ -58,9 +58,12 @@ class Controller_Home_Main extends Controller_Manager{
     else
       $this->view->loop_content = $this->execute( 'loop/page' );
 
-    $this->view->sidebar = $this->execute('sidebar');
+    $this->view->sidebar = $this->execute('sidebar?' . $this->view->sidebar,
+      NULL, ( $this->view->cache_sidebar
+        && $this->view->layout_page != 'sidebar-no' ));
 
-    $this->view->extra_content = $this->execute('extra/content');
+    $this->view->extra_content = $this->execute('extra/content?' . $wp->query_string,
+      NULL, $this->view->cache_extra_content);
 
     $this->view->footer = $this->execute('footer');
 
