@@ -747,9 +747,11 @@ EOF;
 
     $mo = new MO();
     if ( $cache = wp_cache_get( $key, self::ATTR_MO_GROUP ) ) {
+
       $mo->entries = $cache['entries'];
       $mo->set_headers( $cache['headers'] );
     } else {
+
       if ( !$mo->import_from_file( $mofile ) ) return false;
       $cache = array(
         'entries' => $mo->entries,

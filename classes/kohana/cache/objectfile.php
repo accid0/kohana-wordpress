@@ -16,6 +16,9 @@
  */
 class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
 {
+  private $getted = 0;
+  private $setted = 0;
+  private $rejected = 0;
   /**
    * Retrieve a cached value entry by id.
    *
@@ -59,11 +62,13 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
         if ( ( $cache['ttl'] !== 0 && $cache['ttl'] < time() ) || $cache['data'] === NULL )
         {
           // Delete the file
+          $this->rejected++;
           $this->_delete_file($file, NULL, TRUE);
           return $default;
         }
         else
         {
+          $this->getted++;
           return $cache['data'];
         }
       }
@@ -132,9 +137,10 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
 
     try
     {
-      $expirationTS= $lifetime ? time() + $lifetime : 0;
+      $expirationTS = $lifetime ? time() + $lifetime : 0;
       $data = serialize(array( 'ttl' => $expirationTS, 'data' => $data));
       $file->fwrite($data, strlen($data));
+      $this->setted++;
       return (bool) $file->fflush();
     }
     catch (ErrorException $e)
@@ -235,4 +241,24 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
     return $i + $step;
   }
 
+  /**
+   * @return int
+   */
+  public function getGetted(){
+    return $this->getted;
+  }
+
+  /**
+   * @return int
+   */
+  public function getSetted(){
+    return $this->setted;
+  }
+
+  /**
+   * @return int
+   */
+  public function getRejected(){
+    return $this->rejected;
+  }
 }
