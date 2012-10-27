@@ -601,7 +601,7 @@ abstract class Kohana_Base_WPPlugin {
   public function filter_found_posts_query(){}
   public function filter_get_editable_authors(){}
   public function filter_gettext($translated_text, $untranslated_text){}
-  public function filter_override_load_textdomain(){}
+  public function filter_override_load_textdomain( $override, $domain, $mofile ){}
   public function filter_get_next_post_join(){}
   public function filter_get_next_post_sort(){}
   public function filter_get_next_post_where(){}

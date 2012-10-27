@@ -198,6 +198,8 @@ function hyper_cache_start($delete=true) {
     }
   }
   ob_start('hyper_cache_callback');
+  require_once WP_CONTENT_DIR . '/plugins/kadapter/kohana_index.php';
+  require_once WP_CONTENT_DIR . '/plugins/kadapter/kohana_bootstrap.php';
 }
 
 // From here Wordpress starts to process the request
@@ -340,5 +342,171 @@ function hyper_cache_exit() {
   global $hyper_cache_gzip_on_the_fly;
 
   if ($hyper_cache_gzip_on_the_fly && extension_loaded('zlib')) ob_start('ob_gzhandler');
+
+  require_once WP_CONTENT_DIR . '/plugins/kadapter/kohana_index.php';
+  require_once WP_CONTENT_DIR . '/plugins/kadapter/kohana_bootstrap.php';
   return false;
+}
+
+/**
+ * wp_cache_add() - Adds data to the cache, if the cache key doesn't aleady exist
+ *
+ * @param int|string $key The cache ID to use for retrieval later
+ * @param mixed $data The data to add to the cache store
+ * @param string $flag The group to add the cache to
+ * @param int $expire When the cache data should be expired
+ * @return unknown
+ */
+function wp_cache_add($key, $data, $flag = '', $expire = 0)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->add($key, $data, $flag, $expire);
+}
+
+/**
+ * wp_cache_close() - Closes the cache
+ *
+ * @return bool Always returns True
+ */
+function wp_cache_close()
+{
+  global $wp_object_cache;
+  $wp_object_cache->close();
+  return true;
+}
+
+/**
+ * wp_cache_delete() - Removes the cache contents matching ID and flag
+ *
+ * @param int|string $id What the contents in the cache are called
+ * @param string $flag Where the cache contents are grouped
+ * @return bool True on successful removal, false on failure
+ */
+function wp_cache_delete($id, $flag = '')
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->delete($id, $flag);
+}
+
+/**
+ * wp_cache_flush() - Removes all cache items
+ *
+ * @return bool Always returns true
+ */
+function wp_cache_flush()
+{
+  global $wp_object_cache;
+  $wp_object_cache->flush();
+  return true;
+}
+
+/**
+ * wp_cache_get() - Retrieves the cache contents from the cache by ID and flag
+ *
+ * @param int|string $id What the contents in the cache are called
+ * @param string $flag Where the cache contents are grouped
+ * @return bool|mixed False on failure to retrieve contents or the cache contents on success
+ */
+function wp_cache_get($id, $flag = '')
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->get($id, $flag);
+}
+
+function wp_cache_init()
+{
+  static $initialized = false;
+  if ($initialized) {
+    wp_cache_reset();
+    return;
+  }
+
+  $initialized = true;
+
+  $options = array();
+
+  if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = null;
+    $options['persist'] = false;
+  }
+
+  $GLOBALS['wp_object_cache'] = LazyCache::instance('object-file',$options);
+}
+
+/**
+ * Reset internal cache keys and structures. If the cache backend uses global blog or site IDs as part of its cache keys,
+ * this function instructs the backend to reset those keys and perform any cleanup since blog or site IDs have changed since cache init.
+ */
+function wp_cache_reset()
+{
+  global $wp_object_cache;
+  if (is_object($wp_object_cache))
+    $wp_object_cache->reset();
+  else
+    wp_cache_init();
+}
+
+/**
+ * wp_cache_replace() - Replaces the contents of the cache with new data
+ *
+ * @param int|string $id What to call the contents in the cache
+ * @param mixed $data The contents to store in the cache
+ * @param string $flag Where to group the cache contents
+ * @param int $expire When to expire the cache contents
+ * @return bool False if cache ID and group already exists, true on success
+ */
+function wp_cache_replace($key, $data, $flag = '', $expire = 0)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->replace($key, $data, $flag, $expire);
+}
+
+/**
+ * wp_cache_set() - Saves the data to the cache
+ *
+ * @param int|string $id What to call the contents in the cache
+ * @param mixed $data The contents to store in the cache
+ * @param string $flag Where to group the cache contents
+ * @param int $expire When to expire the cache contents
+ * @return bool False if cache ID and group already exists, true on success
+ */
+function wp_cache_set($key, $data, $flag = '', $expire = 0)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->set($key, $data, $flag, $expire);
+}
+
+/**
+ * Adds a group or set of groups to the list of global groups.
+ *
+ * @param string|array $groups A group or an array of groups to add
+ */
+function wp_cache_add_global_groups($groups)
+{
+  global $wp_object_cache;
+  if (!is_array($groups)) {
+    $groups = array($groups);
+  }
+
+  $wp_object_cache->addGlobalGroups($groups);
+}
+
+/**
+ * Adds a group or set of groups to the list of non-persistent groups.
+ *
+ * @param string|array $groups A group or an array of groups to add
+ */
+function wp_cache_add_non_persistent_groups($groups)
+{
+  global $wp_object_cache;
+  if (!is_array($groups)) {
+    $groups = array($groups);
+  }
+
+  $wp_object_cache->addNonPersistentGroups($groups);
 }

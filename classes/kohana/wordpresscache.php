@@ -18,6 +18,8 @@ abstract class Kohana_WordpressCache extends WPPlugin
   const ATTR_INVALIDATE_POST     = 'post';
   const ATTR_INVALIDATE_DISABLED = 'none';
   const ATTR_INVALIDATE_FULL     = 'all';
+  const ATTR_MO_GROUP            = 'mo';
+  const ATTR_MO_VERSION          = '2.0';
   const OPT_INVALIDATED          = 'invalidated';
   const OPT_INVALIDATED_POST_ID  = 'invalidated_post_id';
   const OPT_FOUND_TAGS           = 'found_tags';
@@ -661,7 +663,7 @@ EOF;
    *
    * @see Kohana_Base_WPPlugin::action_switch_theme()
    */
-  public function action_switch_theme( $theme_name, WP_Theme $theme)
+  public function action_switch_theme( $theme_name, WP_Theme $theme = NULL)
   {
 
     $this->log("action_switch_theme> Called");
@@ -722,5 +724,43 @@ EOF;
 
     $hyper_redirect = $redirect_url;
     return $redirect_url;
+  }
+
+  /**
+   * @param $override
+   * @param $domain
+   * @param $mofile
+   * @return bool
+   */
+  public function filter_override_load_textdomain( $override, $domain, $mofile ){
+    global $l10n;
+
+    do_action( 'load_textdomain', $domain, $mofile );
+    $mofile = apply_filters( 'load_textdomain_mofile', $mofile, $domain );
+    if ( !is_readable( $mofile ) ) return false;
+
+    if ( function_exists( 'wp_cache_add_global_groups' ) ) {
+      wp_cache_add_global_groups( self::ATTR_MO_GROUP );
+    }
+    $key = preg_replace('/[^-\w]/', '_',
+      self::ATTR_MO_VERSION . "-${GLOBALS['wp_version']}-$mofile");
+
+    $mo = new MO();
+    if ( $cache = wp_cache_get( $key, self::ATTR_MO_GROUP ) ) {
+      $mo->entries = $cache['entries'];
+      $mo->set_headers( $cache['headers'] );
+    } else {
+      if ( !$mo->import_from_file( $mofile ) ) return false;
+      $cache = array(
+        'entries' => $mo->entries,
+        'headers' => $mo->headers,
+      );
+      wp_cache_set( $key, $cache, self::ATTR_MO_GROUP );
+    }
+
+    if ( isset( $l10n[$domain] ) )
+      $mo->merge_with( $l10n[$domain] );
+    $l10n[$domain] = $mo;
+    return true;
   }
 }
