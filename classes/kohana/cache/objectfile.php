@@ -56,7 +56,7 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
         $cache  = unserialize( ob_get_clean());
 
         // Test the expiry
-        if ( $cache['ttl'] < time() || $cache['data'] === NULL )
+        if ( ( $cache['ttl'] !== 0 && $cache['ttl'] < time() ) || $cache['data'] === NULL )
         {
           // Delete the file
           $this->_delete_file($file, NULL, TRUE);
@@ -214,7 +214,7 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
   public function increment($id, $step = 1){
     $i = $this->get($id);
     if ( $i == NULL) $i = 0;
-    $this->set( $id, $i + $step);
+    $this->set( $id, $i + $step, 0);
     return $i + $step;
   }
 
@@ -231,7 +231,7 @@ class Kohana_Cache_ObjectFile extends Cache_File implements Cache_Arithmetic
   public function decrement($id, $step = 1){
     $i = $this->get($id);
     if ( $i == NULL) $i = 0;
-    $this->set( $id, $i - $step);
+    $this->set( $id, $i - $step, 0);
     return $i + $step;
   }
 

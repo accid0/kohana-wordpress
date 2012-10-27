@@ -357,7 +357,7 @@ function hyper_cache_exit() {
  * @param int $expire When the cache data should be expired
  * @return unknown
  */
-function wp_cache_add($key, $data, $flag = '', $expire = 0)
+function wp_cache_add($key, $data, $flag = '', $expire = NULL)
 {
   global $wp_object_cache;
   if (empty($flag)) { $flag = 'default'; }
@@ -458,7 +458,7 @@ function wp_cache_reset()
  * @param int $expire When to expire the cache contents
  * @return bool False if cache ID and group already exists, true on success
  */
-function wp_cache_replace($key, $data, $flag = '', $expire = 0)
+function wp_cache_replace($key, $data, $flag = '', $expire = NULL)
 {
   global $wp_object_cache;
   if (empty($flag)) { $flag = 'default'; }
@@ -474,7 +474,7 @@ function wp_cache_replace($key, $data, $flag = '', $expire = 0)
  * @param int $expire When to expire the cache contents
  * @return bool False if cache ID and group already exists, true on success
  */
-function wp_cache_set($key, $data, $flag = '', $expire = 0)
+function wp_cache_set($key, $data, $flag = '', $expire = NULL)
 {
   global $wp_object_cache;
   if (empty($flag)) { $flag = 'default'; }
