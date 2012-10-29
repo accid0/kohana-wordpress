@@ -37,6 +37,6 @@ class Controller_Footer_Big extends Controller_Manager{
    * @see Controller_Manager::do_action()
    */
   protected function do_action(){
-    $this->response->headers('cache-control', 'public, max-age=3600');
+    $this->response->headers('cache-control', 'public, max-age=' . $this->view->lifetime_big * 3600 );
   }
 }

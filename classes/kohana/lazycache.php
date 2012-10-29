@@ -29,6 +29,7 @@ abstract class Kohana_LazyCache
   protected $np_groups = array();
   protected $global_groups = array();
   protected $blog_id;
+  protected $debug = FALSE;
 
   /**
    * @desc To stay compatible with SimpleTags
@@ -36,7 +37,7 @@ abstract class Kohana_LazyCache
   protected $cache_enabled = TRUE;
 
   /**
-   * @var Cache|NULL
+   * @var Cache_ObjectFile|NULL
    */
   private $_cache = NULL;
   private $getted = 0;
@@ -86,6 +87,7 @@ abstract class Kohana_LazyCache
     $options          = Arr::merge($options, array('persist'                => TRUE,
                                                    'enabled'                => TRUE,
                                                    'ttl'                    => NULL,
+                                                   'debug'                  => FALSE,
                                                    'blog_id'                => isset($GLOBALS['blog_id']) ? (int) $GLOBALS['blog_id'] : 0,
                                                    //'addNonPersistentGroups' => $np_g,
     ));
@@ -101,6 +103,7 @@ abstract class Kohana_LazyCache
    */
   private function __construct(array $options = array())
   {
+
     foreach ($options as $key => $value) {
       if (method_exists($this, $key)) {
         $this->$key($value);
@@ -162,15 +165,27 @@ abstract class Kohana_LazyCache
   }
 
   /**
+   * @param bool|null $blog_id
+   *
+   * @return bool|null
+   */
+  public function debug($mod = NULL)
+  {
+    if ($mod !== NULL)
+      $this->debug = $mod;
+    $return = $this->debug;
+    return $return;
+  }
+
+  /**
    * Getter and setter for the internal caching engine,
    * used to cache responses if available and valid.
    *
-   * @param   Kohana_Cache  cache engine to use for caching
+   * @param   Cache_ObjectFile  cache engine to use for caching
    *
-   * @return  Kohana_Cache
-   * @return  Kohana_Request_Client
+   * @return  Cache_ObjectFile
    */
-  public function cache(Cache $cache = NULL)
+  public function cache( Cache_ObjectFile $cache = NULL)
   {
     if ($cache === NULL)
       return $this->_cache;
@@ -187,10 +202,14 @@ abstract class Kohana_LazyCache
   protected function getKey($sid, $group = array())
   {
     if (!is_array($group)) $group = array($group);
-    $tags = implode( ',', $group);
-    if ( !in_array($group, $this->global_groups))
+    $tags = implode( '_', $group);
+    $loc = TRUE;
+    foreach( $group as $tag)
+      $loc = $loc && !in_array($tag, $this->global_groups);
+    if ( $loc )
       $tags .= '_' . $this->blog_id;
-    return sha1($sid . $tags);
+
+    return $sid . '_' . $tags;
   }
 
   /**
@@ -199,21 +218,10 @@ abstract class Kohana_LazyCache
    *
    * @return array
    */
-  protected function encode($data, $sids = array())
+  protected function encode($key, &$data, $sids, $ttl )
   {
-    /*if ( !is_array($sids))  $sids = array( $sids);
-    $tags = array();
-    foreach( $sids as $tag){
-      $key = $this->getKey( self::TAG_PREFIX . $tag);
-      $v = $this->_cache->get( $key);
-      if ( !$v) {
-        $this->_cache->add( $key, 0, $this->maxttl);
-        $v = 0;
-      }
-      $tags[$tag] = $v;
-    }
-    return array( 'value' => $data, 'tags' => $tags); */
-    return $data;
+    if ( !is_array($sids)) $sids = array($sids);
+    return $this->_cache->set_with_tags( $this->getKey($key, $sids), $data, $ttl, $sids);
   }
 
   /**
@@ -221,24 +229,9 @@ abstract class Kohana_LazyCache
    *
    * @return array
    */
-  protected function decode($data = NULL)
+  protected function decode( $key, $group)
   {
-    /*if ( !is_array($data) || !array_key_exists('tags', $data) )
-      $data = array( 'tags' => array(), 'value' => $data);
-    $tags = array();
-    foreach( $data['tags'] as $tag => $value){
-      $v = $this->_cache->get( $this->getKey(self::TAG_PREFIX . $tag));
-      if ( $v !== NULL && $v === $value )
-        $tags[$tag] = $v;
-      else{
-        $tags = array();
-        $this->rejected++;
-        break;
-      }
-    }
-    $data['tags'] = $tags;
-    return $data;*/
-    return $data;
+    return $this->_cache->get($this->getKey( $key, $group));
   }
 
   /**
@@ -260,7 +253,7 @@ abstract class Kohana_LazyCache
    */
   public function __set($key, $val)
   {
-    if ('enabled' == $key) {
+    if ('enabled' === $key) {
       if (!$val) {
         $this->close();
         $this->persist = FALSE;
@@ -290,7 +283,7 @@ abstract class Kohana_LazyCache
    *
    * @return bool
    */
-  public function add($key, $data, $group, $ttl = NULL)
+  public function add($key, &$data, $group, $ttl = NULL)
   {
     if (!isset($this->cache[$group][$key])) {
       return $this->set($key, $data, $group, $ttl);
@@ -308,9 +301,12 @@ abstract class Kohana_LazyCache
       foreach ($this->dirty as $key => $tags) {
         foreach ($tags as $group => $ttl) {
           if (!in_array($group, $this->np_groups) && $this->lock($group)) {
-            $v = $this->cache[$group][$key];
+            $v =& $this->cache[$group][$key];
             if ($v !== NULL) {
-              $this->_cache->set($this->getKey($key, $group), $this->encode($v, $group), $ttl);
+
+              if ($this->encode($key, $v, $group, $ttl)){
+                $this->setted++;
+              }
             }
             $this->unlock($group);
           }
@@ -318,6 +314,7 @@ abstract class Kohana_LazyCache
       }
     }
     $this->dirty = array();
+    if ( $this->debug) DB::log( $this->info());
   }
 
   /**
@@ -367,7 +364,7 @@ abstract class Kohana_LazyCache
    *
    * @return bool
    */
-  public function set($key, $data, $group, $ttl = NULL)
+  public function set($key, &$data, $group, $ttl = NULL)
   {
     if (!$this->enabled) {
       return FALSE;
@@ -378,10 +375,6 @@ abstract class Kohana_LazyCache
 
     if (!is_array($group)) $group = array($group);
     foreach ($group as $tag){
-      //if ( is_array( $this->cache[$tag]) && array_key_exists( $key, $this->cache[$tag]) )
-      //    $this->np_groups = Arr::merge( $this->np_groups, array( $tag => $tag ));
-      //else
-        $this->setted++;
       $this->dirty[$key][$tag] = $ttl;
     }
     $this->fast_set($key, $data, $group);
@@ -393,7 +386,7 @@ abstract class Kohana_LazyCache
    * @param $data
    * @param $group
    */
-  protected function fast_set($key, $data, $group)
+  protected function fast_set($key, &$data, $group)
   {
 
     if (is_object($data)) {
@@ -425,17 +418,19 @@ abstract class Kohana_LazyCache
     }
 
     if ($this->persist && !in_array($group, $this->np_groups)) {
+      $this->getted++;
 
       if ($this->lock($group)) {
-        $data = $this->decode($this->_cache->get($this->getKey($key, $group)));
+        $data = $this->decode( $key, $group);
 
         $this->unlock($group);
       }
-      if ($data === NULL) return $result;
+      if ($data === NULL) {
+        return $result;
+      }
       $add                       = is_object($data) ? clone($data) : $data;
       $this->cache[$group][$key] = $add;
       $result                    = $data;
-      $this->getted++;
     }
     return $result;
   }
@@ -516,7 +511,7 @@ abstract class Kohana_LazyCache
    *
    * @return bool
    */
-  public function replace($key, $data, $group, $ttl = NULL)
+  public function replace($key, &$data, $group, $ttl = NULL)
   {
     if ($this->enabled && is_array($this->cache[$group]) && array_key_exists( $key, $this->cache[$group])) {
       return $this->set($key, $data, $group, $ttl);
@@ -544,6 +539,7 @@ abstract class Kohana_LazyCache
    */
   public function addGlobalGroups(array $groups)
   {
+    $this->_cache->addGlobalTags( $groups);
     if (!is_array($this->global_groups)) {
       $this->global_groups = array();
     }
@@ -602,4 +598,167 @@ abstract class Kohana_LazyCache
 EOF;
 
   }
+}
+
+/**
+ * wp_cache_add() - Adds data to the cache, if the cache key doesn't aleady exist
+ *
+ * @param int|string $key The cache ID to use for retrieval later
+ * @param mixed $data The data to add to the cache store
+ * @param string $flag The group to add the cache to
+ * @param int $expire When the cache data should be expired
+ * @return unknown
+ */
+function wp_cache_add($key, $data, $flag = '', $expire = NULL)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->add($key, $data, $flag, $expire);
+}
+
+/**
+ * wp_cache_close() - Closes the cache
+ *
+ * @return bool Always returns True
+ */
+function wp_cache_close()
+{
+  global $wp_object_cache;
+  $wp_object_cache->close();
+  return true;
+}
+
+/**
+ * wp_cache_delete() - Removes the cache contents matching ID and flag
+ *
+ * @param int|string $id What the contents in the cache are called
+ * @param string $flag Where the cache contents are grouped
+ * @return bool True on successful removal, false on failure
+ */
+function wp_cache_delete($id, $flag = '')
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->delete($id, $flag);
+}
+
+/**
+ * wp_cache_flush() - Removes all cache items
+ *
+ * @return bool Always returns true
+ */
+function wp_cache_flush()
+{
+  global $wp_object_cache;
+  $wp_object_cache->flush();
+  return true;
+}
+
+/**
+ * wp_cache_get() - Retrieves the cache contents from the cache by ID and flag
+ *
+ * @param int|string $id What the contents in the cache are called
+ * @param string $flag Where the cache contents are grouped
+ * @return bool|mixed False on failure to retrieve contents or the cache contents on success
+ */
+function wp_cache_get($id, $flag = '')
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->get($id, $flag);
+}
+
+function wp_cache_init()
+{
+  static $initialized = false;
+  if ($initialized) {
+    wp_cache_reset();
+    return;
+  }
+
+  $initialized = true;
+
+  $options = array();
+
+  if (!isset($_SERVER['HTTP_HOST'])) {
+    $_SERVER['HTTP_HOST'] = null;
+    $options['persist'] = false;
+  }
+
+  $GLOBALS['wp_object_cache'] = LazyCache::instance('tag-file',$options);
+}
+
+/**
+ * Reset internal cache keys and structures. If the cache backend uses global blog or site IDs as part of its cache keys,
+ * this function instructs the backend to reset those keys and perform any cleanup since blog or site IDs have changed since cache init.
+ */
+function wp_cache_reset()
+{
+  global $wp_object_cache;
+  if (is_object($wp_object_cache))
+    $wp_object_cache->reset();
+  else
+    wp_cache_init();
+}
+
+/**
+ * wp_cache_replace() - Replaces the contents of the cache with new data
+ *
+ * @param int|string $id What to call the contents in the cache
+ * @param mixed $data The contents to store in the cache
+ * @param string $flag Where to group the cache contents
+ * @param int $expire When to expire the cache contents
+ * @return bool False if cache ID and group already exists, true on success
+ */
+function wp_cache_replace($key, $data, $flag = '', $expire = NULL)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->replace($key, $data, $flag, $expire);
+}
+
+/**
+ * wp_cache_set() - Saves the data to the cache
+ *
+ * @param int|string $id What to call the contents in the cache
+ * @param mixed $data The contents to store in the cache
+ * @param string $flag Where to group the cache contents
+ * @param int $expire When to expire the cache contents
+ * @return bool False if cache ID and group already exists, true on success
+ */
+function wp_cache_set($key, $data, $flag = '', $expire = NULL)
+{
+  global $wp_object_cache;
+  if (empty($flag)) { $flag = 'default'; }
+  return $wp_object_cache->set($key, $data, $flag, $expire);
+}
+
+/**
+ * Adds a group or set of groups to the list of global groups.
+ *
+ * @param string|array $groups A group or an array of groups to add
+ */
+function wp_cache_add_global_groups($groups)
+{
+  global $wp_object_cache;
+  if (!is_array($groups)) {
+    $groups = array($groups);
+  }
+
+  $wp_object_cache->addGlobalGroups($groups);
+}
+
+/**
+ * Adds a group or set of groups to the list of non-persistent groups.
+ *
+ * @param string|array $groups A group or an array of groups to add
+ */
+function wp_cache_add_non_persistent_groups($groups)
+{
+  global $wp_object_cache;
+  if (!is_array($groups)) {
+    $groups = array($groups);
+  }
+
+  $wp_object_cache->addNonPersistentGroups($groups);
 }

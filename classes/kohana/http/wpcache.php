@@ -18,6 +18,10 @@ class Kohana_HTTP_WPCache extends HTTP_Cache
 {
 
   /**
+   * @var array
+   */
+  protected $tags = NULL;
+  /**
    * Factory method for HTTP_Cache that provides a convenient dependency
    * injector for the Cache library.
    *
@@ -47,6 +51,8 @@ class Kohana_HTTP_WPCache extends HTTP_Cache
     }
 
     $options['cache'] = $cache;
+
+    $options = Arr::merge( $options, array( 'tags' => array('parts', 'options')));
 
     return new self($options);
   }
@@ -167,12 +173,15 @@ class Kohana_HTTP_WPCache extends HTTP_Cache
     }
 
     // If there is no response, lookup an existing cached response
+    $this->_cache->parts(TRUE);
     if ($response === NULL)
     {
       $response = $this->_cache->get($key);
 
-      if ( empty($response))
+      if ( empty($response)){
+        $this->_cache->parts(FALSE);
         return FALSE;
+      }
 
       // Do cache hit arithmetic, using fast arithmetic if available
       if ($this->_cache instanceof Cache_Arithmetic)
@@ -191,20 +200,40 @@ class Kohana_HTTP_WPCache extends HTTP_Cache
         HTTP_Cache::CACHE_STATUS_HIT)
         ->headers(HTTP_Cache::CACHE_HIT_KEY, $hit_count);
 
+      $this->_cache->parts(FALSE);
       return $response;
     }
     else
     {
-      if (($ttl = $this->cache_lifetime($response)) === FALSE)
+      if (($ttl = $this->cache_lifetime($response)) === FALSE){
+        $this->_cache->parts(FALSE);
         return FALSE;
+      }
       $response->headers(HTTP_Cache::CACHE_STATUS_KEY,
         HTTP_Cache::CACHE_STATUS_SAVED);
 
       // Set the hit count to zero
       $this->_cache->set(HTTP_Cache::CACHE_HIT_KEY.$key, 0);
+      $tags = $response->headers('tags');
+      if ( is_null($tags))  $tags = array();
+      else
+        $tags = HTTP_Header::parse_cache_control($tags);
+      $return = $this->_cache->set_with_tags($key, $response, $ttl, Arr::merge( $tags, $this->tags));
 
-      return $this->_cache->set($key, $response, $ttl);
+      $this->_cache->parts(FALSE);
+      return $return;
     }
   }
 
+  /**
+   * @param array|null $tags
+   * @return array
+   */
+  public function tags( array $tags = NULL){
+
+    if ( $tags !== NULL && is_array($tags))
+      $this->tags = $tags;
+    return $this->tags;
+
+  }
 }

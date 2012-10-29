@@ -681,6 +681,16 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_CACHE_BIG_FOOTER                                    = 'cache_big_footer';
   const VAR_CACHE_EXTRA_CONTENT                                 = 'cache_extra_content';
   const VAR_CACHE_TAG                                           = 'cache_tag';
+  const VAR_CACHE_MENU_TOP_TTL                                  = 'cache_menu_top_ttl';
+  const VAR_CACHE_MENU_MAIN_TTL                                 = 'cache_menu_main_ttl';
+  const VAR_CACHE_SCRIPTS_TTL                                   = 'cache_scripts_ttl';
+  const VAR_CACHE_SLIDER_TTL                                    = 'cache_slider_ttl';
+  const VAR_CACHE_TOPSIDEBAR_TTL                                = 'cache_topsidebar_ttl';
+  const VAR_CACHE_MAP_TTL                                       = 'cache_map_ttl';
+  const VAR_CACHE_SIDEBAR_TTL                                   = 'cache_sidebar_ttl';
+  const VAR_CACHE_BIG_FOOTER_TTL                                = 'cache_big_footer_ttl';
+  const VAR_CACHE_EXTRA_CONTENT_TTL                             = 'cache_extra_content_ttl';
+  const VAR_CACHE_TAG_TTL                                       = 'cache_tag_ttl';
 
   const OPT_THEMES_ROOT                                         = 'themes_root';
   const OPT_THEMES_SUB_DIRECTORY                                = 'themes_sub_directory';
@@ -1601,6 +1611,15 @@ class Kohana_WordpressTheme extends WPPlugin {
         self::VAR_CACHE_SIDEBAR                                       => self::ATTR_TEXT,
         self::VAR_CACHE_BIG_FOOTER                                    => self::ATTR_TEXT,
         self::VAR_CACHE_EXTRA_CONTENT                                 => self::ATTR_TEXT,
+        self::VAR_CACHE_MENU_TOP_TTL                                  => self::ATTR_TEXT,
+        self::VAR_CACHE_MENU_MAIN_TTL                                 => self::ATTR_TEXT,
+        self::VAR_CACHE_SCRIPTS_TTL                                   => self::ATTR_TEXT,
+        self::VAR_CACHE_SLIDER_TTL                                    => self::ATTR_TEXT,
+        self::VAR_CACHE_TOPSIDEBAR_TTL                                => self::ATTR_TEXT,
+        self::VAR_CACHE_MAP_TTL                                       => self::ATTR_TEXT,
+        self::VAR_CACHE_SIDEBAR_TTL                                   => self::ATTR_TEXT,
+        self::VAR_CACHE_BIG_FOOTER_TTL                                => self::ATTR_TEXT,
+        self::VAR_CACHE_EXTRA_CONTENT_TTL                             => self::ATTR_TEXT,
       ),
 		),
 		self::OPT_OPTION_FIELD_LABELS                           => array(
@@ -1954,6 +1973,15 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_SIDEBAR                                       => 'Main Sidebar',
       self::VAR_CACHE_BIG_FOOTER                                    => 'Footer Sidebar',
       self::VAR_CACHE_EXTRA_CONTENT                                 => 'Extra Content',
+      self::VAR_CACHE_MENU_TOP_TTL                                  => 'Top Menu Lifetime',
+      self::VAR_CACHE_MENU_MAIN_TTL                                 => 'Main Menu Lifetime',
+      self::VAR_CACHE_SCRIPTS_TTL                                   => 'Scripts Lifetime',
+      self::VAR_CACHE_SLIDER_TTL                                    => 'Sliders Lifetime',
+      self::VAR_CACHE_TOPSIDEBAR_TTL                                => 'Top Sidebar Lifetime',
+      self::VAR_CACHE_MAP_TTL                                       => 'Map Lifetime',
+      self::VAR_CACHE_SIDEBAR_TTL                                   => 'Main Sidebar Lifetime',
+      self::VAR_CACHE_BIG_FOOTER_TTL                                => 'Footer Sidebar Lifetime',
+      self::VAR_CACHE_EXTRA_CONTENT_TTL                             => 'Extra Content Lifetime',
     ),
 		self::OPT_OPTION_STATIC                                 => array( 
 		  self::VAR_CONTACT_FORMS, self::VAR_DEFAULT_PORTFOLIOS_PID, self::VAR_FONT_TYPE_OPTION_ID,
@@ -2332,6 +2360,15 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_SIDEBAR                                       => 1,
       self::VAR_CACHE_BIG_FOOTER                                    => 1,
       self::VAR_CACHE_EXTRA_CONTENT                                 => 1,
+      self::VAR_CACHE_MENU_TOP_TTL                                  => 1,
+      self::VAR_CACHE_MENU_MAIN_TTL                                 => 1,
+      self::VAR_CACHE_SCRIPTS_TTL                                   => 1,
+      self::VAR_CACHE_SLIDER_TTL                                    => 1,
+      self::VAR_CACHE_TOPSIDEBAR_TTL                                => 1,
+      self::VAR_CACHE_MAP_TTL                                       => 1,
+      self::VAR_CACHE_SIDEBAR_TTL                                   => 1,
+      self::VAR_CACHE_BIG_FOOTER_TTL                                => 1,
+      self::VAR_CACHE_EXTRA_CONTENT_TTL                             => 1,
       self::VAR_CACHE_TAG                                           => 0,
 
     ),
@@ -6595,6 +6632,7 @@ case 'vimeo' :
     switch( $name){
       case 'content':
 
+        set_query_var('lifetime',$this->get_option( self::VAR_CACHE_EXTRA_CONTENT_TTL));
         set_query_var('current_pagename',$this->get_current_pagename());
         break;
     }
@@ -6634,6 +6672,7 @@ case 'vimeo' :
     set_query_var('footer_cols', $this->get_option( self::VAR_FOOTER_COLUMNS, 1));
     set_query_var('cache_scripts', $this->get_option( self::VAR_CACHE_SCRIPTS));
     set_query_var('cache_big_footer', $this->get_option( self::VAR_CACHE_BIG_FOOTER));
+    set_query_var('lifetime_big',$this->get_option( self::VAR_CACHE_BIG_FOOTER_TTL));
   }
 
   /**
@@ -6776,6 +6815,22 @@ case 'vimeo' :
    */
   public function template_map( $slug, $name){
 
+    set_query_var('lifetime',$this->get_option( self::VAR_CACHE_MAP_TTL));
+  }
+
+  /**
+   * @param $name
+   * @return void
+   */
+  public function template_menu( $slug, $name){
+    switch ($name){
+      case 'main':
+        set_query_var('lifetime',$this->get_option( self::VAR_CACHE_MENU_MAIN_TTL));
+        break;
+      case 'top':
+        set_query_var('lifetime',$this->get_option( self::VAR_CACHE_MENU_TOP_TTL));
+        break;
+    }
   }
 
   /**
@@ -6830,6 +6885,14 @@ case 'vimeo' :
    * @param $name
    * @return void
    */
+  public function template_scripts( $slug, $name){
+    set_query_var('lifetime',$this->get_option( self::VAR_CACHE_SCRIPTS_TTL));
+  }
+
+  /**
+   * @param $name
+   * @return void
+   */
   public function template_searchform( $name){
 
   }
@@ -6842,6 +6905,7 @@ case 'vimeo' :
     set_query_var('blog_cats_exclude_sidebar', $this->get_option( self::VAR_BLOG_CATS_EXCLUDE_SIDEBAR));
     $sidebar = $this->sidebar_type();
     set_query_var( 'sidebar', $sidebar);
+    set_query_var('lifetime',$this->get_option( self::VAR_CACHE_SIDEBAR_TTL));
     switch($name){
       case 'blog':
         if (empty($sidebar)) set_query_var( 'sidebar', "Blog Sidebar");
@@ -6874,7 +6938,7 @@ case 'vimeo' :
   public function template_slider( $slug, $name){
     set_query_var('slider', $this->slider_type());
     set_query_var('slider_responsive', $this->get_option( self::VAR_SLIDER_RESPONSIVE));
-
+    set_query_var('lifetime',$this->get_option( self::VAR_CACHE_SLIDER_TTL));
     switch($name){
       case 'elegant':
         set_query_var('slider_elegant_caption_position', $this->get_option( self::VAR_SLIDER_ELEGANT_CAPTION_POSITION));
@@ -6944,7 +7008,7 @@ case 'vimeo' :
     set_query_var('topsidebar_rows', $this->get_option( self::VAR_TOPSIDEBAR_ROWS));
     set_query_var('topsidebar_cols', $this->get_option( self::VAR_TOPSIDEBAR_COLS));
     set_query_var('use_topsidebar',  $this->get_option( self::VAR_TOPSIDEBAR_HAS));
-
+    set_query_var('lifetime', $this->get_option( self::VAR_CACHE_TOPSIDEBAR_TTL));
   }
 
   /**
@@ -7023,7 +7087,7 @@ case 'vimeo' :
     $view->set('core', $this);
 
     echo Manager::execute( $uri . '?' . $wp->query_string
-      , $view, HTTP_WPCache::factory('wp-file'))->body($view);
+      , $view, HTTP_WPCache::factory('tag-file'))->body($view);
 
     return FALSE;
   }

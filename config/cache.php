@@ -21,4 +21,16 @@ return array
       '.svn'
     )
   ),
+  'tag-file'    => array(
+    'driver'             => 'ObjectFileTag',
+    'cache_dir'          => WP_CONTENT_DIR .'/cache/kohana/objects',
+    'tags_dir'           => WP_CONTENT_DIR .'/cache/kohana/tags',
+    'parts_dir'          => WP_CONTENT_DIR .'/cache/kohana/parts',
+    'default_expire'     => 0,
+    'ignore_on_delete'   => array(
+      '.gitignore',
+      '.git',
+      '.svn'
+    )
+  ),
 );

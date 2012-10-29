@@ -37,7 +37,12 @@ class Controller_Menu_Main extends Controller_Manager{
    * @see Controller_Manager::do_action()
    */
   protected function do_action(){
+
+    do_action('get_template_part_menu', 'menu', $this->request->param('query'));
+
     $this->response->body( $this->extend('content', FALSE));
-    $this->response->headers('cache-control', 'public, max-age=3600');
+
+    $this->response->headers('cache-control', 'public, max-age=' . get_query_var('lifetime') * 3600 );
+
   }
 }
