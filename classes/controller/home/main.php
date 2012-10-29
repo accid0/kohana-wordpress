@@ -40,12 +40,13 @@ class Controller_Home_Main extends Controller_Manager{
 
     global $wp_query, $wp;
 
-    if ( ( is_home() || is_front_page() ) && get_option( 'show_on_front' ) == 'posts'
-      || $wp_query->is_posts_page || (is_home() && get_option( 'page_for_posts' ) != '0' )) {
+    if ( ( ( is_home() || is_front_page() ) && get_option( 'show_on_front' ) == 'posts'
+      || $wp_query->is_posts_page ) || (is_home() && get_option( 'page_for_posts' ) != '0' )) {
 
-      $this->auto_render = FALSE;
-      do_action('get_template_part_blog', 'blog', '');
-      $this->response->body($this->execute('blog', $this->view));
+      $this->file = NULL;
+
+      $this->response->body( $this->extend('blog'));
+
       return;
     }
 

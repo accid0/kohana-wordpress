@@ -121,8 +121,8 @@ $tpl_tdomain = get_query_var('tpl_tdomain');
 	$comment_args = array(
 		'fields'               => apply_filters( 'comment_form_default_fields', $fields ),
 		'comment_field'        => '<p class="comment-form-comment"><label for="comment">'.__( 'Your comment', $tpl_tdomain ).'</label><textarea id="comment" name="comment" cols="45" rows="8"></textarea></p><div class="clear"></div>',
-		'must_log_in'          => '<p class="must-log-in">' .  sprintf( __( 'You must be <a href="%s">logged in</a> to post a comment.', $tpl_tdomain ), wp_login_url( apply_filters( 'the_permalink', get_permalink( get_the_ID() ) ) ) ) . '</p>',
-		'logged_in_as'         => '<p class="logged-in-as">' . sprintf( __( 'Logged in as <a href="%1$s">%2$s</a>. <a href="%3$s" title="Log out of this account">Log out?</a>', $tpl_tdomain ), admin_url( 'profile.php' ), $user_identity, wp_logout_url( apply_filters( 'the_permalink', get_permalink( get_the_ID() ) ) ) ) . '</p>',
+		'must_log_in'          => '<p class="must-log-in">' .  sprintf( __( "You must be <a href='%s'>logged in</a> to post a comment.", $tpl_tdomain ), wp_login_url( apply_filters( 'the_permalink', get_permalink( get_the_ID() ) ) ) ) . '</p>',
+		'logged_in_as'         => '<p class="logged-in-as">' . sprintf( __( "Logged in as <a href='%1\$s'>%2\$s</a>. <a href='%3\$s' title='Log out of this account'>Log out?</a>", $tpl_tdomain ), admin_url( 'profile.php' ), $user_identity, wp_logout_url( apply_filters( 'the_permalink', get_permalink( get_the_ID() ) ) ) ) . '</p>',
 		'comment_notes_before' => '',
 		'comment_notes_after'  => '',
 		'id_form'              => 'commentform',
@@ -132,7 +132,7 @@ $tpl_tdomain = get_query_var('tpl_tdomain');
 		'cancel_reply_link'    => __( 'Cancel reply', $tpl_tdomain ),
 		'label_submit'         => __( 'Post Comment', $tpl_tdomain ),
 	);
-	
+
 	comment_form( $comment_args ); 
 ?>
 

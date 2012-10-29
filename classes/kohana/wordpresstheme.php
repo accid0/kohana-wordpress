@@ -2171,8 +2171,8 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_FOOTER_ROWS                                         => 1,
       self::VAR_FOOTER_COLUMNS                                      => 4,
       self::VAR_FOOTER_TEXT_CENTERED                                => '',
-      self::VAR_COPYRIGHT_TEXT_LEFT                                 => 'Copyright <a href        ="%site_url%"><strong>%name_site%</strong></a> 2012',
-      self::VAR_COPYRIGHT_TEXT_RIGHT                                => 'Powered by <a href        ="http://www.yourinspirationweb.com/en"><strong>Your Inspiration Web</strong></a>',
+      self::VAR_COPYRIGHT_TEXT_LEFT                                 => 'Copyright <a href="%site_url%"><strong>%name_site%</strong></a> %date%',
+      self::VAR_COPYRIGHT_TEXT_RIGHT                                => 'Copyright <a href="%site_url%"><strong>%name_site%</strong></a> %date%',
       self::VAR_GA_CODE                                             => '',
       self::VAR_SHOP_PRODUCTS_PER_PAGE                              => 8,
       self::VAR_SHOP_PRODUCTS_STYLE                                 => self::ATTR_RIBBON,
@@ -4981,6 +4981,7 @@ case 'vimeo' :
    *
    */
   private function minicart( $echo = TRUE) {
+    if ( !$this->ensure_woo()) return NULL;
     global $woocommerce;
 
     // quantity
@@ -5799,6 +5800,11 @@ case 'vimeo' :
    */
   protected function update_options( &$params){
     $this->update_flash_slider( $params[self::VAR_SLIDER_FLASH_SLIDES], $params);
+    $cache = Cache::instance('tag-file');
+    if ( $cache ) {
+      $cache->delete_tag('parts');
+      $cache->delete_tag('options');
+    }
   }
 
   protected function block_options( View $template, $sid){

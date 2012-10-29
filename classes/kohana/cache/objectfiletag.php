@@ -184,7 +184,7 @@ class Kohana_Cache_ObjectFileTag extends Cache_ObjectFile implements Cache_Taggi
     if( $this->lock( $sid)){
       $key = $this->id_tag($sid);
       $this->_istag = TRUE;
-      $this->_cache->increment( $key, 1);
+      $this->increment( $key, 1);
       $this->_istag = FALSE;
       $this->unlock($sid);
     }

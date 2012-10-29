@@ -1,6 +1,6 @@
 <div class="clear"></div>
 
-<?php if ( $have_posts ) :?>
+<?php if ( $have_posts ) : ?>
 <?php /* If this is a category archive */
   if (is_category()) { ?>
   <h3
