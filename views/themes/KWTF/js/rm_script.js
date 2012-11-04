@@ -55,7 +55,7 @@ jQuery(document).ready(function($){
 		
 		return false;
 	});
-});                     
+});
 
 jQuery(document).ready(function($) {
 	$('.rm_color').each(function() {
@@ -63,7 +63,7 @@ jQuery(document).ready(function($) {
 		var inputPicker = $(this).find('input[type=text]');
 		divPicker.farbtastic(inputPicker);
 		divPicker.hide();
-		
+
         $('.colorpicker-icon', this).click(function(){
            divPicker.slideToggle('fast', function(){
                optionsTab.redraw();
@@ -71,7 +71,14 @@ jQuery(document).ready(function($) {
            inputPicker.val('#ffffff');
         });
 	});
-  });       
+  });
+
+jQuery(document).ready(function($) {
+    $('.rm_select > select[multiple]').each(function() {
+        $(this).chosen({no_results_text: "No results matched"});
+
+    });
+});
 
 jQuery(document).ready(function($) {
 	$('.radioLink input').live('click',function() {

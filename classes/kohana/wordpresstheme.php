@@ -681,6 +681,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_CACHE_BIG_FOOTER                                    = 'cache_big_footer';
   const VAR_CACHE_EXTRA_CONTENT                                 = 'cache_extra_content';
   const VAR_CACHE_TAG                                           = 'cache_tag';
+  const VAR_CACHE_WIDGETS                                       = 'cache_widgets';
   const VAR_CACHE_MENU_TOP_TTL                                  = 'cache_menu_top_ttl';
   const VAR_CACHE_MENU_MAIN_TTL                                 = 'cache_menu_main_ttl';
   const VAR_CACHE_SCRIPTS_TTL                                   = 'cache_scripts_ttl';
@@ -690,7 +691,7 @@ class Kohana_WordpressTheme extends WPPlugin {
   const VAR_CACHE_SIDEBAR_TTL                                   = 'cache_sidebar_ttl';
   const VAR_CACHE_BIG_FOOTER_TTL                                = 'cache_big_footer_ttl';
   const VAR_CACHE_EXTRA_CONTENT_TTL                             = 'cache_extra_content_ttl';
-  const VAR_CACHE_TAG_TTL                                       = 'cache_tag_ttl';
+  const VAR_CACHE_WIDGETS_TTL                                   = 'cache_widgets_ttl';
 
   const OPT_THEMES_ROOT                                         = 'themes_root';
   const OPT_THEMES_SUB_DIRECTORY                                = 'themes_sub_directory';
@@ -1013,15 +1014,15 @@ class Kohana_WordpressTheme extends WPPlugin {
           self::ATTR_MEDIA => 'all'
         ),
         array(
-          self::ATTR_HANDLE => 'iphone-style-checkboxes',
-          self::ATTR_SRC => 'css/iphone-style-checkboxes.css',
-          self::ATTR_VER => '1.0',
+          self::ATTR_HANDLE => 'chosen',
+          self::ATTR_SRC => 'css/chosen.css',
+          self::ATTR_VER => '0.9.8',
           self::ATTR_MEDIA => 'all'
         ),
         array(
-          self::ATTR_HANDLE => 'jquery-ui-overcast',
-          self::ATTR_SRC => 'css/jquery-ui-1.8.9.custom.css',
-          self::ATTR_VER => '1.8.8',
+          self::ATTR_HANDLE => 'iphone-style-checkboxes',
+          self::ATTR_SRC => 'css/iphone-style-checkboxes.css',
+          self::ATTR_VER => '1.0',
           self::ATTR_MEDIA => 'all'
         ),
         array(
@@ -1044,6 +1045,13 @@ class Kohana_WordpressTheme extends WPPlugin {
           self::ATTR_SRC => 'js/jquery-ui-1.8.9.custom.min.js',
           self::ATTR_VER => '1.8.9',
           self::ATTR_IN_FOOTER => TRUE
+        ),
+        array(
+          self::ATTR_HANDLE => 'chosen',
+          self::ATTR_SRC => 'js/chosen.jquery.min.js',
+          self::ATTR_VER => '0.9.8',
+          self::ATTR_IN_FOOTER => TRUE,
+          self::ATTR_DEPS => array( 'jquery'),
         ),
         array(
           self::ATTR_HANDLE => 'rm_script',
@@ -1610,6 +1618,7 @@ class Kohana_WordpressTheme extends WPPlugin {
         self::VAR_CACHE_MAP                                           => self::ATTR_TEXT,
         self::VAR_CACHE_SIDEBAR                                       => self::ATTR_TEXT,
         self::VAR_CACHE_BIG_FOOTER                                    => self::ATTR_TEXT,
+        self::VAR_CACHE_WIDGETS                                       => self::ATTR_TEXT,
         self::VAR_CACHE_EXTRA_CONTENT                                 => self::ATTR_TEXT,
         self::VAR_CACHE_MENU_TOP_TTL                                  => self::ATTR_TEXT,
         self::VAR_CACHE_MENU_MAIN_TTL                                 => self::ATTR_TEXT,
@@ -1619,6 +1628,7 @@ class Kohana_WordpressTheme extends WPPlugin {
         self::VAR_CACHE_MAP_TTL                                       => self::ATTR_TEXT,
         self::VAR_CACHE_SIDEBAR_TTL                                   => self::ATTR_TEXT,
         self::VAR_CACHE_BIG_FOOTER_TTL                                => self::ATTR_TEXT,
+        self::VAR_CACHE_WIDGETS_TTL                                   => self::ATTR_TEXT,
         self::VAR_CACHE_EXTRA_CONTENT_TTL                             => self::ATTR_TEXT,
       ),
 		),
@@ -1972,6 +1982,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_MAP                                           => 'Map',
       self::VAR_CACHE_SIDEBAR                                       => 'Main Sidebar',
       self::VAR_CACHE_BIG_FOOTER                                    => 'Footer Sidebar',
+      self::VAR_CACHE_WIDGETS                                       => 'Widgets',
       self::VAR_CACHE_EXTRA_CONTENT                                 => 'Extra Content',
       self::VAR_CACHE_MENU_TOP_TTL                                  => 'Top Menu Lifetime',
       self::VAR_CACHE_MENU_MAIN_TTL                                 => 'Main Menu Lifetime',
@@ -1980,6 +1991,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_TOPSIDEBAR_TTL                                => 'Top Sidebar Lifetime',
       self::VAR_CACHE_MAP_TTL                                       => 'Map Lifetime',
       self::VAR_CACHE_SIDEBAR_TTL                                   => 'Main Sidebar Lifetime',
+      self::VAR_CACHE_WIDGETS_TTL                                   => 'Widgets Lifetime',
       self::VAR_CACHE_BIG_FOOTER_TTL                                => 'Footer Sidebar Lifetime',
       self::VAR_CACHE_EXTRA_CONTENT_TTL                             => 'Extra Content Lifetime',
     ),
@@ -2358,6 +2370,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_TOPSIDEBAR                                    => 1,
       self::VAR_CACHE_MAP                                           => 1,
       self::VAR_CACHE_SIDEBAR                                       => 1,
+      self::VAR_CACHE_WIDGETS                                       => array(),
       self::VAR_CACHE_BIG_FOOTER                                    => 1,
       self::VAR_CACHE_EXTRA_CONTENT                                 => 1,
       self::VAR_CACHE_MENU_TOP_TTL                                  => 1,
@@ -2367,6 +2380,7 @@ class Kohana_WordpressTheme extends WPPlugin {
       self::VAR_CACHE_TOPSIDEBAR_TTL                                => 1,
       self::VAR_CACHE_MAP_TTL                                       => 1,
       self::VAR_CACHE_SIDEBAR_TTL                                   => 1,
+      self::VAR_CACHE_WIDGETS_TTL                                   => 1,
       self::VAR_CACHE_BIG_FOOTER_TTL                                => 1,
       self::VAR_CACHE_EXTRA_CONTENT_TTL                             => 1,
       self::VAR_CACHE_TAG                                           => 0,
@@ -6124,6 +6138,19 @@ case 'vimeo' :
         $template->configs = $this->get_option( self::VAR_PANEL_CONFIGS );
         $template->code = base64_encode( serialize( $this->get_option() ) );
         break;
+      case self::ATTR_BLOCK_CACHE_SETTINGS:
+        global $wp_registered_widgets;
+
+        $options_widgets = array();
+        foreach( $wp_registered_widgets as $id => $widget){
+          if ( is_array($widget['callback']))
+            $sid = strtolower( get_class($widget['callback'][0]). '_' . $widget['callback'][1]);
+          else $sid = strtolower($widget['callback']);
+          $options_widgets[$sid] = $widget['name'];
+        }
+        $template->options_widgets = $options_widgets;
+
+        break;
     }
   }
 
@@ -6912,6 +6939,8 @@ case 'vimeo' :
     $sidebar = $this->sidebar_type();
     set_query_var( 'sidebar', $sidebar);
     set_query_var('lifetime',$this->get_option( self::VAR_CACHE_SIDEBAR_TTL));
+    set_query_var('lifetime_widgets',$this->get_option( self::VAR_CACHE_WIDGETS_TTL));
+    set_query_var('cache_widgets',$this->get_option( self::VAR_CACHE_WIDGETS));
     switch($name){
       case 'blog':
         if (empty($sidebar)) set_query_var( 'sidebar', "Blog Sidebar");
@@ -7473,11 +7502,6 @@ case 'vimeo' :
         'description' => __( 'Design', $this->plg_tdomain ) . ' 5'
       ),
     ) );
-
-    $locale = get_locale();
-    $locale_file = $this->themes_root . '/' . $this->name . "/languages/$locale.php";
-    if ( is_readable( $locale_file ) )
-      require_once( $locale_file );
 
     // This theme uses wp_nav_menu() in more locations.
     register_nav_menus(
@@ -8604,7 +8628,7 @@ case 'vimeo' :
    */
   public function action_wp_dashboard_setup() {
     wp_add_dashboard_widget( 'kwtf_dashboard_news', __( 'News from the support forum' , $this->get_var( self::OPT_PLUGIN_TDOMAIN) ), array( $this, 'dashboard_forum_news') );
-    wp_add_dashboard_widget( 'kwtf_news', __( 'News from the YIW Blog' , $this->get_var( self::OPT_PLUGIN_TDOMAIN) ), array( $this, 'dashboard_news') );
+    wp_add_dashboard_widget( 'kwtf_news', __( 'News from the KWTF Blog' , $this->get_var( self::OPT_PLUGIN_TDOMAIN) ), array( $this, 'dashboard_news') );
     // Globalize the metaboxes array, this holds all the widgets for wp-admin
 
     global $wp_meta_boxes;
@@ -11669,10 +11693,7 @@ var text_color = $('#<?php $this->option_id( $value['id_colors'] ); ?>'); var pr
            marginheight="0"
            marginwidth="0"
            src="<?php echo$src ?>&output=embed">
-    </iframe></div></div>
-    <div id="map-text"><?php echo $caption ?></div>
-       <a href="#" class="tab-label opened"><?php _e('Close Map', $this->get_var( self::OPT_PLUGIN_TDOMAIN)) ?></a>
-    </div>
+    </iframe></div></div></div>
       <?php
       $html  = ob_get_clean();
        

@@ -18,7 +18,7 @@
 	padding: 0px;
 }
 
-#navmenu ul {
+#navmenu > ul {
 	margin: 0px;
 	padding: 4px 0px 4px 0px;
 	list-style-type: none;
@@ -26,7 +26,7 @@
 	border-bottom: solid thin #CCCCCC;
 }
 
-#navmenu li {
+#navmenu > ul > li {
 	margin: 0px;
 	display: inline;
 	border-top: solid thin #CCCCCC;
@@ -35,14 +35,14 @@
 	padding: 5px 0px 5px 0px;
 }
 
-#navmenu ul li a {
+#navmenu > ul > li > a {
 	text-decoration: none;
 	margin: 0px;
 	padding: 5px 10px 5px 10px;
 	background: #EEEEEE;
 }
 
-#navmenu ul li a:hover {
+#navmenu > ul > li > a:hover {
 	background: #FFFFFF;
 }
 

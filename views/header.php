@@ -38,7 +38,7 @@
     echo ' | ' . $description;
 
     // Add a page number if necessary:
-    echo $page;
+    echo ($page) ? ' | ' . $page : '';
 
     ?></title>          
     

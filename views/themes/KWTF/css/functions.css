@@ -47,7 +47,7 @@
 }
 .rm_option{
 	position:relative;
-	z-index:2;
+	/*z-index:2;*/
 }
 .rm_option .fade_color {
 	position:absolute;
