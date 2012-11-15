@@ -137,6 +137,7 @@ abstract class Kohana_Kadapter extends WPPlugin
    */
   static function getInstance()
   {
+
     return parent::getInstance();
   }
 

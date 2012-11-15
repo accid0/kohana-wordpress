@@ -275,17 +275,23 @@ abstract class Kohana_WPPlugin extends Kohana_Base_WPPlugin {
                                       . DIRECTORY_SEPARATOR
                                       . $this->lang_dir;
     $this->option_values = get_option( $this->option_key );
+
     if ( $this->_options[self::OPT_MODE] == self::ATTR_PLUGIN && is_admin()){  
                                                  
-      register_activation_hook( $this->base_name, array( &$this, '_activate' ) );
+      register_activation_hook( $this->base_name, array( $this, '_activate' ) );
     
-      register_deactivation_hook( $this->base_name, array( &$this, '_deactivate' ) );
-      
+      register_deactivation_hook( $this->base_name, array( $this, '_deactivate' ) );
+
+
+      //@todo conficted from inherit class static method _deinstall
+      //register_uninstall_hook( $this->base_name, array( $this, '_deinstall' ) );
+
       add_action( 'admin_init', array( $this, '_register_plugin'));
     }
-    
+
+
     if ( $this->isActive()){
-      
+
       if( $this->has_cron )
         $this->schedule_cron();
         
@@ -615,6 +621,10 @@ abstract class Kohana_WPPlugin extends Kohana_Base_WPPlugin {
   protected function deactivate(){}
 
   /**
+   */
+  protected function deinstall(){}
+
+  /**
    * 
    * @param array $params
    */
@@ -720,13 +730,20 @@ abstract class Kohana_WPPlugin extends Kohana_Base_WPPlugin {
    */
   function _deactivate(){
     $this->deactivate();
-    $this->_delete_options();
     if( $this->has_cron ) {
       foreach( $this->crontab as $sched => $entry ) {
         $event = "wpp_{$sched}_{$this->sanitized_name}_event";
         wp_clear_scheduled_hook( $event);
       }
     }
+  }
+
+  /**
+   * @todo realise this static method for inherit class
+   */
+  static function _deinstall(){
+    $this->deinstall();
+    $this->_delete_options();
   }
   
   /**
